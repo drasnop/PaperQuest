@@ -1,5 +1,10 @@
 var width = 1366,
-    height = 768;
+    height = 768,
+    paperMinRadius = 5,
+    paperMaxRadius = 20,
+    paperMarginBottom = 5,
+    titleBaselineOffset = 6;
+    // these settings can display at most 17 papers
 
 var currentYear=2010;
 
@@ -10,6 +15,7 @@ var svg = d3.select("body").append("svg")
 
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
+    
     var papers = svg.selectAll("paper")
     	.data(data)
     .enter()
@@ -18,12 +24,17 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     papers.append("circle")
     	.attr("class", "node")
-    	.attr("cx", 25)
-    	.attr("cy", function(d,i) {return i*25;})
-    	.attr("r", function(d,i) {return 5+Math.sqrt(currentYear-d.year);})
+    	.attr("cx", paperMaxRadius)
+    	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
+    	.attr("r", function(d,i) {
+    		return Math.max(paperMinRadius,
+    			Math.min(paperMaxRadius,
+    			currentYear-d.year));
+    	})
+    
     papers.append("text")
     	.attr("class", "title")
-    	.attr("x", 50)
-    	.attr("y", function(d,i) {return i*25+5;})
+    	.attr("x", 2*paperMaxRadius)
+    	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);})
     	.text(function(d,i) {return d.title;});
 });
