@@ -10,12 +10,20 @@ var svg = d3.select("body").append("svg")
 
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
-    var nodes = svg.selectAll(".node")
+    var papers = svg.selectAll("paper")
     	.data(data)
-    .enter().append("circle")
-    	.attr("class","node")
-    	.attr("cx", function(d,i) {return 20;})
-    	.attr("cy", function(d,i) {return i*20;})
-    	.attr("r", 10);
-    	//.style("stroke-width", 3);
+    .enter()
+    .append("g")
+    	.attr("class","paper")
+
+    papers.append("circle")
+    	.attr("class", "node")
+    	.attr("cx", 25)
+    	.attr("cy", function(d,i) {return i*25;})
+    	.attr("r", function(d,i) {return 5+Math.sqrt(currentYear-d.year);})
+    papers.append("text")
+    	.attr("class", "title")
+    	.attr("x", 50)
+    	.attr("y", function(d,i) {return i*25+5;})
+    	.text(function(d,i) {return d.title;});
 });
