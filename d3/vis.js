@@ -6,6 +6,16 @@ var width = 1366,
     titleBaselineOffset = 6;
     // these settings can display at most 17 papers
 
+var colors={
+	"blue":"#00A1CB",
+	"green":"#61AE24",
+	"pink":"#D70060",
+	"orange":"#F18D05",
+	"darkblue":"#113F8C",
+	"turquoise":"#01A4A4",	// not to be used for the nodes
+	"red":"#E54028"	// not to be used for the nodes
+}
+
 var currentYear=2010;
 
 // I'm not sure what was the point of .select("body").append("svg")...
@@ -31,6 +41,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     			Math.min(paperMaxRadius,
     			currentYear-d.year));
     	})
+    	.attr("fill",function(d,i) {return randomColor();});
     
     papers.append("text")
     	.attr("class", "title")
@@ -38,3 +49,9 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);})
     	.text(function(d,i) {return d.title;});
 });
+
+// Return a random color except red or turquoise
+function randomColor(){
+	var keys=Object.keys(colors);
+	return colors[keys[ (keys.length-2) * Math.random() << 0]];
+}
