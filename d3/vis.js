@@ -35,10 +35,14 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     	.attr("class", "node")
     	.attr("cx", paperMaxRadius)
     	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
-    	.attr("r", function(d,i) {return radius(d.year,true)})
-    	.attr("stroke-width",paperOutlineWidth)
-    	.attr("fill","white")
-    	.attr("stroke",randomColor);
+    	.attr("r", function(d,i) {return radius(d.year);})
+    	.attr("fill",randomColor);
+   	
+   	papers.append("circle")
+    	.attr("cx", paperMaxRadius)
+    	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
+    	.attr("r", function(d,i) {return radius(d.year)*.4;})
+    	.attr("fill","white");
     
     papers.append("text")
     	.attr("class", "title")
@@ -57,10 +61,9 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
 // Compute a radius from the value supplied, between min and max
 // If we want to display an outline instead of a fill circle, the radius must be smaller
-function radius(value,outline){
+function radius(value){
 	return Math.max(paperMinRadius, Math.min(paperMaxRadius,
-		currentYear-value))
-		- (outline*paperOutlineWidth/2);
+		currentYear-value));
 }
 
 // Return a random color except red or turquoise
