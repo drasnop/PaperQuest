@@ -8,8 +8,11 @@ var paperMinRadius = 5,
     titleBaselineOffset = 6;
 
 // horizontal sizes of the different regions based on the current view (core, toread, fringe)
-var coreSize = [1000,200,150],
-	toreadSize = [200,1000,250];
+var coreSize = [1000,200,120],
+	toreadSize = [200,1000,300],
+	fringeRadius = 2000,
+	fringeXOffset = -(fringeRadius-coreSize[2]-toreadSize[2]);
+
 
 var colors={
 	"blue":"#00A1CB",
@@ -87,7 +90,9 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
 // Compute X coordinate for the i-th paper on the fringe
 function fringePaperX(i){
-	return coreSize[view]+toreadSize[view]+paperMaxRadius;
+	var h=window.innerHeight;
+	return fringeXOffset+Math.sqrt(Math.pow(fringeRadius,2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius;
+	//return coreSize[view]+toreadSize[view]+paperMaxRadius;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
