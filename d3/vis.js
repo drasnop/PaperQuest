@@ -1,12 +1,15 @@
 ///////////////////   Parameters   /////////////////
 
-var width = 1366,
-    height = 700,
-    paperMinRadius = 5,
+var paperMinRadius = 5,
     paperMaxRadius = 15,
-    paperOutlineWidth = 4,	// this divided by 2 must be > min radius
+    paperInnerWhiteCircleRatio =.4,
+    paperOutlineWidth = 4,	// UNUSED - this divided by 2 must be > min radius
     paperMarginBottom = 5,
     titleBaselineOffset = 6;
+
+// horizontal sizes of the different regions based on the current view (core, toread, fringe)
+var coreSize = [1000,200,150],
+	toreadSize = [200,1000,250];
 
 var colors={
 	"blue":"#00A1CB",
@@ -35,6 +38,8 @@ var svg = d3.select("body").append("svg");
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
     
+	// fringe
+
     var papers = svg.selectAll("paper")
     	.data(data)
     .enter()
@@ -43,22 +48,30 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     papers.append("circle")
     	.attr("class", "node")
-    	.attr("cx", function(d,i) { return fringePaperX(i);})
-    	.attr("cy", function(d,i) { return fringePaperY(i);})
-    	.attr("r", function(d,i) {return radius(d.year);})
+    	.attr("cx", function(d,i) { return fringePaperX(i);} )
+    	.attr("cy", function(d,i) { return fringePaperY(i);} )
+    	.attr("r", function(d,i) {return radius(d.year);} )
     	.attr("fill",randomColor);
    	
    	papers.append("circle")
-    	.attr("cx", function(d,i) { return fringePaperX(i);})
-    	.attr("cy", function(d,i) {return fringePaperY(i);})
-    	.attr("r", function(d,i) {return radius(d.year)*.4;})
+    	.attr("cx", function(d,i) { return fringePaperX(i);} )
+    	.attr("cy", function(d,i) {return fringePaperY(i);} )
+    	.attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
     	.attr("fill","white");
     
     papers.append("text")
     	.attr("class", "title")
-    	.attr("x", 2*paperMaxRadius)
-    	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);})
-    	.text(function(d,i) {return d.title;});
+    	.attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius;} )
+    	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
+    	.text(function(d,i) {return d.title;} );
+
+    // core
+
+    svg.append("circle")
+    	.attr("cx",0)
+    	.attr("cy","50%")
+    	.attr("r",coreSize[view])
+    	.attr("fill",colors.red);
 
     // sidebar
 /*    svg.append("rect")
@@ -73,8 +86,8 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 ////////////////	Helper functions    //////////////
 
 // Compute X coordinate for the i-th paper on the fringe
-function fringePaperX(){
-	return paperMaxRadius;
+function fringePaperX(i){
+	return coreSize[view]+toreadSize[view]+paperMaxRadius;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
