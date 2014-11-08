@@ -1,10 +1,10 @@
 var width = 1366,
-    height = 768,
+    height = 700,
     paperMinRadius = 5,
-    paperMaxRadius = 20,
+    paperMaxRadius = 15,
+    paperOutlineWidth = 4,	// this divided by 2 must be > min radius
     paperMarginBottom = 5,
     titleBaselineOffset = 6;
-    // these settings can display at most 17 papers
 
 var colors={
 	"blue":"#00A1CB",
@@ -13,15 +13,14 @@ var colors={
 	"orange":"#F18D05",
 	"darkblue":"#113F8C",
 	"turquoise":"#01A4A4",	// not to be used for the nodes
-	"red":"#E54028"	// not to be used for the nodes
+	"red":"#E54028",	// not to be used for the nodes
+	"darkgray":"#616161"	// not to be used for the nodes
 }
 
 var currentYear=2010;
 
 // I'm not sure what was the point of .select("body").append("svg")...
-var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+var svg = d3.select("body").append("svg");
 
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
@@ -36,19 +35,33 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     	.attr("class", "node")
     	.attr("cx", paperMaxRadius)
     	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
-    	.attr("r", function(d,i) {
-    		return Math.max(paperMinRadius,
-    			Math.min(paperMaxRadius,
-    			currentYear-d.year));
-    	})
-    	.attr("fill",function(d,i) {return randomColor();});
+    	.attr("r", function(d,i) {return radius(d.year,true)})
+    	.attr("stroke-width",paperOutlineWidth)
+    	.attr("fill","white")
+    	.attr("stroke",randomColor);
     
     papers.append("text")
     	.attr("class", "title")
     	.attr("x", 2*paperMaxRadius)
     	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);})
     	.text(function(d,i) {return d.title;});
+
+    // sidebar
+/*    svg.append("rect")
+    	.attr("x","")
+    	.attr("y","0")
+    	.attr("width","100")
+    	.attr("height","100%")
+    	.attr("fill",colors.darkgray);*/
 });
+
+// Compute a radius from the value supplied, between min and max
+// If we want to display an outline instead of a fill circle, the radius must be smaller
+function radius(value,outline){
+	return Math.max(paperMinRadius, Math.min(paperMaxRadius,
+		currentYear-value))
+		- (outline*paperOutlineWidth/2);
+}
 
 // Return a random color except red or turquoise
 function randomColor(){
