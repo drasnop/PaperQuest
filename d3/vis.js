@@ -1,3 +1,5 @@
+///////////////////   Parameters   /////////////////
+
 var width = 1366,
     height = 700,
     paperMinRadius = 5,
@@ -19,7 +21,15 @@ var colors={
 
 var currentYear=2010;
 
-// I'm not sure what was the point of .select("body").append("svg")...
+
+////////////////	Global variables    //////////////
+
+var view=2;	// 0=core, 1=to read, 2=fringe
+
+
+////////////////	Main rendering      //////////////
+
+// I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg");
 
 d3.tsv("data/SmallDataset.tsv", function(data){
@@ -33,14 +43,14 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     papers.append("circle")
     	.attr("class", "node")
-    	.attr("cx", paperMaxRadius)
-    	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
+    	.attr("cx", function(d,i) { return fringePaperX(i);})
+    	.attr("cy", function(d,i) { return fringePaperY(i);})
     	.attr("r", function(d,i) {return radius(d.year);})
     	.attr("fill",randomColor);
    	
    	papers.append("circle")
-    	.attr("cx", paperMaxRadius)
-    	.attr("cy", function(d,i) {return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);})
+    	.attr("cx", function(d,i) { return fringePaperX(i);})
+    	.attr("cy", function(d,i) {return fringePaperY(i);})
     	.attr("r", function(d,i) {return radius(d.year)*.4;})
     	.attr("fill","white");
     
@@ -59,7 +69,20 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     	.attr("fill",colors.darkgray);*/
 });
 
-// Compute a radius from the value supplied, between min and max
+
+////////////////	Helper functions    //////////////
+
+// Compute X coordinate for the i-th paper on the fringe
+function fringePaperX(){
+	return paperMaxRadius;
+}
+
+// Compute Y coordinate for the i-th paper on the fringe
+function fringePaperY(i){
+	return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);
+}
+
+// Compute a node radius from the value supplied, between min and max
 // If we want to display an outline instead of a fill circle, the radius must be smaller
 function radius(value){
 	return Math.max(paperMinRadius, Math.min(paperMaxRadius,
