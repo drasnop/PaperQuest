@@ -9,12 +9,15 @@ var paperMinRadius = 5,
     titleXOffset = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset);
 
-// horizontal sizes of the different regions based on the current view (core, toread, fringe)
-var coreSize = [1000,200,120],
-	toreadSize = [200,1000,300],
-	fringeRadius = 2000,
-	fringeXOffset = -(fringeRadius-coreSize[2]-toreadSize[2]);
-
+// Defines the dimension of each region, index by the current view (core, toread, fringe)
+// The apparent width is the horizontal space that we want the region to occupy on the screen
+// An appropriate offset for the x-position of the center will be computed as -radius+apparentWidth
+var coreRadius = [120,120,120],
+    toreadRadius = [2000,2000,2000],
+    fringeRadius = [2000,2000,2000],
+    coreApparentWidth = [120,120,120],
+    fringeApparentWidth = [420,420,420],
+    toreadApparentWidth = [420,420,fringeApparentWidth[2]+ paperXOffsetWhenSelected/2];
 
 var colors={
 	"blue":"#00A1CB",
@@ -91,7 +94,7 @@ function bindListeners(){
             .filter(function(){ return d3.select(this).attr("selected")==0;})
             .select(".title").attr("font-weight","normal").style("fill","#222")
     })
-    // click papers on the fringe
+    // clicking papers on the fringe translates them to the left
     .on("click",function() {
         var paper=d3.select(this)
         console.log(paper.attr("selected"))
@@ -121,20 +124,20 @@ function drawVis(){
 
     d3.selectAll(".title")
         .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius+titleXOffset;} )
-        .attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
+        .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
 
     // toread
     d3.selectAll(".toread")
-        .attr("cx",fringeXOffset)
+        .attr("cx",-toreadRadius[view]+toreadApparentWidth[view])
         .attr("cy","50%")
-        .attr("r",fringeRadius+(paperXOffsetWhenSelected/2))
+        .attr("r",toreadRadius[view])
         .style("fill",colors.orange)
     
     // core
     d3.selectAll(".core")
-        .attr("cx",0)
+        .attr("cx",-coreRadius[view]+coreApparentWidth[view])
         .attr("cy","50%")
-        .attr("r",coreSize[view])
+        .attr("r",coreRadius[view])
         .style("fill",colors.red)
 
     // sidebar
@@ -159,7 +162,8 @@ window.onresize = function(){
 // Compute X coordinate for the i-th paper on the fringe, based on a circle
 function fringePaperX(i){
 	var h=window.innerHeight;
-	return fringeXOffset+Math.sqrt(Math.pow(fringeRadius,2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius;
+    var xoffset=-fringeRadius[view]+fringeApparentWidth[view];
+	return xoffset+Math.sqrt(Math.pow(fringeRadius[view],2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
