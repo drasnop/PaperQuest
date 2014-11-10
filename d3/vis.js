@@ -5,7 +5,8 @@ var paperMinRadius = 5,
     paperInnerWhiteCircleRatio =.4,
     paperOutlineWidth = 4,	// UNUSED - this divided by 2 must be > min radius
     paperMarginBottom = 5,
-    titleBaselineOffset = 6;
+    titleBaselineOffset = 6,  // depends on font size
+    titleXOffset = 5;
 
 // horizontal sizes of the different regions based on the current view (core, toread, fringe)
 var coreSize = [1000,200,120],
@@ -67,9 +68,21 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     svg.append("circle")
         .attr("class","core")
 
+    bindListeners();
     drawVis();
-
 });
+
+function bindListeners(){
+    d3.selectAll(".paper")
+    .on("mouseover",function() {
+        d3.select(this).select(".node").attr("filter","url(#drop-shadow)");
+        d3.select(this).select(".title").attr("font-weight","bold");
+    })
+    .on("mouseleave",function() {
+        d3.select(this).select(".node").attr("filter","none")
+        d3.select(this).select(".title").attr("font-weight","normal")
+    })  
+}
 
 function drawVis(){
 
@@ -77,13 +90,7 @@ function drawVis(){
     d3.selectAll(".node")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
         .attr("cy", function(d,i) { return fringePaperY(i);} )
-        .attr("r", function(d,i) {return radius(d.year);} )
-        .on("mouseover",function() {
-            d3.select(this).attr("filter","url(#drop-shadow)")
-        })
-        .on("mouseleave",function() {
-            d3.select(this).attr("filter","none")
-        })    
+        .attr("r", function(d,i) {return radius(d.year);} )  
 
     d3.selectAll(".innerNode")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
@@ -92,7 +99,7 @@ function drawVis(){
         .attr("fill","white")
 
     d3.selectAll(".title")
-        .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius;} )
+        .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius+titleXOffset;} )
         .attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
     
     // core
