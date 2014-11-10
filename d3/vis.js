@@ -42,8 +42,16 @@ var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
             .attr("height",window.innerHeight);
 
-// Build the components of the vis
+// Build the components of the vis, in the appropriate z-index order
 d3.tsv("data/SmallDataset.tsv", function(data){
+    // toread
+    svg.append("circle")
+        .attr("class","toread")
+
+    // core
+    svg.append("circle")
+        .attr("class","core")
+
     // fringe
     var papers = svg.selectAll(".paper")
         .data(data)
@@ -63,10 +71,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
         .attr("class", "title")
         .text(function(d,i) {return d.title;} )
 
-    // core
-    svg.append("circle")
-        .attr("class","core")
-
+    // Initialize interaction & visual appearance
     bindListeners();
     drawVis();
 });
@@ -117,6 +122,13 @@ function drawVis(){
     d3.selectAll(".title")
         .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius+titleXOffset;} )
         .attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
+
+    // toread
+    d3.selectAll(".toread")
+        .attr("cx",fringeXOffset)
+        .attr("cy","50%")
+        .attr("r",fringeRadius+(paperXOffsetWhenSelected/2))
+        .style("fill",colors.orange)
     
     // core
     d3.selectAll(".core")
