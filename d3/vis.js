@@ -41,30 +41,27 @@ var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
             .attr("height",window.innerHeight);
 
+// Build the components of the vis
 d3.tsv("data/SmallDataset.tsv", function(data){
-	console.log(data);
-    
     // fringe
-
     var papers = svg.selectAll(".paper")
         .data(data)
     .enter()
     .append("g")
-        .attr("class","paper");
+        .attr("class","paper")
 
     papers.append("circle")
         .attr("class", "node")
-        .attr("fill",randomColor);  // eventually this style attr should be defined in drawVis
+        .attr("fill",randomColor)  // eventually this style attr should be defined in drawVis
     
     papers.append("circle")
-        .attr("class", "innerNode");
+        .attr("class", "innerNode")
     
     papers.append("text")
         .attr("class", "title")
-        .text(function(d,i) {return d.title;} );
+        .text(function(d,i) {return d.title;} )
 
     // core
-
     svg.append("circle")
         .attr("class","core")
 
@@ -75,8 +72,8 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 function bindListeners(){
     d3.selectAll(".paper")
     .on("mouseover",function() {
-        d3.select(this).select(".node").attr("filter","url(#drop-shadow)");
-        d3.select(this).select(".title").attr("font-weight","bold");
+        d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
+        d3.select(this).select(".title").attr("font-weight","bold")
     })
     .on("mouseleave",function() {
         d3.select(this).select(".node").attr("filter","none")
@@ -85,7 +82,6 @@ function bindListeners(){
 }
 
 function drawVis(){
-
     // fringe
     d3.selectAll(".node")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
@@ -116,18 +112,15 @@ function drawVis(){
         .attr("width","100")
         .attr("height","100%")
         .attr("fill",colors.darkgray);*/
-
-     // test circle highlighted   
-/*   svg.append("circle")
-        .attr("cx", fringePaperX(10) )
-        .attr("cy", fringePaperY(10) )
-        .attr("r", 20)
-        .attr("fill",colors.red)
-        .attr("filter","url(#drop-shadow)");*/
 }
 
 // Dynamic resize
-window.onresize = resizeSVG;
+window.onresize = function(){
+    svg.attr("width", window.innerWidth)
+       .attr("height", window.innerHeight);
+    drawVis();
+}
+
 
 ////////////////	Helper functions    //////////////
 
@@ -153,11 +146,4 @@ function radius(value){
 function randomColor(){
 	var keys=Object.keys(colors);
 	return colors[keys[ (keys.length-2) * Math.random() << 0]];
-}
-
-function resizeSVG(){
-    console.log("blah");
-    svg.attr("width", window.innerWidth)
-       .attr("height", window.innerHeight);
-    drawVis();
 }
