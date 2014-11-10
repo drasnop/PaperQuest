@@ -43,40 +43,29 @@ var svg = d3.select("body").append("svg")
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
     
-	// fringe
+    // fringe
 
-    var papers = svg.selectAll("paper")
-    	.data(data)
+    var papers = svg.selectAll(".paper")
+        .data(data)
     .enter()
     .append("g")
-    	.attr("class","paper");
+        .attr("class","paper");
 
     papers.append("circle")
-    	.attr("class", "node")
-    	.attr("cx", function(d,i) { return fringePaperX(i);} )
-    	.attr("cy", function(d,i) { return fringePaperY(i);} )
-    	.attr("r", function(d,i) {return radius(d.year);} )
-    	.attr("fill",randomColor);
-   	
-   	papers.append("circle")
-    	.attr("cx", function(d,i) { return fringePaperX(i);} )
-    	.attr("cy", function(d,i) {return fringePaperY(i);} )
-    	.attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
-    	.attr("fill","white");
+        .attr("class", "node")
+        .attr("fill",randomColor);
+    
+    papers.append("circle")
+        .attr("class", "innerNode");
     
     papers.append("text")
-    	.attr("class", "title")
-    	.attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius;} )
-    	.attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
-    	.text(function(d,i) {return d.title;} );
+        .attr("class", "title")
+        .text(function(d,i) {return d.title;} );
 
     // core
 
     svg.append("circle")
-    	.attr("cx",0)
-    	.attr("cy","50%")
-    	.attr("r",coreSize[view])
-    	.attr("fill",colors.red);
+        .attr("class","core")
 
     // sidebar
 /*    svg.append("rect")
@@ -93,8 +82,42 @@ d3.tsv("data/SmallDataset.tsv", function(data){
         .attr("r", 20)
         .attr("fill",colors.red)
         .attr("filter","url(#drop-shadow)");*/
+
+
+    drawVis();
+
 });
 
+function drawVis(){
+
+    // fringe
+
+    d3.selectAll(".node")
+        .attr("cx", function(d,i) { return fringePaperX(i);} )
+        .attr("cy", function(d,i) { return fringePaperY(i);} )
+        .attr("r", function(d,i) {return radius(d.year);} )
+        //.attr("fill",randomColor)
+
+    d3.selectAll(".innerNode")
+        .attr("cx", function(d,i) { return fringePaperX(i);} )
+        .attr("cy", function(d,i) { return fringePaperY(i);} )
+        .attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
+        .attr("fill","white")
+
+    d3.selectAll(".title")
+        .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius;} )
+        .attr("y", function(d,i) {return paperMaxRadius+titleBaselineOffset+i*(2*paperMaxRadius+paperMarginBottom);} )
+    
+    // core
+    d3.selectAll(".core")
+        .attr("cx",0)
+        .attr("cy","50%")
+        .attr("r",coreSize[view])
+        .attr("fill",colors.red);
+}
+
+// Dynamic resize
+window.onresize = resizeSVG;
 
 ////////////////	Helper functions    //////////////
 
@@ -120,4 +143,11 @@ function radius(value){
 function randomColor(){
 	var keys=Object.keys(colors);
 	return colors[keys[ (keys.length-2) * Math.random() << 0]];
+}
+
+function resizeSVG(){
+    console.log("blah");
+    svg.attr("width", window.innerWidth)
+       .attr("height", window.innerHeight);
+    drawVis();
 }
