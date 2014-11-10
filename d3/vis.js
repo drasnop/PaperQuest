@@ -38,7 +38,7 @@ var view=2;	// 0=core, 1=to read, 2=fringe
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",window.innerHeight);  // to avoid 
+            .attr("height",window.innerHeight);
 
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
@@ -53,7 +53,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     papers.append("circle")
         .attr("class", "node")
-        .attr("fill",randomColor);
+        .attr("fill",randomColor);  // eventually this style attr should be defined in drawVis
     
     papers.append("circle")
         .attr("class", "innerNode");
@@ -67,23 +67,6 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     svg.append("circle")
         .attr("class","core")
 
-    // sidebar
-/*    svg.append("rect")
-        .attr("x","")
-        .attr("y","0")
-        .attr("width","100")
-        .attr("height","100%")
-        .attr("fill",colors.darkgray);*/
-
-     // test circle highlighted   
-/*    svg.append("circle")
-        .attr("cx", fringePaperX(10) )
-        .attr("cy", fringePaperY(10) )
-        .attr("r", 20)
-        .attr("fill",colors.red)
-        .attr("filter","url(#drop-shadow)");*/
-
-
     drawVis();
 
 });
@@ -91,12 +74,11 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 function drawVis(){
 
     // fringe
-
     d3.selectAll(".node")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
         .attr("cy", function(d,i) { return fringePaperY(i);} )
         .attr("r", function(d,i) {return radius(d.year);} )
-        //.attr("fill",randomColor)
+        //.attr("fill",randomColor)     
 
     d3.selectAll(".innerNode")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
@@ -114,6 +96,22 @@ function drawVis(){
         .attr("cy","50%")
         .attr("r",coreSize[view])
         .attr("fill",colors.red);
+
+    // sidebar
+/*    svg.append("rect")
+        .attr("x","")
+        .attr("y","0")
+        .attr("width","100")
+        .attr("height","100%")
+        .attr("fill",colors.darkgray);*/
+
+     // test circle highlighted   
+/*    svg.append("circle")
+        .attr("cx", fringePaperX(10) )
+        .attr("cy", fringePaperY(10) )
+        .attr("r", 20)
+        .attr("fill",colors.red)
+        .attr("filter","url(#drop-shadow)");*/
 }
 
 // Dynamic resize
