@@ -6,7 +6,8 @@ var paperMinRadius = 5,
     paperOutlineWidth = 4,	// UNUSED - this divided by 2 must be > min radius
     paperMarginBottom = 5,
     titleBaselineOffset = 6,  // depends on font size
-    titleXOffset = 5;
+    titleXOffset = 5,
+    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset);
 
 // horizontal sizes of the different regions based on the current view (core, toread, fringe)
 var coreSize = [1000,200,120],
@@ -69,8 +70,10 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     drawVis();
 });
 
+// Specify interaction
 function bindListeners(){
     d3.selectAll(".paper")
+    // highlight
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").attr("font-weight","bold")
@@ -78,7 +81,11 @@ function bindListeners(){
     .on("mouseleave",function() {
         d3.select(this).select(".node").attr("filter","none")
         d3.select(this).select(".title").attr("font-weight","normal")
-    })  
+    })
+    // click papers on the fringe
+    .on("click",function() {
+        d3.select(this).attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)");
+    })
 }
 
 function drawVis(){
