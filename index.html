@@ -12,10 +12,10 @@
     
     <!-- Apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->
     <svg height="0" xmlns="http://www.w3.org/2000/svg">
-        <filter id="drop-shadow">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+        <filter id="drop-shadow" y="-40%" height="180%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
             <feOffset dx="1" dy="1" result="offsetblur"/>
-            <feFlood flood-color="rgba(100,100,100,0.5)"/>
+            <feFlood flood-color="rgba(10,10,10,0.5)"/>
             <feComposite in2="offsetblur" operator="in"/>
             <feMerge>
                 <feMergeNode/>

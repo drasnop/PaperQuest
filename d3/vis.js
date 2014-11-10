@@ -78,7 +78,12 @@ function drawVis(){
         .attr("cx", function(d,i) { return fringePaperX(i);} )
         .attr("cy", function(d,i) { return fringePaperY(i);} )
         .attr("r", function(d,i) {return radius(d.year);} )
-        //.attr("fill",randomColor)     
+        .on("mouseover",function() {
+            d3.select(this).attr("filter","url(#drop-shadow)")
+        })
+        .on("mouseleave",function() {
+            d3.select(this).attr("filter","none")
+        })    
 
     d3.selectAll(".innerNode")
         .attr("cx", function(d,i) { return fringePaperX(i);} )
@@ -95,7 +100,7 @@ function drawVis(){
         .attr("cx",0)
         .attr("cy","50%")
         .attr("r",coreSize[view])
-        .attr("fill",colors.red);
+        .attr("fill",colors.red)
 
     // sidebar
 /*    svg.append("rect")
@@ -106,7 +111,7 @@ function drawVis(){
         .attr("fill",colors.darkgray);*/
 
      // test circle highlighted   
-/*    svg.append("circle")
+/*   svg.append("circle")
         .attr("cx", fringePaperX(10) )
         .attr("cy", fringePaperY(10) )
         .attr("r", 20)
