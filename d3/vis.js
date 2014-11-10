@@ -54,7 +54,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     papers.append("circle")
         .attr("class", "node")
-        .attr("fill",randomColor)  // eventually this style attr should be defined in drawVis
+        .style("fill",randomColor)  // eventually this style attr should be defined in drawVis
     
     papers.append("circle")
         .attr("class", "innerNode")
@@ -77,11 +77,14 @@ function bindListeners(){
     // highlight
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
-        d3.select(this).select(".title").attr("font-weight","bold")
+        d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444")
     })
     .on("mouseleave",function() {
         d3.select(this).select(".node").attr("filter","none")
-        d3.select(this).select(".title").attr("font-weight","normal")
+        d3.select(this)
+            // to keep the selected elements bold
+            .filter(function(){ return d3.select(this).attr("selected")==0;})
+            .select(".title").attr("font-weight","normal").style("fill","#222")
     })
     // click papers on the fringe
     .on("click",function() {
@@ -109,7 +112,7 @@ function drawVis(){
         .attr("cx", function(d,i) { return fringePaperX(i);} )
         .attr("cy", function(d,i) { return fringePaperY(i);} )
         .attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
-        .attr("fill","white")
+        .style("fill","white")
 
     d3.selectAll(".title")
         .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius+titleXOffset;} )
@@ -120,7 +123,7 @@ function drawVis(){
         .attr("cx",0)
         .attr("cy","50%")
         .attr("r",coreSize[view])
-        .attr("fill",colors.red)
+        .style("fill",colors.red)
 
     // sidebar
 /*    svg.append("rect")

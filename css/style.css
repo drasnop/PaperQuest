@@ -19,3 +19,7 @@ svg{
 .paper{
 	cursor:pointer;
 }
+
+.title{
+	fill: #222;
+}
