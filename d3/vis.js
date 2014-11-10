@@ -51,11 +51,13 @@ var svg = d3.select("body").append("svg")
 d3.tsv("data/SmallDataset.tsv", function(data){
     // toread
     svg.append("circle")
-        .attr("class","toread")
+        .attr("id","toread")
+        //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
 
     // core
     svg.append("circle")
-        .attr("class","core")
+        .attr("id","core")
+        .attr("class","shadowOnHover")
 
     // fringe
     var papers = svg.selectAll(".paper")
@@ -83,8 +85,17 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
 // Specify interaction
 function bindListeners(){
+    
+    d3.selectAll(".shadowOnHover")
+    .on("mouseover",function() {
+        d3.select(this).attr("filter","url(#drop-shadow)")
+    })
+    .on("mouseleave",function() {
+        d3.select(this).attr("filter","none")
+    })
+
+    // highlight papers
     d3.selectAll(".paper")
-    // highlight
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444")
@@ -96,6 +107,7 @@ function bindListeners(){
             .filter(function(){ return d3.select(this).attr("selected")==0;})
             .select(".title").attr("font-weight","normal").style("fill","#222")
     })
+
     // clicking papers on the fringe translates them to the left
     .on("click",function() {
         var paper=d3.select(this)
@@ -129,14 +141,14 @@ function drawVis(){
         .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
 
     // toread
-    d3.selectAll(".toread")
+    d3.selectAll("#toread")
         .attr("cx",-toreadRadius[view]+toreadApparentWidth[view])
         .attr("cy","50%")
         .attr("r",toreadRadius[view])
         .style("fill",colors.toread)
     
     // core
-    d3.selectAll(".core")
+    d3.selectAll("#core")
         .attr("cx",-coreRadius[view]+coreApparentWidth[view])
         .attr("cy","50%")
         .attr("r",coreRadius[view])
