@@ -15,3 +15,7 @@ svg{
 	text-align: left;
 	background-color: #fafafa;
 }
+
+.paper{
+	cursor:pointer;
+}

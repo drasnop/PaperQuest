@@ -50,6 +50,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     .enter()
     .append("g")
         .attr("class","paper")
+        .attr("selected",0)
 
     papers.append("circle")
         .attr("class", "node")
@@ -84,7 +85,16 @@ function bindListeners(){
     })
     // click papers on the fringe
     .on("click",function() {
-        d3.select(this).attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)");
+        var paper=d3.select(this)
+        console.log(paper.attr("selected"))
+        if(paper.attr("selected")==0){
+            paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
+            paper.attr("selected",1)
+        }
+        else{
+            paper.attr("transform","matrix(1 0 0 1 0 0)")
+            paper.attr("selected",0)
+        }
     })
 }
 
