@@ -36,7 +36,9 @@ var view=2;	// 0=core, 1=to read, 2=fringe
 ////////////////	Main rendering      //////////////
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
-var svg = d3.select("body").append("svg");
+var svg = d3.select("body").append("svg")
+            .attr("width",window.innerWidth)
+            .attr("height",window.innerHeight);  // to avoid 
 
 d3.tsv("data/SmallDataset.tsv", function(data){
 	console.log(data);
@@ -47,7 +49,7 @@ d3.tsv("data/SmallDataset.tsv", function(data){
     	.data(data)
     .enter()
     .append("g")
-    	.attr("class","paper")
+    	.attr("class","paper");
 
     papers.append("circle")
     	.attr("class", "node")
@@ -78,21 +80,28 @@ d3.tsv("data/SmallDataset.tsv", function(data){
 
     // sidebar
 /*    svg.append("rect")
-    	.attr("x","")
-    	.attr("y","0")
-    	.attr("width","100")
-    	.attr("height","100%")
-    	.attr("fill",colors.darkgray);*/
+        .attr("x","")
+        .attr("y","0")
+        .attr("width","100")
+        .attr("height","100%")
+        .attr("fill",colors.darkgray);*/
+
+     // test circle highlighted   
+/*    svg.append("circle")
+        .attr("cx", fringePaperX(10) )
+        .attr("cy", fringePaperY(10) )
+        .attr("r", 20)
+        .attr("fill",colors.red)
+        .attr("filter","url(#drop-shadow)");*/
 });
 
 
 ////////////////	Helper functions    //////////////
 
-// Compute X coordinate for the i-th paper on the fringe
+// Compute X coordinate for the i-th paper on the fringe, based on a circle
 function fringePaperX(i){
 	var h=window.innerHeight;
 	return fringeXOffset+Math.sqrt(Math.pow(fringeRadius,2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius;
-	//return coreSize[view]+toreadSize[view]+paperMaxRadius;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
