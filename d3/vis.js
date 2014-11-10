@@ -17,7 +17,7 @@ var coreRadius = [120,120,120],
     fringeRadius = [2000,2000,2000],
     coreApparentWidth = [120,120,120],
     fringeApparentWidth = [420,420,420],
-    toreadApparentWidth = [420,420,fringeApparentWidth[2]+ paperXOffsetWhenSelected/2];
+    toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleXOffset];
 
 var colors={
 	"blue":"#00A1CB",
@@ -25,9 +25,11 @@ var colors={
 	"pink":"#D70060",
 	"orange":"#F18D05",
 	"darkblue":"#113F8C",
-	"turquoise":"#01A4A4",	// not to be used for the nodes
-	"red":"#E54028",	// not to be used for the nodes
-	"darkgray":"#616161"	// not to be used for the nodes
+	"turquoise":"#01A4A4",	    // This color and all the following are not to be used for the nodes
+	"red":"#E54028",	
+	"darkgray":"#616161",	
+    "toread":"rgb(242, 210, 166)", 
+    "core":"rgb(223, 111, 95)"
 }
 
 var currentYear=2010;
@@ -131,14 +133,14 @@ function drawVis(){
         .attr("cx",-toreadRadius[view]+toreadApparentWidth[view])
         .attr("cy","50%")
         .attr("r",toreadRadius[view])
-        .style("fill",colors.orange)
+        .style("fill",colors.toread)
     
     // core
     d3.selectAll(".core")
         .attr("cx",-coreRadius[view]+coreApparentWidth[view])
         .attr("cy","50%")
         .attr("r",coreRadius[view])
-        .style("fill",colors.red)
+        .style("fill",colors.core)
 
     // sidebar
 /*    svg.append("rect")
@@ -181,5 +183,5 @@ function radius(value){
 // Return a random color except red or turquoise
 function randomColor(){
 	var keys=Object.keys(colors);
-	return colors[keys[ (keys.length-2) * Math.random() << 0]];
+	return colors[keys[ (keys.length-5) * Math.random() << 0]];
 }
