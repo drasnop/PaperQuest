@@ -98,14 +98,14 @@ function bindListeners(){
     d3.selectAll(".paper")
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
-        d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444")
+        d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444").style("letter-spacing","normal")
     })
     .on("mouseleave",function() {
         d3.select(this).select(".node").attr("filter","none")
         d3.select(this)
             // to keep the selected elements bold
             .filter(function(){ return d3.select(this).attr("selected")==0;})
-            .select(".title").attr("font-weight","normal").style("fill","#222")
+            .select(".title").attr("font-weight","normal").style("fill","#222").style("letter-spacing",".54px")
     })
 
     // clicking papers on the fringe translates them to the left
