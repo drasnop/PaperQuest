@@ -28,7 +28,8 @@ var colors={
 	"turquoise":"#01A4A4",	    // This color and all the following are not to be used for the nodes
 	"red":"#E54028",	
 	"darkgray":"#616161",	
-    "toread":"rgb(242, 210, 166)", 
+    "toread":"rgb(242, 222, 195)", 
+    "toreadBorder":"rgb(242, 210, 166)",
     "core":"rgb(223, 111, 95)"
 }
 
@@ -146,6 +147,8 @@ function drawVis(){
         .attr("cy","50%")
         .attr("r",toreadRadius[view])
         .style("fill",colors.toread)
+        .style("stroke",colors.toreadBorder)
+        .style("stroke-width",2)
     
     // core
     d3.selectAll("#core")
