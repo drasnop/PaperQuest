@@ -65,7 +65,12 @@ Storage.prototype.getObject = function(key) {
     return value && JSON.parse(value);
 }
 
-var retrievedData=localStorage.getObject("userData", userData);
+function saveSession(){
+    localStorage.setObject("userData", userData);
+    console.log("session saved in localStorage('userData')");
+}
+
+var retrievedData=localStorage.getObject("userData");
 console.log(retrievedData);
 
 ////////////////	   Main rendering       //////////////
