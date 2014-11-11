@@ -36,12 +36,39 @@ var colors={
 var currentYear=2010;
 
 
-////////////////	Global variables    //////////////
+////////////////    Global variables    //////////////
 
-var view=2;	// 0=core, 1=to read, 2=fringe
+var view=2; // 0=core, 1=to read, 2=fringe
 
+var userData={
+    "seedPapers":[
+    {
+        // Triggers and barriers to customization
+        "doi":"10.1145/108844.108867" },
+    {
+        // Buttons
+        "doi":"10.1145/97243.97271" },
+    {
+        // Medium vs Mechanism
+        "doi":"10.1007/978-94-011-0349-7_9" }
+    ]};
 
-////////////////	Main rendering      //////////////
+////////////////    Load previous session    //////////////
+
+// Handle local storage of objects
+Storage.prototype.setObject = function(key, value) {
+    this.setItem(key, JSON.stringify(value));
+}
+
+Storage.prototype.getObject = function(key) {
+    var value = this.getItem(key);
+    return value && JSON.parse(value);
+}
+
+var retrievedData=localStorage.getObject("userData", userData);
+console.log(retrievedData);
+
+////////////////	   Main rendering       //////////////
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
