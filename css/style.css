@@ -11,6 +11,15 @@ body {
 	overflow: hidden;
 }
 
+#sidebar{
+	position:fixed;
+	top: 0;
+	right: 0;
+	height:100%;
+	width:10%;
+	background-color: #616161;
+}
+
 svg{
 	text-align: left;
 	background-color: #fafafa;

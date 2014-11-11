@@ -41,7 +41,7 @@ var currentYear=2010;
 var view=2; // 0=core, 1=to read, 2=fringe
 
 var userData={
-    "seedPapers":[
+    "core":[
     {
         // Triggers and barriers to customization
         "doi":"10.1145/108844.108867" },
@@ -51,7 +51,7 @@ var userData={
     {
         // Medium vs Mechanism
         "doi":"10.1007/978-94-011-0349-7_9" }
-    ]};
+    ]}; 
 
 ////////////////    Load previous session    //////////////
 
@@ -112,49 +112,11 @@ d3.tsv("data/SmallDataset.tsv", function(data){
         .text(function(d,i) {return d.title;} )
 
     // Initialize interaction & visual appearance
-    bindListeners();
+    //createVis();
     drawVis();
+    bindListeners();
 });
 
-// Specify interaction
-function bindListeners(){
-    
-    d3.selectAll(".shadowOnHover")
-    .on("mouseover",function() {
-        d3.select(this).attr("filter","url(#drop-shadow)")
-    })
-    .on("mouseleave",function() {
-        d3.select(this).attr("filter","none")
-    })
-
-    // highlight papers
-    d3.selectAll(".paper")
-    .on("mouseover",function() {
-        d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
-        d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444").style("letter-spacing","normal")
-    })
-    .on("mouseleave",function() {
-        d3.select(this).select(".node").attr("filter","none")
-        d3.select(this)
-            // to keep the selected elements bold
-            .filter(function(){ return d3.select(this).attr("selected")==0;})
-            .select(".title").attr("font-weight","normal").style("fill","#222").style("letter-spacing",".54px")
-    })
-
-    // clicking papers on the fringe translates them to the left
-    .on("click",function() {
-        var paper=d3.select(this)
-        console.log(paper.attr("selected"))
-        if(paper.attr("selected")==0){
-            paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
-            paper.attr("selected",1)
-        }
-        else{
-            paper.attr("transform","matrix(1 0 0 1 0 0)")
-            paper.attr("selected",0)
-        }
-    })
-}
 
 function drawVis(){
     // fringe
@@ -198,6 +160,46 @@ function drawVis(){
         .attr("fill",colors.darkgray);*/
 }
 
+// Specify interaction
+function bindListeners(){
+    
+    d3.selectAll(".shadowOnHover")
+    .on("mouseover",function() {
+        d3.select(this).attr("filter","url(#drop-shadow)")
+    })
+    .on("mouseleave",function() {
+        d3.select(this).attr("filter","none")
+    })
+
+    // highlight papers
+    d3.selectAll(".paper")
+    .on("mouseover",function() {
+        d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
+        d3.select(this).select(".title").attr("font-weight","bold").style("fill","#444").style("letter-spacing","normal")
+    })
+    .on("mouseleave",function() {
+        d3.select(this).select(".node").attr("filter","none")
+        d3.select(this)
+            // to keep the selected elements bold
+            .filter(function(){ return d3.select(this).attr("selected")==0;})
+            .select(".title").attr("font-weight","normal").style("fill","#222").style("letter-spacing",".54px")
+    })
+
+    // clicking papers on the fringe translates them to the left
+    .on("click",function() {
+        var paper=d3.select(this)
+        console.log(paper.attr("selected"))
+        if(paper.attr("selected")==0){
+            paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
+            paper.attr("selected",1)
+        }
+        else{
+            paper.attr("transform","matrix(1 0 0 1 0 0)")
+            paper.attr("selected",0)
+        }
+    })
+}
+
 // Dynamic resize
 window.onresize = function(){
     svg.attr("width", window.innerWidth)
@@ -230,5 +232,5 @@ function radius(value){
 // Return a random color except red or turquoise
 function randomColor(){
 	var keys=Object.keys(colors);
-	return colors[keys[ (keys.length-5) * Math.random() << 0]];
+	return colors[keys[ (keys.length-6) * Math.random() << 0]];
 }

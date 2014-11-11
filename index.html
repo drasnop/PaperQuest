@@ -9,9 +9,11 @@
 </head>
 <body>
     <script type="text/javascript" src="d3/vis.js"></script>
-    <button onclick=saveSession()>Save</button>
+    <div id="sidebar">
+        <button onclick=saveSession()>Save</button>
+    </div>
     <!-- Usage: apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->
-    <svg>
+    <svg width=0 height=0>
         <!-- Must extend the size of the drawing region, otherwise the shadow is clipped -->
         <filter id="drop-shadow" x="-50%" width="200%" y="-50%" height="200%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
