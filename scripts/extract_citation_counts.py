@@ -18,6 +18,7 @@ doiACMSuffixPattern = re.compile('id=(\d+\.\d+|\d+)')
 def extractDOI(s):
     return doiACMSuffixPattern.findall(s)[0]
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print "You have to specify the file with the Kimono results"
