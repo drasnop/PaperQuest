@@ -48,4 +48,4 @@ if __name__ == "__main__":
         counts[extractDOI(r[2])] = dict(title=r[0],
                                         citation_count=int(r[1]))
 
-    print counts
+    print json.dumps(counts)
