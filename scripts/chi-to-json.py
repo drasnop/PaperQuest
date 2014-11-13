@@ -24,8 +24,8 @@ import sys
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print "Usage: python chi-to-json.py <papers.tsv>"
+    if len(sys.argv) != 3:
+        print "Usage: python chi-to-json.py <papers.tsv> <citation_counts.json>"
         exit (1);
 
     input_file = open(sys.argv[1])
@@ -37,17 +37,20 @@ if __name__ == "__main__":
 
         # Build a new dictionary with the values for the paper.
         paper = {}
-        paper['conference'] = vals[0]
-        paper['year']       = vals[1]
-        paper['title']      = vals[2]
-        paper['abstract']   = vals[3]
-        paper['authors']    = vals[4].split('~')
-        # paper['doi']      = vals[5]
-        paper['references'] = vals[6:]
-        paper['citations']  = []
+        paper['conference']     = vals[0]
+        paper['year']           = vals[1]
+        paper['title']          = vals[2]
+        paper['abstract']       = vals[3]
+        paper['authors']        = vals[4].split('~')
+        # paper['doi']          = vals[5]
+        paper['references']     = vals[6:]
+        paper['citations']      = []
+        paper['citation_count'] = 0  # All papers have a 0 CC by default
 
         # Index papers by doi to set up for building citations.
         papers[vals[5]] = paper
+
+    input_file.close()
 
     # Once we have a dictionary with all papers, go through them again
     # building the citations
@@ -66,6 +69,10 @@ if __name__ == "__main__":
     #print len(papers)
     #print reduce(lambda x,y: x+y, [len(p['references']) for p in papers.values()])
     #print reduce(lambda x,y: x+y, [len(p['citations']) for p in papers.values()])
+
+    ccs = None
+    with open(sys.argv[2]) as citation_counts_json:
+       ccs = json.loads(citation_counts_json.read())
 
     # Write out a JSON object with everything in it.
     print json.dumps({'papers': papers.values()})
