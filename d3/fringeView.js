@@ -1,3 +1,8 @@
+/*
+* Creates, draw and specify interaction for the Fringe view
+*/
+
+
 // Build the components of the vis, in the appropriate z-index order
 function createVis(data){
     // toread
