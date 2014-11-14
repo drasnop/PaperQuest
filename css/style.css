@@ -30,6 +30,14 @@ svg{
 }
 
 .title{
+	font-weight: normal;
 	fill: #222;
 	letter-spacing: .54px;
 }
+
+.title.highlighted{
+	font-weight: bold;
+	fill:#444;
+	letter-spacing: normal;
+}
+
