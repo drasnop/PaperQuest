@@ -28,7 +28,6 @@ fringeView.updateVis=function(){
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
 fringeView.computeVisibleFringe=function(){
     userData.visibleFringe=userData.fringe.slice(0,fringeView.numberOfVisiblePapers());
-    //userData.visibleFringe.forEach(function(d,i){ d.selected=false});
 }
 
 // Create some svg elements once and for all
@@ -36,7 +35,7 @@ fringeView.createStaticElements=function(){
     // toread
     svg.append("circle")
     .attr("id","toread")
-        //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
+    //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
 
     // core
     svg.append("circle")
@@ -57,7 +56,7 @@ fringeView.manageDynamicElements=function(){
 
     papers.append("circle")
     .attr("class", "node")
-    .style("fill",fringeView.randomColor)  // eventually this style attr should be defined in drawVis
+    .style("fill",fringeView.randomColor)  // eventually this style attr should be defined in drawVis based on a tag
 
     papers.append("circle")
     .attr("class", "innerNode")
@@ -75,6 +74,9 @@ fringeView.manageDynamicElements=function(){
 // Specify positions and styles
 fringeView.drawVis=function(){
     // fringe
+    d3.selectAll(".paper")
+    .attr("transform","matrix(1 0 0 1 0 0)")    // remove any temporary transformation
+
     d3.selectAll(".node")
     .attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
     .attr("cy", function(d,i) { return fringeView.fringePaperY(i);} )
@@ -92,7 +94,7 @@ fringeView.drawVis=function(){
     .classed("highlighted", function(d,i) {return d.selected;})
 
     // toread
-    d3.selectAll("#toread")
+    d3.select("#toread")
     .attr("cx",-toreadRadius[global.view]+toreadApparentWidth[global.view])
     .attr("cy","50%")
     .attr("r",toreadRadius[global.view])
@@ -101,7 +103,7 @@ fringeView.drawVis=function(){
     .style("stroke-width",2)
     
     // core
-    d3.selectAll("#core")
+    d3.select("#core")
     .attr("cx",-coreRadius[global.view]+coreApparentWidth[global.view])
     .attr("cy","50%")
     .attr("r",coreRadius[global.view])
@@ -131,6 +133,7 @@ fringeView.bindListeners=function(){
         d3.select(this)
             // to keep the selected elements bold
             .filter(function(){ 
+                // this is ugly as hell, but I don't know how to access d cleanly...
                 var res;
                 d3.select(this).each(function(d,i){
                     res=!d.selected;
@@ -145,10 +148,15 @@ fringeView.bindListeners=function(){
         var paper=d3.select(this);
         paper.each(function(d,i) {
             d.selected=!d.selected;
+        
+            // Here it is hard to compute fringePaperX(d,i), because we don't know which i this paper corresponds to
+            // (maybe we'll store this eventually,but...)
+            // So apply a temporary transform to the entire group
+            if(d.selected)
+                paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
+            else
+                paper.attr("transform","matrix(1 0 0 1 0 0)")
         });
-        paper.select(".node").attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
-        paper.select("innerNode").attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
-        paper.select("title").attr("x", function(d,i) { return fringeView.fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
     })
 }
 
@@ -186,5 +194,3 @@ fringeView.randomColor=function(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
 }
-
-
