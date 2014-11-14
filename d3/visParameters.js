@@ -10,7 +10,8 @@ var paperMinRadius = 5,
     paperMarginBottom = 5,
     titleBaselineOffset = 6,  // depends on font size
     titleXOffset = 5,
-    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset);
+    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
+    fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;
 
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen

@@ -6,8 +6,33 @@
 // To create a class with static methods (basically, a namespace)
 var fringeView = {}
 
-// Build the components of the vis, in the appropriate z-index order
-fringeView.createVis=function(){
+fringeView.initializeVis=function(){
+    fringeView.computeVisibleFringe();
+    fringeView.manageStaticElements();
+    fringeView.manageDynamicElements();
+    fringeView.drawVis();
+    fringeView.bindListeners();
+}
+
+// update the vis after a change of zoom/window size
+fringeView.updateVis=function(){
+    fringeView.computeVisibleFringe();
+    console.log(userData.visibleFringe.length);
+    fringeView.manageDynamicElements();
+    fringeView.drawVis();
+}
+
+
+//////////////////  Drawing functions   ///////////////////////
+
+
+// Given the current windows dimensions, which papers can be displayed on the Fringe?
+fringeView.computeVisibleFringe=function(){
+    userData.visibleFringe=userData.fringe.slice(0,fringeView.numberOfVisiblePapers());
+}
+
+// Create some svg elements once and for all
+fringeView.manageStaticElements=function(){
     // toread
     svg.append("circle")
     .attr("id","toread")
@@ -16,15 +41,21 @@ fringeView.createVis=function(){
     // core
     svg.append("circle")
     .attr("id","core")
-    .attr("class","shadowOnHover")
+    .attr("class","shadowOnHover")  
+}
+
+// Build the components of the vis, in the appropriate z-index order
+fringeView.manageDynamicElements=function(){
 
     // fringe
     var papers = svg.selectAll(".paper")
-    .data(global.papers)
+    .data(userData.visibleFringe)
     .enter()
     .append("g")
     .attr("class","paper")
     .attr("selected",0)
+/*    .exit()
+    .remove()*/
 
     papers.append("circle")
     .attr("class", "node")
@@ -114,7 +145,6 @@ fringeView.bindListeners=function(){
     })
 }
 
-
 ////////////////    helper functions    //////////////
 
 // Compute X coordinate for the i-th paper on the fringe, based on a circle
@@ -127,6 +157,13 @@ fringeView.fringePaperX=function(i){
 // Compute Y coordinate for the i-th paper on the fringe
 fringeView.fringePaperY=function(i){
     return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);
+}
+
+// Compute how many papers can be displayed on the fringe
+// taking into account some space at the bottom to show an update button
+fringeView.numberOfVisiblePapers=function(){
+    var availableHeight=window.innerHeight-fringeBottomMargin;
+    return Math.floor(availableHeight/(2*paperMaxRadius+paperMarginBottom));
 }
 
 // Compute a node radius from the value supplied, between min and max
