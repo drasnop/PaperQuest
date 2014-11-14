@@ -2,7 +2,12 @@
 * Global variables
 */
 
-var view=2; // 0=core, 1=to read, 2=fringe
+var global={
+    // Current view: 0=core, 1=to read, 2=fringe
+    "view":2,
+    // papers dataset, accessed by global.papers[doi]
+    "papers":false
+};
 
 var userData={
     "core":[
@@ -15,4 +20,5 @@ var userData={
     {
         // Medium vs Mechanism
         "doi":"10.1007/978-94-011-0349-7_9" }
-    ]}; 
+    ]
+}; 
