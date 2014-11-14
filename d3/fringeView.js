@@ -75,7 +75,7 @@ fringeView.manageDynamicElements=function(){
 fringeView.drawVis=function(){
     // fringe
     d3.selectAll(".paper")
-    .attr("transform","matrix(1 0 0 1 0 0)")    // remove any temporary transformation
+    .attr("transform",null)    // remove any temporary transformation
 
     d3.selectAll(".node")
     .attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
@@ -155,7 +155,7 @@ fringeView.bindListeners=function(){
             if(d.selected)
                 paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
             else
-                paper.attr("transform","matrix(1 0 0 1 0 0)")
+                paper.attr("transform", null)
         });
     })
 }
