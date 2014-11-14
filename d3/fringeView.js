@@ -6,20 +6,19 @@
 // To create a class with static methods (basically, a namespace)
 var fringeView = {}
 
+// Except for the (static) background elements, everything is computed on-the-fly
 fringeView.initializeVis=function(){
-    fringeView.computeVisibleFringe();
-    fringeView.manageStaticElements();
-    fringeView.manageDynamicElements();
-    fringeView.drawVis();
-    fringeView.bindListeners();
+    fringeView.createStaticElements();
+    fringeView.updateVis();
 }
 
-// update the vis after a change of zoom/window size
+// Update the vis after a change of zoom/window size 
 fringeView.updateVis=function(){
     fringeView.computeVisibleFringe();
     console.log(userData.visibleFringe.length);
     fringeView.manageDynamicElements();
     fringeView.drawVis();
+    fringeView.bindListeners();
 }
 
 
@@ -32,7 +31,7 @@ fringeView.computeVisibleFringe=function(){
 }
 
 // Create some svg elements once and for all
-fringeView.manageStaticElements=function(){
+fringeView.createStaticElements=function(){
     // toread
     svg.append("circle")
     .attr("id","toread")
@@ -50,24 +49,27 @@ fringeView.manageDynamicElements=function(){
     // fringe
     var papers = svg.selectAll(".paper")
     .data(userData.visibleFringe)
+
     .enter()
-    .append("g")
-    .attr("class","paper")
-    .attr("selected",0)
-/*    .exit()
-    .remove()*/
+        .append("g")
+        .attr("class","paper")
+        .attr("selected",0);
 
     papers.append("circle")
     .attr("class", "node")
         .style("fill",fringeView.randomColor)  // eventually this style attr should be defined in drawVis
 
-        papers.append("circle")
-        .attr("class", "innerNode")
+    papers.append("circle")
+    .attr("class", "innerNode")
 
-        papers.append("text")
-        .attr("class", "title")
-        .text(function(d,i) {return d.title;} )
-    }
+    papers.append("text")
+    .attr("class", "title")
+    .text(function(d,i) {return d.title;} );
+
+    svg.selectAll(".paper")     // I have no idea of what's going on there. Why just paper.exit().remove() doesn't work?
+    .data(userData.visibleFringe)
+    .exit().remove();
+}
 
 
 // Specify positions and styles
