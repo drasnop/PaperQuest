@@ -11,11 +11,13 @@ import re
 import sys
 
 
-citationPattern = re.compile('(.*)Cited by (\d+).*doi>(.*)')
-# For our purposes, assume DOIs don't contain spaces. The rest of the
-# regex is meant to help clean the DOI from extra stuff that might
-# have gotten attached to it in the initial pattern parsing.
-doiPattern = re.compile(' *([^ ]+)[\] \xa0].*')
+citationPattern = re.compile('(.*)Cited by (\d+).*doi>([0-9\.]+/[0-9\.]+[0-9])')
+# For our purposes, assume DOIs consist of numbers, dots and
+# slashes. All the DOIs we're interested in match this pattern. The
+# rest of the regex is meant to help clean the DOI from extra stuff
+# that might have gotten attached to it in the initial pattern
+# parsing.
+doiPattern = re.compile(' *([0-9\.]+/[0-9\.]+[0-9]).*?')
 
 
 def extractDOI(s):
