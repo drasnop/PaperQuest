@@ -23,17 +23,15 @@ var coreRadius = [120,120,120],
     toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleXOffset];
 
 var colors={
-	"blue":"#00A1CB",
-	"green":"#61AE24",
-	"pink":"#D70060",
-	"orange":"#F18D05",
-	"darkblue":"#113F8C",
-	"turquoise":"#01A4A4",	    // This color and all the following are not to be used for the nodes
-	"red":"#E54028",	
-	"darkgray":"#616161",	
-    "toread":"rgb(242, 222, 195)", 
-    "toreadBorder":"rgb(242, 210, 166)",
-    "core":"rgb(223, 111, 95)"
+    // blue, green, pink, orange, darkblue
+    "tags":["#00A1CB","#61AE24","#D70060","#F18D05","#113F8C"],
+	// thése two colors are pretty, but probably shouldn't be used for tags (too similar)
+    "turquoise":"#01A4A4",	    
+	"red":"#E54028",		
+    // background color of each region based on the current view
+    "core":["rgb(223, 111, 95)","rgb(223, 111, 95)","rgb(223, 111, 95)"],
+    "toread":["rgb(242, 222, 195)","rgb(242, 222, 195)","rgb(242, 222, 195)"], 
+    "toreadBorder":["rgb(242, 210, 166)","rgb(242, 210, 166)","rgb(242, 210, 166)"]
 }
 
 var currentYear=2010;
