@@ -4,7 +4,17 @@
 
 
 // To create a class with static methods (basically, a namespace)
-function fringeView() {};
+var fringeView = {
+    talk:function(){ console.log("blah");},
+    test1:function(){ talk();},                 // doesn't work
+    test2:function(){ fringeView.talk();},      // works
+    test3:function(){ this.talk();}             // works here, but dangerous: this can be used by something else (e.g. in a selection)
+};
+
+fringeView.talk();
+fringeView.test2();
+fringeView.test3();
+fringeView.test1();
 
 // Build the components of the vis, in the appropriate z-index order
 fringeView.createVis=function(){
@@ -103,7 +113,6 @@ fringeView.bindListeners=function(){
     // clicking papers on the fringe translates them to the left
     .on("click",function() {
         var paper=d3.select(this)
-        console.log(paper.attr("selected"))
         if(paper.attr("selected")==0){
             paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
             paper.attr("selected",1)
