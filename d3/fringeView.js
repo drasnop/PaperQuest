@@ -2,11 +2,12 @@
 * Creates, draw and specify interaction for the Fringe global.view
 */
 
-// To creat a class with public methods
-var fringeView={
+
+// To create a class with static methods (basically, a namespace)
+function fringeView() {};
 
 // Build the components of the vis, in the appropriate z-index order
-createVis:function(){
+fringeView.createVis=function(){
     // toread
     svg.append("circle")
     .attr("id","toread")
@@ -27,7 +28,7 @@ createVis:function(){
 
     papers.append("circle")
     .attr("class", "node")
-        .style("fill",randomColor)  // eventually this style attr should be defined in drawVis
+        .style("fill",fringeView.randomColor)  // eventually this style attr should be defined in drawVis
 
         papers.append("circle")
         .attr("class", "innerNode")
@@ -39,22 +40,22 @@ createVis:function(){
 
 
 // Specify positions and styles
-drawVis:function(){
+fringeView.drawVis=function(){
     // fringe
     d3.selectAll(".node")
-    .attr("cx", function(d,i) { return fringePaperX(i);} )
-    .attr("cy", function(d,i) { return fringePaperY(i);} )
-    .attr("r", function(d,i) {return radius(d.year);} )  
+    .attr("cx", function(d,i) { return fringeView.fringePaperX(i);} )
+    .attr("cy", function(d,i) { return fringeView.fringePaperY(i);} )
+    .attr("r", function(d,i) {return fringeView.radius(d.year);} )  
 
     d3.selectAll(".innerNode")
-    .attr("cx", function(d,i) { return fringePaperX(i);} )
-    .attr("cy", function(d,i) { return fringePaperY(i);} )
-    .attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
+    .attr("cx", function(d,i) { return fringeView.fringePaperX(i);} )
+    .attr("cy", function(d,i) { return fringeView.fringePaperY(i);} )
+    .attr("r", function(d,i) {return fringeView.radius(d.year)*paperInnerWhiteCircleRatio;} )
     .style("fill","white")
 
     d3.selectAll(".title")
-    .attr("x", function(d,i) { return fringePaperX(i)+paperMaxRadius+titleXOffset;} )
-    .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
+    .attr("x", function(d,i) { return fringeView.fringePaperX(i)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d,i) {return fringeView.fringePaperY(i)+titleBaselineOffset;} )
 
     // toread
     d3.selectAll("#toread")
@@ -75,7 +76,7 @@ drawVis:function(){
 
 
 // Specify interaction
-bindListeners:function(){
+fringeView.bindListeners=function(){
 
     d3.selectAll(".shadowOnHover")
     .on("mouseover",function() {
@@ -115,31 +116,31 @@ bindListeners:function(){
 }
 
 
-////////////////    (private) helper functions    //////////////
+////////////////    helper functions    //////////////
 
 // Compute X coordinate for the i-th paper on the fringe, based on a circle
-var fringePaperX=function(i){
+fringeView.fringePaperX=function(i){
     var h=window.innerHeight;
     var xoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
-    return xoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius;
+    return xoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringeView.fringePaperY(i),2))+paperMaxRadius;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
-var fringePaperY=function(i){
+fringeView.fringePaperY=function(i){
     return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);
 }
 
 // Compute a node radius from the value supplied, between min and max
 // If we want to display an outline instead of a fill circle, the radius must be smaller
-var radius=function(value){
+fringeView.radius=function(value){
     return Math.max(paperMinRadius, Math.min(paperMaxRadius,
         currentYear-value));
 }
 
 // Return a random color except red or turquoise
-var randomColor=function(){
+fringeView.randomColor=function(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
 }
 
-};
+
