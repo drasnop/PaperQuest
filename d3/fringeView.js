@@ -15,7 +15,6 @@ fringeView.initializeVis=function(){
 // Update the vis after a change of zoom/window size 
 fringeView.updateVis=function(){
     fringeView.computeVisibleFringe();
-    console.log(userData.visibleFringe.length);
     fringeView.manageDynamicElements();
     fringeView.drawVis();
     fringeView.bindListeners();
@@ -28,6 +27,8 @@ fringeView.updateVis=function(){
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
 fringeView.computeVisibleFringe=function(){
     userData.visibleFringe=userData.fringe.slice(0,fringeView.numberOfVisiblePapers());
+    // stores which position this paper is in the fringe - useful when selecting papers
+    userData.visibleFringe.forEach(function(d,i){ d.index=i; });
 }
 
 // Create some svg elements once and for all
@@ -74,8 +75,6 @@ fringeView.manageDynamicElements=function(){
 // Specify positions and styles
 fringeView.drawVis=function(){
     // fringe
-    d3.selectAll(".paper")
-    .attr("transform",null)    // remove any temporary transformation
 
     d3.selectAll(".node")
     .attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
@@ -146,16 +145,17 @@ fringeView.bindListeners=function(){
     // clicking papers on the fringe translates them to the left
     .on("click",function() {
         var paper=d3.select(this);
-        paper.each(function(d,i) {
+        paper.each(function(d) {
             d.selected=!d.selected;
+            console.log(d.selected);
         
-            // Here it is hard to compute fringePaperX(d,i), because we don't know which i this paper corresponds to
-            // (maybe we'll store this eventually,but...)
-            // So apply a temporary transform to the entire group
-            if(d.selected)
-                paper.attr("transform", "translate(" + paperXOffsetWhenSelected + ", 0)")
-            else
-                paper.attr("transform", null)
+            // Updates the position of each element (so far I haven't found a way to simply offset the group, 
+            // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
+            // We need the index in the original list (visibleFringe), because here paper.each has only one element
+            var i=d.index;
+            paper.select(".node").attr("cx", function(d) { return fringeView.fringePaperX(d,i);} )
+            paper.select(".innerNode").attr("cx", function(d) { return fringeView.fringePaperX(d,i);} )
+            paper.select(".title").attr("x", function(d) { return fringeView.fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
         });
     })
 }
