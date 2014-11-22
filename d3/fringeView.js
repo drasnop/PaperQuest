@@ -2,22 +2,21 @@
 * Creates, draw and specify interaction for the Fringe global.view
 */
 
-
 // To create a class with static methods (basically, a namespace)
-var fringeView = {}
+var fringeView = (function () {
 
 // Except for the (static) background elements, everything is computed on-the-fly
-fringeView.initializeVis=function(){
-    fringeView.createStaticElements();
-    fringeView.updateVis();
+ function initializeVis(){
+    createStaticElements();
+    updateVis();
 }
 
 // Update the vis after a change of zoom/window size 
-fringeView.updateVis=function(){
-    fringeView.computeVisibleFringe();
-    fringeView.manageDynamicElements();
-    fringeView.drawVis();
-    fringeView.bindListeners();
+ function updateVis(){
+    computeVisibleFringe();
+    manageDynamicElements();
+    drawVis();
+    bindListeners();
 }
 
 
@@ -25,14 +24,14 @@ fringeView.updateVis=function(){
 
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
-fringeView.computeVisibleFringe=function(){
-    userData.visibleFringe=userData.fringe.slice(0,fringeView.numberOfVisiblePapers());
+ function computeVisibleFringe(){
+    userData.visibleFringe=userData.fringe.slice(0,numberOfVisiblePapers());
     // stores which position this paper is in the fringe - useful when selecting papers
     userData.visibleFringe.forEach(function(d,i){ d.index=i; });
 }
 
 // Create some svg elements once and for all
-fringeView.createStaticElements=function(){
+ function createStaticElements(){
     // toread
     svg.append("circle")
     .attr("id","toread")
@@ -45,7 +44,7 @@ fringeView.createStaticElements=function(){
 }
 
 // Build the components of the vis, in the appropriate z-index order
-fringeView.manageDynamicElements=function(){
+ function manageDynamicElements(){
 
     // fringe
     var papers = svg.selectAll(".paper")
@@ -57,7 +56,7 @@ fringeView.manageDynamicElements=function(){
 
     papers.append("circle")
     .attr("class", "node")
-    .style("fill",fringeView.randomColor)  // eventually this style attr should be defined in drawVis based on a tag
+    .style("fill",randomColor)  // eventually this style attr should be defined in drawVis based on a tag
 
     papers.append("circle")
     .attr("class", "innerNode")
@@ -73,23 +72,23 @@ fringeView.manageDynamicElements=function(){
 
 
 // Specify positions and styles
-fringeView.drawVis=function(){
+ function drawVis(){
     // fringe
 
     d3.selectAll(".node")
-    .attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
-    .attr("cy", function(d,i) { return fringeView.fringePaperY(i);} )
-    .attr("r", function(d,i) {return fringeView.radius(d.year);} )  
+    .attr("cx", function(d,i) { return fringePaperX(d,i);} )
+    .attr("cy", function(d,i) { return fringePaperY(i);} )
+    .attr("r", function(d,i) {return radius(d.year);} )  
 
     d3.selectAll(".innerNode")
-    .attr("cx", function(d,i) { return fringeView.fringePaperX(d,i);} )
-    .attr("cy", function(d,i) { return fringeView.fringePaperY(i);} )
-    .attr("r", function(d,i) {return fringeView.radius(d.year)*paperInnerWhiteCircleRatio;} )
+    .attr("cx", function(d,i) { return fringePaperX(d,i);} )
+    .attr("cy", function(d,i) { return fringePaperY(i);} )
+    .attr("r", function(d,i) {return radius(d.year)*paperInnerWhiteCircleRatio;} )
     .style("fill","white")
 
     d3.selectAll(".title")
-    .attr("x", function(d,i) { return fringeView.fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
-    .attr("y", function(d,i) {return fringeView.fringePaperY(i)+titleBaselineOffset;} )
+    .attr("x", function(d,i) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
     .classed("highlighted", function(d,i) {return d.selected;})
 
     // toread
@@ -111,7 +110,7 @@ fringeView.drawVis=function(){
 
 
 // Specify interaction
-fringeView.bindListeners=function(){
+ function bindListeners(){
 
     d3.selectAll(".shadowOnHover")
     .on("mouseover",function() {
@@ -153,9 +152,9 @@ fringeView.bindListeners=function(){
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
             // We need the index in the original list (visibleFringe), because here paper.each has only one element
             var i=d.index;
-            paper.select(".node").attr("cx", function(d) { return fringeView.fringePaperX(d,i);} )
-            paper.select(".innerNode").attr("cx", function(d) { return fringeView.fringePaperX(d,i);} )
-            paper.select(".title").attr("x", function(d) { return fringeView.fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
+            paper.select(".node").attr("cx", function(d) { return fringePaperX(d,i);} )
+            paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d,i);} )
+            paper.select(".title").attr("x", function(d) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
         });
     })
 }
@@ -163,34 +162,45 @@ fringeView.bindListeners=function(){
 ////////////////    helper functions    //////////////
 
 // Compute X coordinate for the i-th paper on the fringe, based on a circle
-fringeView.fringePaperX=function(d,i){
+function fringePaperX(d,i){
     var h=window.innerHeight;
     var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
     var selectedOffset=d.selected? paperXOffsetWhenSelected : 0 ;
-    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringeView.fringePaperY(i),2))+paperMaxRadius+selectedOffset;
+    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius+selectedOffset;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
-fringeView.fringePaperY=function(i){
+function fringePaperY(i){
     return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);
 }
 
 // Compute how many papers can be displayed on the fringe
 // taking into account some space at the bottom to show an update button
-fringeView.numberOfVisiblePapers=function(){
+function numberOfVisiblePapers(){
     var availableHeight=window.innerHeight-fringeBottomMargin;
     return Math.floor(availableHeight/(2*paperMaxRadius+paperMarginBottom));
 }
 
 // Compute a node radius from the value supplied, between min and max
 // If we want to display an outline instead of a fill circle, the radius must be smaller
-fringeView.radius=function(value){
+function radius(value){
     return Math.max(paperMinRadius, Math.min(paperMaxRadius,
         currentYear-value));
 }
 
 // Return a random color except red or turquoise
-fringeView.randomColor=function(){
+function randomColor(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
 }
+
+///////////////     Define public static methods, and return    /////////////
+
+var fringeView = {};
+
+fringeView.initializeVis=initializeVis;
+fringeView.updateVis=updateVis;
+
+return fringeView;
+
+})();
