@@ -18,7 +18,17 @@ var sessionManager = function(){
 		var retrievedData=localStorage.getObject("userData");
 		if(retrievedData!=null){
 			console.log(retrievedData);
+			/*
+			// We manually add each paper instead of swapping one object for the other,
+			// so that the methods defined on userData are not lost. 
+			retrievedData.papers.forEach(function(paper){
+				userData.papers[paper]=paper;	
+			})*/
 			userData=retrievedData;
+		}
+		else{
+			console.log("Loading hard-coded seedPapers")
+			userData.papers=seedPapers;
 		}
 	}
 

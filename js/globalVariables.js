@@ -18,20 +18,7 @@ var global={
 var userData={
     
     // contains the tags and all useful information about the papers that have been visited
-    "papers":{       
-        "10.1145/108844.108867":{
-            // Triggers and barriers to customization
-            "core":true
-        },
-        "10.1145/97243.97271":{
-            // Buttons
-            "core":true
-        },
-        "10.1007/978-94-011-0349-7_9":{
-            // Medium vs Mechanism
-            "core":true
-        }
-    },
+    "papers":{},
     
     // The followings are just lists of dois
     "core":[
@@ -47,3 +34,21 @@ var userData={
     "selected":[],
     "fringe":[]
 }; 
+
+
+var seedPapers={
+    "10.1145/108844.108867":{
+        // Triggers and barriers to customization
+        "core":true
+    },
+    "10.1145/97243.97271":{
+        // Buttons
+        "core":true
+    },
+    "10.1007/978-94-011-0349-7_9":{
+        // Medium vs Mechanism
+        "core":true
+    }
+
+    // mysterious paper 10.1145/97243.97250
+}
