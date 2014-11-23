@@ -17,13 +17,14 @@ var sessionManager = function(){
 	function loadSession(){
 		var retrievedData=localStorage.getObject("userData");
 		if(retrievedData!=null){
-			console.log(retrievedData);
-
-			// We manually add each paper instead of swapping one object for the other,
+/*			// We manually add each paper instead of swapping one object for the other,
 			// so that the methods defined on userData are not lost. 
 			Object.keys(retrievedData.papers).forEach(function(doi){
-				userData.papers[doi]=retrievedData.papers[doi];	
-			})
+				userData.papers[doi]=JSON.parse( JSON.stringify( retrievedData.papers[doi] ) );
+			})*/
+			// In fact, all the methods are defined on userData, not userData.papers, so ok to swap
+			console.log("retrieved: "+userData)
+			userData.papers=retrievedData.papers;
 		}
 		else{
 			console.log("Loading hard-coded seedPapers")
