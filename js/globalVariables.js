@@ -6,7 +6,9 @@ var global={
     // Current view: 0=core, 1=to read, 2=fringe
     "view":2,
     // papers dataset, accessed by global.papers[doi]
-    "papers":false
+    "papers":false,
+    // automatically computed by fringeView
+    "visibleFringe":[]
 };
 
 var userData={
@@ -22,7 +24,6 @@ var userData={
         "doi":"10.1007/978-94-011-0349-7_9" }
     ],
     // pairs doi-selected
-    "fringe":[],
-    // automatically computed by fringeView
-    "visibleFringe":[]
+    "toRead":[],
+    "fringe":[]
 }; 

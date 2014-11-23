@@ -25,9 +25,9 @@ var fringeView = (function () {
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
  function computeVisibleFringe(){
-    userData.visibleFringe=userData.fringe.slice(0,numberOfVisiblePapers());
+    global.visibleFringe=userData.fringe.slice(0,numberOfVisiblePapers());
     // stores which position this paper is in the fringe - useful when selecting papers
-    userData.visibleFringe.forEach(function(d,i){ d.index=i; });
+    global.visibleFringe.forEach(function(d,i){ d.index=i; });
 }
 
 // Create some svg elements once and for all
@@ -54,7 +54,7 @@ var fringeView = (function () {
 
     // fringe
     var papers = svg.selectAll(".paper")
-    .data(userData.visibleFringe)       // what is the selection on this line? svg?
+    .data(global.visibleFringe)       // what is the selection on this line? svg?
 
     .enter()
         .append("g")
@@ -72,7 +72,7 @@ var fringeView = (function () {
     .text(function(d,i) {return d.title;} );
 
     svg.selectAll(".paper")     // I have no idea of what's going on there. Why just paper.exit().remove() doesn't work?
-    .data(userData.visibleFringe)
+    .data(global.visibleFringe)
     .exit().remove();
 }
 
@@ -100,8 +100,6 @@ var fringeView = (function () {
     d3.select("#updateFringe")
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")
-
-    console.log(d3.select("#updateFringe").style("color"));
 
     // toread
     d3.select("#toread")
@@ -158,7 +156,6 @@ var fringeView = (function () {
         var paper=d3.select(this);
         paper.each(function(d) {
             d.selected=!d.selected;
-            console.log(d);
         
             // Updates the position of each element (so far I haven't found a way to simply offset the group, 
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
