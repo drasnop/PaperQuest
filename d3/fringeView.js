@@ -41,6 +41,10 @@ var fringeView = (function () {
     svg.append("circle")
     .attr("id","core")
     .attr("class","shadowOnHover")  
+
+    svg.append("circle")
+    .attr("id","updateFringe")
+    .attr("class","button") 
 }
 
 // Build the components of the vis, in the appropriate z-index order
@@ -90,6 +94,11 @@ var fringeView = (function () {
     .attr("x", function(d,i) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
     .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
     .classed("highlighted", function(d,i) {return d.selected;})
+
+    d3.selectAll("#updateFringe")
+    .attr("cx", function(d,i) { return updateFringeButtonX();} )
+    .attr("cy", function(d,i) { return updateFringeButtonY();} )
+    .attr("r", function(d,i) {return paperMaxRadius;} )  
 
     // toread
     d3.select("#toread")
@@ -157,6 +166,11 @@ var fringeView = (function () {
             paper.select(".title").attr("x", function(d) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
         });
     })
+
+    // update fringe button
+    d3.select("#updateFringe").on("click",function () {
+        updateFringe();
+    })
 }
 
 ////////////////    helper functions    //////////////
@@ -179,6 +193,17 @@ function fringePaperY(i){
 function numberOfVisiblePapers(){
     var availableHeight=window.innerHeight-fringeBottomMargin;
     return Math.floor(availableHeight/(2*paperMaxRadius+paperMarginBottom));
+}
+
+function updateFringeButtonY(){
+    return window.innerHeight-paperMaxRadius-paperMarginBottom;
+}
+
+// Compute the horizontal position of the updateFringe button
+function updateFringeButtonX(){
+    var h=window.innerHeight;
+    var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
+    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
 }
 
 // Compute a node radius from the value supplied, between min and max

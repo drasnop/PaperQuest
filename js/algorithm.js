@@ -4,7 +4,11 @@
 
 function computeFringe(){
 	userData.fringe=global.papers.slice(0,100);
+}
 
+function updateFringe(){
+	console.log("updateFringe()");
+}
 
 /*
 pseudo-code
@@ -40,4 +44,3 @@ for each paper P in core, toRead, fringe
 	updateRelevanceScoresWhenInserting(P)
 
 */	
-}

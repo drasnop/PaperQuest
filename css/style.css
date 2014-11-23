@@ -25,6 +25,12 @@ svg{
 	background-color: #fafafa;
 }
 
+/*#updateFringe{
+	position:fixed;
+	bottom:0;
+	left:0;
+}*/
+
 .paper{
 	cursor:pointer;
 }
