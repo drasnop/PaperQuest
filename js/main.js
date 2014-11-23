@@ -20,7 +20,7 @@ console.log(userData.fringe.getSelected());
 d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
 
-    computeFringe();
+    generateFringe();
     fringeView.initializeVis();
 });
 

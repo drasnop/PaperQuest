@@ -2,12 +2,25 @@
 * Compute the fringe and the relevance scores 
 */
 
-function computeFringe(){
+function generateFringe(){
 	userData.fringe=global.papers.slice(0,100);
+
+	// userData.papers.allExceptNonSelected.forEach(updateRelevanceScoresWhenInserting)
+
+	//userData.core.forEach(updateRelevanceScoresWhenInserting);
+	//userData.toRead.forEach(updateRelevanceScoresWhenInserting);
+	//userData.selected.forEach(updateRelevanceScoresWhenInserting);
 }
 
 function updateFringe(){
 	console.log("updateFringe()");
+}
+
+function updateRelevanceScoresWhenInserting(doi){
+/*	global.papers[doi].references.forEach(doi){
+		if userData.papers doesn't contain doi
+			do stuff
+	}*/
 }
 
 /*
