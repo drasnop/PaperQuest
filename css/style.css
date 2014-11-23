@@ -25,11 +25,9 @@ svg{
 	background-color: #fafafa;
 }
 
-/*#updateFringe{
-	position:fixed;
-	bottom:0;
-	left:0;
-}*/
+#updateFringe{
+	position:absolute;
+}
 
 .paper{
 	cursor:pointer;
