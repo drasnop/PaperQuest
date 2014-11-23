@@ -28,10 +28,11 @@ var sessionManager = function(){
 		}
 		else{
 			console.log("Loading hard-coded seedPapers")
-			userData.papers=seedPapers;
+			userData.uploadSeedPapers();
 		}
 	}
 
+	// we could just store userData.papers, but eh. Having the methods could be useful for debugging
 	function saveSession(){
 	    localStorage.setObject("userData", userData);
 	    console.log("session saved in localStorage('userData')");

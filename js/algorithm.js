@@ -3,28 +3,35 @@
 */
 
 function generateFringe(){
-	Object.keys(global.papers).slice(0,30).forEach(function(doi){
-		if(!userData.papers[doi])
-			userData.papers[doi]={};
-		userData.papers[doi].fringe=true;
-	})
-
-	// userData.papers.allExceptNonSelected.forEach(updateRelevanceScoresWhenInserting)
-
-	//userData.core.forEach(updateRelevanceScoresWhenInserting);
-	//userData.toRead.forEach(updateRelevanceScoresWhenInserting);
-	//userData.selected.forEach(updateRelevanceScoresWhenInserting);
+	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
 }
 
 function updateFringe(){
 	console.log("updateFringe()");
 }
 
-function updateRelevanceScoresWhenInserting(doi){
-/*	global.papers[doi].references.forEach(doi){
-		if userData.papers doesn't contain doi
-			do stuff
-	}*/
+// Update the score for all papers (not only the ones on the Fringe)
+// doiSource is provided by the callback in forEach
+function updateRelevanceScoresWhenInserting(doiSource){
+	console.log("processing "+doiSource)
+
+	global.papers[doiSource].references.forEach(function(doiTarget){
+		// if paper has never been seen before, add it to the fringe
+		if (!userData.papers.hasOwnProperty(doiTarget)) {
+			userData.papers[doiTarget]={"fringe":true, "score":adjustedCitationCount(doiTarget)};
+		}
+		// update relevance score of this paper
+		updateScore(doiSource,doiTarget);
+	})
+
+	global.papers[doiSource].citations.forEach(function(doiTarget){
+		// if paper has never been seen before, add it to the fringe
+		if (!userData.papers.hasOwnProperty(doiTarget)) {
+			userData.papers[doiTarget]={"fringe":true, "score":adjustedCitationCount(doiTarget)};
+		}
+		// update relevance score of this paper
+		updateScore(doiSource,doiTarget);
+	})
 }
 
 /*
@@ -59,17 +66,15 @@ function updateRelevanceScoresWhenMoving(P)
 // generate first fringe
 for each paper P in core, toRead, fringe
 	updateRelevanceScoresWhenInserting(P)
-
+*/
 
 ///////////////		helper functions	/////////////////////////////
 
-function hasPaperBeenVisited(doi)
-	core, toRead, fringe
+function updateScore(doiSource, doiTarget){
+	userData.papers[doiTarget].score+=1;
+}
 
-function adjustedCitationScore(doi)
-
-function updateWeight(doiTarget, doiSource)
-
-
-
-*/	
+	
+function adjustedCitationCount(doi){
+	return 0;
+}
