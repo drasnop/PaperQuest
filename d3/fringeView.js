@@ -158,7 +158,7 @@ var fringeView = (function () {
         var paper=d3.select(this);
         paper.each(function(d) {
             d.selected=!d.selected;
-            console.log(d.selected);
+            console.log(d);
         
             // Updates the position of each element (so far I haven't found a way to simply offset the group, 
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)

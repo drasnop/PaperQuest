@@ -21,7 +21,8 @@ var userData={
         // Medium vs Mechanism
         "doi":"10.1007/978-94-011-0349-7_9" }
     ],
-    "fringe":[],
     // pairs doi-selected
+    "fringe":[],
+    // automatically computed by fringeView
     "visibleFringe":[]
 }; 
