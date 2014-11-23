@@ -11,6 +11,10 @@ var global={
     "visibleFringe":[]
 };
 
+
+/* /!\ since we redefine these objects on loading,
+*  properties and methods must be defined in main.js on the new objects
+*/
 var userData={
     "core":[
     {

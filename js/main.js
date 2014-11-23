@@ -9,9 +9,17 @@ var svg = d3.select("body").append("svg")
 
 sessionManager.loadSession();
 
+userData.fringe.getSelected=function(){
+   return this.filter(function(element){
+        return element.selected;   
+    });
+}
+console.log(userData.fringe.getSelected());
+
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
 d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
+
     computeFringe();
     fringeView.initializeVis();
 });

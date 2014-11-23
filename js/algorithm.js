@@ -14,7 +14,7 @@ function updateFringe(){
 pseudo-code
 
 // all the papers that matter to the user
-knownPapers = core + toRead + fringe (which contains selected)
+visitedPapers = core + toRead + fringe (which contains selected)
 
 // all the papers that impact the computation of the relevance score
 interestSet = core + toRead + selected
@@ -22,8 +22,8 @@ interestSet = core + toRead + selected
 // call this function everytime a paper is added to the interest set
 function updateRelevanceScoresWhenInserting(P)
 	for each reference R in P
-		if knownPapers doesn't contain R
-			add R to knownPapers
+		if visitedPapers doesn't contain R
+			add R to fringe
 			set R.relevance=ACC
 		R.relevance+=w[P.type]
 	for each citation C in P
@@ -34,7 +34,7 @@ function updateRelevanceScoresWhenMoving(P)
 	for each reference R in P
 		// in theory all its references and citations are already known
 		// Maybe there is no performance gain in separating these two update functions,
-		// if checking for existance of R in knownPapers has the same cost as doing knowPapers.R.relevance
+		// if checking for existance of R in visitedPapers has the same cost as doing knowPapers.R.relevance
 		R.relevance+=w[P.type]
 	for each citation C in P
 		idem
@@ -42,5 +42,17 @@ function updateRelevanceScoresWhenMoving(P)
 // generate first fringe
 for each paper P in core, toRead, fringe
 	updateRelevanceScoresWhenInserting(P)
+
+
+///////////////		helper functions	/////////////////////////////
+
+function hasPaperBeenVisited(doi)
+	core, toRead, fringe
+
+function adjustedCitationScore(doi)
+
+function updateWeight(doiTarget, doiSource)
+
+
 
 */	
