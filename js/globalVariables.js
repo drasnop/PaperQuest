@@ -35,6 +35,23 @@ var userData={
     "fringe":[]
 }; 
 
+userData.fringe.getSelected=function(){
+   return this.filter(function(element){
+        return element.selected;   
+    });
+}
+
+userData.getCore=function(){
+    return Object.keys(userData.papers).filter(function(doi){
+        return userData.papers[doi].core;
+    });
+}
+
+userData.getFringe=function(){
+    return Object.keys(userData.papers).filter(function(doi){
+        return userData.papers[doi].fringe;
+    });
+}
 
 var seedPapers={
     "10.1145/108844.108867":{
@@ -49,6 +66,4 @@ var seedPapers={
         // Medium vs Mechanism
         "core":true
     }
-
-    // mysterious paper 10.1145/97243.97250
 }

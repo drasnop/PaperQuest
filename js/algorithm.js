@@ -3,11 +3,9 @@
 */
 
 function generateFringe(){
-/*	global.papers.slice(0,100).forEach(function(paper){
-		userData.papers[paper.doi]=paper;
-	})*/
-
-	userData.fringe=global.papers.slice(0,100);
+	Object.keys(global.papers).slice(0,10).forEach(function(doi){
+		userData.papers[doi]={"fringe":true};
+	})
 
 	// userData.papers.allExceptNonSelected.forEach(updateRelevanceScoresWhenInserting)
 
