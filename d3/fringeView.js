@@ -43,10 +43,9 @@ var fringeView = (function () {
     .attr("class","shadowOnHover")  
 
 
-    d3.select("body").append("input")
-    .attr("type","button")
+    d3.select("body").append("button")
     .attr("id","updateFringe")
-    .attr("value","Update fringe")
+    .text("Update fringe")
     .attr("onclick","updateFringe()")
 }
 
@@ -99,7 +98,10 @@ var fringeView = (function () {
     .classed("highlighted", function(d,i) {return d.selected;})
 
     d3.select("#updateFringe")
-    .attr("style", "top:"+updateFringeButtonY()+"px; left:"+updateFringeButtonX()+"px")
+    .style("top",updateFringeButtonY()+"px")
+    .style("left",updateFringeButtonX()+"px")
+
+    console.log(d3.select("#updateFringe").style("color"));
 
     // toread
     d3.select("#toread")
