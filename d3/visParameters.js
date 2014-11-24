@@ -36,3 +36,4 @@ var colors={
 }
 
 var currentYear=2010;
+var citationCountCutoff=150;

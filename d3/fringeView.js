@@ -84,12 +84,12 @@ var fringeView = (function () {
     d3.selectAll(".node")
     .attr("cx", function(d,i) { return fringePaperX(d,i);} )
     .attr("cy", function(d,i) { return fringePaperY(i);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].year);} )  
+    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
 
     d3.selectAll(".innerNode")
     .attr("cx", function(d,i) { return fringePaperX(d,i);} )
     .attr("cy", function(d,i) { return fringePaperY(i);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].year)*paperInnerWhiteCircleRatio;} )
+    .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
     .style("fill","white")
 
     d3.selectAll(".title")
@@ -206,11 +206,11 @@ function updateFringeButtonX(){
     return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
 }
 
-// Compute a node radius from the value supplied, between min and max
-// If we want to display an outline instead of a fill circle, the radius must be smaller
-function radius(value){
-    return Math.max(paperMinRadius, Math.min(paperMaxRadius,
-        currentYear-value));
+// Compute a node radius from the citation count supplied, between min and max
+// So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
+function radius(citationCount){
+    return Math.min(paperMaxRadius, 
+        paperMinRadius+(paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/citationCountCutoff));
 }
 
 // Return a random color except red or turquoise
