@@ -24,8 +24,8 @@ var coreRadius = [120,120,120],
     toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleXOffset];
 
 var colors={
-    // blue, green, pink, orange, darkblue
-    "tags":["#00A1CB","#61AE24","#D70060","#F18D05","#113F8C"],
+    // orange, green, blue, pink, darkblue
+    "tags":["#F18D05","#61AE24","#00A1CB","#D70060","#113F8C"],
 	// thése two colors are pretty, but probably shouldn't be used for tags (too similar)
     "turquoise":"#01A4A4",	    
 	"red":"#E54028",		

@@ -33,7 +33,8 @@ userData.getFringe=function(){
 userData.getSortedFringe=function(){
     return userData.getFringe()
         .sort(function(a,b){
-            return userData.papers[a].score-userData.papers[b].score;
+            // decreasing order!
+            return userData.papers[b].score-userData.papers[a].score;
         });
 }
 

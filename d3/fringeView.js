@@ -62,7 +62,7 @@ var fringeView = (function () {
 
     papers.append("circle")
     .attr("class", "node")
-    .style("fill",randomColor)  // eventually this style attr should be defined in drawVis based on a tag
+    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })  // eventually this style attr should be defined in drawVis based on a tag
 
     papers.append("circle")
     .attr("class", "innerNode")
@@ -217,6 +217,13 @@ function radius(citationCount){
 function randomColor(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
+}
+
+function colorFromUpvoters(n){
+    console.log(n)
+    if(n>5)
+        return colors.tags[4];
+    return colors.tags[n-1];  // between 1..4
 }
 
 ///////////////     Define public static methods, and return    /////////////
