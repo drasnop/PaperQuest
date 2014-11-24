@@ -57,6 +57,23 @@ userData.getAllButNonSelected=function(){
     });
 }
 
+userData.getAll=function(){
+    return Object.keys(userData.papers);
+}
+
+// debug
+userData.computeTotalScore=function(){
+    var sum=0;
+    userData.getFringe().forEach(function(doi){
+        sum+=userData.papers[doi].score;
+    });   
+    return sum;
+}
+
+// debug info
+function info(){
+    console.log("length: "+userData.getSortedAndPrunedFringe().length+"  total_score: "+userData.computeTotalScore());
+}
 
 ///////     hard-coded implementation of seed papers    /////////////////
 

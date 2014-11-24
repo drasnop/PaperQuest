@@ -3,11 +3,17 @@
 */
 
 function generateFringe(){
+	userData.getAll().forEach(initializeRelevanceScore);
 	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
 }
 
 function updateFringe(){
 	fringeView.updateVis();
+}
+
+function initializeRelevanceScore(doi){
+	userData.papers[doi].score=adjustedCitationCount(doi);
+	userData.papers[doi].upvoters=0;
 }
 
 // doiSource is provided by the callback in forEach
@@ -23,23 +29,21 @@ function updateRelevanceScoresWhenRemoving(doiSource){
 function updateRelevanceScores(doiSource, inserting){
 	console.log( (inserting?"inserting ":"removing ") + doiSource)
 
-	global.papers[doiSource].references.forEach(function(doiTarget){
-		// if paper has never been seen before, add it to the fringe
-		if (!userData.papers.hasOwnProperty(doiTarget)) {
-			userData.papers[doiTarget]={"fringe":true, "score":adjustedCitationCount(doiTarget)};
-		}
-		// update relevance score of this paper
-		updateScore(doiSource,doiTarget,inserting);
-	})
+	// update both references and citations of this paper
+	global.papers[doiSource].references
+		.concat(global.papers[doiSource].citations)
+		.forEach(function(doiTarget){
+			// if paper has never been seen before, add it to the fringe
+			if (!userData.papers.hasOwnProperty(doiTarget)) {
+				userData.papers[doiTarget]={"fringe":true};
+				initializeRelevanceScore(doiTarget);
+			}
+			// update relevance score of this paper
+			updatePaper(doiSource,doiTarget,inserting);
 
-	global.papers[doiSource].citations.forEach(function(doiTarget){
-		// if paper has never been seen before, add it to the fringe
-		if (!userData.papers.hasOwnProperty(doiTarget)) {
-			userData.papers[doiTarget]={"fringe":true, "score":adjustedCitationCount(doiTarget)};
-		}
-		// update relevance score of this paper
-		updateScore(doiSource,doiTarget,inserting);
-	})
+			if(userData.papers[doiTarget].upvoters<=0)
+				delete userData.papers[doiTarget];
+		})
 }
 
 /*
@@ -72,11 +76,15 @@ for each paper P in core, toRead, fringe
 
 ///////////////		helper functions	/////////////////////////////
 
-function updateScore(doiSource, doiTarget,inserting){
-	if(inserting)
+function updatePaper(doiSource, doiTarget,inserting){
+	if(inserting){
 		userData.papers[doiTarget].score+=1;
-	else
+		userData.papers[doiTarget].upvoters+=1;
+	}
+	else{
 		userData.papers[doiTarget].score-=1;
+		userData.papers[doiTarget].upvoters-=1;
+	}
 }
 
 	
