@@ -164,6 +164,11 @@ var fringeView = (function () {
             paper.select(".node").attr("cx", function(d) { return fringePaperX(d,i);} )
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d,i);} )
             paper.select(".title").attr("x", function(d) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
+        
+            if(userData.papers[d].selected)
+                updateRelevanceScoresWhenInserting(d);
+            else
+                updateRelevanceScoresWhenRemoving(d);
         });
     })
 }
