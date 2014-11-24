@@ -29,12 +29,19 @@ userData.getFringe=function(){
     });
 }
 
+// Return fringe sorted by relevance score
 userData.getSortedFringe=function(){
     return userData.getFringe()
         .sort(function(a,b){
-            console.log(a+"  "+b)
             return userData.papers[a].score-userData.papers[b].score;
         });
+}
+
+// Return fringe sorted and without the "external" papers
+userData.getSortedAndPrunedFringe=function(){
+    return userData.getSortedFringe().filter(function(doi){
+        return global.papers.hasOwnProperty(doi);
+    });
 }
 
 userData.getSelected=function(){
@@ -61,8 +68,8 @@ var seedPapers=[
 
 userData.uploadSeedPapers=function(){
     for(var i in seedPapers){
-        console.log(seedPapers[i])
-        //if (global.papers.hasOwnProperty(seedPapers[i]))      ///////// why is this not working???
+        console.log("seed paper: "+seedPapers[i])
+        if (global.papers.hasOwnProperty(""+seedPapers[i]))      ///////// why is this not working???
             userData.papers[seedPapers[i]]={"core":true};
     }
 }

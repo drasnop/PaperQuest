@@ -14,7 +14,7 @@ var sessionManager = function(){
 	    return value && JSON.parse(value);
 	}
 
-	function loadSession(){
+	function loadPreviousSession(){
 		var retrievedData=localStorage.getObject("userData");
 		if(retrievedData!=null){
 /*			// We manually add each paper instead of swapping one object for the other,
@@ -46,7 +46,7 @@ var sessionManager = function(){
 	////////	Create public static methods	/////////////////
 
 	var sessionManager={};
-	sessionManager.loadSession=loadSession;
+	sessionManager.loadPreviousSession=loadPreviousSession;
 	sessionManager.saveSession=saveSession;
 	sessionManager.resetSession=resetSession;
 	return sessionManager;

@@ -25,7 +25,7 @@ var fringeView = (function () {
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
  function computeVisibleFringe(){
-    global.visibleFringe=userData.getSortedFringe().slice(0,numberOfVisiblePapers());
+    global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,numberOfVisiblePapers());
     // stores which position this paper is in the fringe - useful when selecting papers
     global.visibleFringe.forEach(function(d,i){ userData.papers[d].index=i; });
 }
@@ -69,9 +69,7 @@ var fringeView = (function () {
 
     papers.append("text")
     .attr("class", "title")
-    .text(function(d,i) {
-        console.log(d)
-        return global.papers[d].title;} );
+    .text(function(d,i) { return global.papers[d].title;} );
 
     svg.selectAll(".paper")     // I have no idea of what's going on there. Why just paper.exit().remove() doesn't work?
     .data(global.visibleFringe)
