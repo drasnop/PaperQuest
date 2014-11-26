@@ -1,3 +1,8 @@
+/*
+* Creates, draw and specify interaction for the Fringe view
+*/
+
+
 // Build the components of the vis, in the appropriate z-index order
 function createVis(data){
     // toread
@@ -54,8 +59,8 @@ function drawVis(){
         .attr("cx",-toreadRadius[view]+toreadApparentWidth[view])
         .attr("cy","50%")
         .attr("r",toreadRadius[view])
-        .style("fill",colors.toread)
-        .style("stroke",colors.toreadBorder)
+        .style("fill",colors.toread[view])
+        .style("stroke",colors.toreadBorder[view])
         .style("stroke-width",2)
     
     // core
@@ -63,15 +68,7 @@ function drawVis(){
         .attr("cx",-coreRadius[view]+coreApparentWidth[view])
         .attr("cy","50%")
         .attr("r",coreRadius[view])
-        .style("fill",colors.core)
-
-    // sidebar
-/*    svg.append("rect")
-        .attr("x","")
-        .attr("y","0")
-        .attr("width","100")
-        .attr("height","100%")
-        .attr("fill",colors.darkgray);*/
+        .style("fill",colors.core[view])
 }
 
 
@@ -139,6 +136,6 @@ function radius(value){
 
 // Return a random color except red or turquoise
 function randomColor(){
-    var keys=Object.keys(colors);
-    return colors[keys[ (keys.length-6) * Math.random() << 0]];
+    var keys=Object.keys(colors.tags);
+    return colors.tags[keys[ keys.length * Math.random() << 0]];
 }
