@@ -13,7 +13,7 @@ d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
     sessionManager.loadPreviousSession();
 
-    generateFringe();
+    algorithm.generateFringe();
     fringeView.initializeVis();
 });
 

@@ -2,11 +2,14 @@
 * Compute the fringe and the relevance scores 
 */
 
+var algorithm = (function(){
+
 function generateFringe(){
 	userData.getAll().forEach(initializeRelevanceScore);
 	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
 }
 
+// this is probably useless
 function updateFringe(){
 	fringeView.updateVis();
 }
@@ -66,3 +69,14 @@ function updatePaper(doiSource, doiTarget,inserting){
 function adjustedCitationCount(doi){
 	return 0;
 }
+
+
+///////////////     Define public static methods, and return    /////////////
+	
+	var algorithm={};
+	algorithm.generateFringe=generateFringe;
+	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
+	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;
+	return algorithm;
+
+})();
