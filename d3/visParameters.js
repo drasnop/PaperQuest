@@ -6,8 +6,7 @@
 var paperMinRadius = 5,
     paperMaxRadius = 15,
     paperInnerWhiteCircleRatio =.4,
-    paperOutlineWidth = 4,	// UNUSED - this divided by 2 must be > min radius
-    paperMarginBottom = 5,
+    paperMarginBottom = 0,
     titleBaselineOffset = 6,  // depends on font size
     titleXOffset = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),

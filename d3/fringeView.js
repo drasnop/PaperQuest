@@ -26,8 +26,6 @@ var fringeView = (function () {
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
  function computeVisibleFringe(){
     global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,numberOfVisiblePapers());
-    // stores which position this paper is in the fringe - useful when selecting papers
-    global.visibleFringe.forEach(function(d,i){ userData.papers[d].index=i; });
 }
 
 // Create some svg elements once and for all
@@ -82,19 +80,19 @@ var fringeView = (function () {
     // fringe
 
     d3.selectAll(".node")
-    .attr("cx", function(d,i) { return fringePaperX(d,i);} )
-    .attr("cy", function(d,i) { return fringePaperY(i);} )
+    .attr("cx", function(d,i) { return fringePaperX(d);} )
+    .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
 
     d3.selectAll(".innerNode")
-    .attr("cx", function(d,i) { return fringePaperX(d,i);} )
-    .attr("cy", function(d,i) { return fringePaperY(i);} )
+    .attr("cx", function(d,i) { return fringePaperX(d);} )
+    .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
     .style("fill","white")
 
     d3.selectAll(".title")
-    .attr("x", function(d,i) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
-    .attr("y", function(d,i) {return fringePaperY(i)+titleBaselineOffset;} )
+    .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
     .classed("highlighted", function(d,i) {return userData.papers[d].selected;})
 
     d3.select("#updateFringe")
@@ -161,9 +159,9 @@ var fringeView = (function () {
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
             // We need the index in the original list (visibleFringe), because here paper.each has only one element
             var i=userData.papers[d].index;
-            paper.select(".node").attr("cx", function(d) { return fringePaperX(d,i);} )
-            paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d,i);} )
-            paper.select(".title").attr("x", function(d) { return fringePaperX(d,i)+paperMaxRadius+titleXOffset;} )
+            paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
+            paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
+            paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
         
             if(userData.papers[d].selected)
                 updateRelevanceScoresWhenInserting(d);
@@ -176,16 +174,17 @@ var fringeView = (function () {
 ////////////////    helper functions    //////////////
 
 // Compute X coordinate for the i-th paper on the fringe, based on a circle
-function fringePaperX(d,i){
+function fringePaperX(d){
     var h=window.innerHeight;
     var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
     var selectedOffset=userData.papers[d].selected? paperXOffsetWhenSelected : 0 ;
-    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(i),2))+paperMaxRadius+selectedOffset;
+    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(d),2))+paperMaxRadius+selectedOffset;
 }
 
 // Compute Y coordinate for the i-th paper on the fringe
-function fringePaperY(i){
-    return paperMaxRadius+i*(2*paperMaxRadius+paperMarginBottom);
+function fringePaperY(d){
+    var index=global.visibleFringe.indexOf(d);
+    return paperMaxRadius+index*(2*paperMaxRadius+paperMarginBottom);
 }
 
 // Compute how many papers can be displayed on the fringe
