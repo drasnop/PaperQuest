@@ -164,9 +164,9 @@ var fringeView = (function () {
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
         
             if(userData.papers[d].selected)
-                updateRelevanceScoresWhenInserting(d);
+                algorithm.updateRelevanceScoresWhenInserting(d);
             else
-                updateRelevanceScoresWhenRemoving(d);
+                algorithm.updateRelevanceScoresWhenRemoving(d);
         });
     })
 }
