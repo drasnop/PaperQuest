@@ -23,6 +23,20 @@ import json
 import sys
 
 
+def partialDOIMatch(d1, d2):
+    """
+    Assumes d1 is a "full DOI", like '10.1145/1166253.1166292', and d2
+    is a partial DOI, like '1166292' or '1166253.1166292'.  Returns true
+    if they match and false otherwise.
+
+    Note that in the previous case, a partial like '292' would be a
+    negative match.  The partial must contain full subsections.
+    """
+    if (d2.find('.') >= 0):
+        return d2 == d1.split('/')[-1]
+    return d2 == d1.split('.')[-1]
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print "Usage: python chi-to-json.py <papers.tsv> <citation_counts.json>"
@@ -74,5 +88,14 @@ if __name__ == "__main__":
     with open(sys.argv[2]) as citation_counts_json:
        ccs = json.loads(citation_counts_json.read())
 
+    # The following process adds citation count information to every
+    # paper that can be found on the specified file.  This is a slow
+    # process because we don't use the hash function in dict, but it
+    # shouldn't have to run frequently.
+    for d2 in ccs.keys():
+        matches = [d1 for d1 in papers.keys() if partialDOIMatch(d1, d2)]
+        if matches:
+            papers[matches[0]]['citation_count'] = ccs[d2]['citation_count']
+
     # Write out a JSON object with everything in it.
-    print json.dumps({'papers': papers.values()})
+    print json.dumps({'papers': papers})

@@ -43,6 +43,8 @@ if __name__ == "__main__":
     counts = {}
     for r in results:
         tmp = citationPattern.findall(r['text'])[0]
+        # Use the DOI as extracted from the ACM DL URL for a key to
+        # store the citation count.
         counts[extractDOI(r['href'])] = dict(title=tmp[0],
                                              citation_count=int(tmp[1]))
 
