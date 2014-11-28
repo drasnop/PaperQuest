@@ -95,7 +95,8 @@ function manageDynamicElements(){
     //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
 
-    var papers = svg.selectAll(".paper").data(global.visibleFringe)
+    var papers = svg.selectAll(".paper")
+        .data(global.visibleFringe, function(d){ return global.visibleFringe.indexOf(d); })
 
 
     //--------------------ENTER---------------------//
