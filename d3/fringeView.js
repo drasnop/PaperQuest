@@ -11,17 +11,12 @@ var fringeView = (function () {
     updateVis();
 }
 
-// Update the vis after a change of zoom/window size 
- function updateVis(){
+// Update the vis, with or without animating the transitions
+ function updateVis(animate){
     computeVisibleFringe();
     drawStaticElements();
-    manageDynamicElements();
+    manageDynamicElements(animate);
     bindListeners();
-}
-
-function animatedUpdate(){
-    console.log("animatedUpdate")
-    updateVis()
 }
 
 //////////////////  Drawing functions   ///////////////////////
@@ -49,14 +44,14 @@ function animatedUpdate(){
     .attr("id","updateFringe")
     .attr("class","visControl")
     .text("Update fringe")
-    .attr("onclick","fringeView.animatedUpdate()")
+    .attr("onclick","fringeView.updateVis(true)")
 
     d3.select("body").append("label")
-    .attr("id","updateFringeContinuously")
+    .attr("id","updateFringeAutomatically")
     .attr("class","visControl")
     .append("input")
     .attr("type","checkbox")
-    d3.select("#updateFringeContinuously")
+    d3.select("#updateFringeAutomatically")
     .append("span")
     .text("automatically")
 }
@@ -67,7 +62,7 @@ function drawStaticElements(){
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")
 
-    d3.select("#updateFringeContinuously")
+    d3.select("#updateFringeAutomatically")
     .style("top",updateFringeButtonY()+3+"px")
     .style("left",updateFringeButtonX()+130+"px")
 
@@ -89,8 +84,8 @@ function drawStaticElements(){
 }
 
 
-// Manage papers on the fringe
-function manageDynamicElements(){
+// Manage papers on the fringe, with or without animating the transitions (TODO)
+function manageDynamicElements(animate){
 
     //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
@@ -271,7 +266,6 @@ var fringeView = {};
 
 fringeView.initializeVis=initializeVis;
 fringeView.updateVis=updateVis;
-fringeView.animatedUpdate=animatedUpdate;
 
 return fringeView;
 
