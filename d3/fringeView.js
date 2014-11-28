@@ -40,11 +40,22 @@ var fringeView = (function () {
     .attr("id","core")
     .attr("class","shadowOnHover")  
 
-
+    // controls
     d3.select("body").append("button")
     .attr("id","updateFringe")
+    .attr("class","visControl")
     .text("Update fringe")
     .attr("onclick","updateFringe()")
+
+    d3.select("body").append("label")
+    .attr("id","updateFringeContinuously")
+    .attr("class","visControl")
+    .append("input")
+    .attr("type","checkbox")
+    d3.select("#updateFringeContinuously")
+    .append("span")
+    .text("update continuously")
+
 }
 
 // Build the components of the vis, in the appropriate z-index order
@@ -98,6 +109,10 @@ var fringeView = (function () {
     d3.select("#updateFringe")
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")
+
+    d3.select("#updateFringeContinuously")
+    .style("top",updateFringeButtonY()+3+"px")
+    .style("left",updateFringeButtonX()+130+"px")
 
     // toread
     d3.select("#toread")
