@@ -58,7 +58,7 @@ function animatedUpdate(){
     .attr("type","checkbox")
     d3.select("#updateFringeContinuously")
     .append("span")
-    .text("update continuously")
+    .text("automatically")
 }
 
 
@@ -92,12 +92,16 @@ function drawStaticElements(){
 // Build the components of the vis, in the appropriate z-index order
 function manageDynamicElements(){
 
+    //------------------DATA JOIN-------------------//
+    // Join new data with old elements, if any
+
+    var papers = svg.selectAll(".paper").data(global.visibleFringe)
+
 
     //--------------------ENTER---------------------//
-    
-    var enteringPapers = svg.selectAll(".paper")
-    .data(global.visibleFringe)
-    .enter()
+    // Create new elements as needed
+
+    var enteringPapers = papers.enter()
         .append("g")
         .attr("class","paper")
 
@@ -116,30 +120,33 @@ function manageDynamicElements(){
 
 
     //------------------ENTER+UPDATE-------------------//
+    // Appending to the enter selection expands the update selection to include
+    // entering elements; so, operations on the update selection after appending to
+    // the enter selection will apply to both entering and updating nodes.
 
-    d3.selectAll(".node")
+    papers.select(".node")
     .transition().duration("2000").ease("quad-in-out")
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
 
-    d3.selectAll(".innerNode")
+    papers.select(".innerNode")
     .transition().duration("2000").ease("quad-in-out")
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
 
-    d3.selectAll(".title")
+    papers.select(".title")
     .transition().duration("2000").ease("quad-in-out")
     .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
     .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
 
 
     //--------------------EXIT---------------------//
+    // Remove old elements as needed.
 
-    svg.selectAll(".paper")     // I have no idea of what's going on there. Why just enteringPapers.exit().remove() doesn't work?
-    .data(global.visibleFringe)
-    .exit().remove();
+    papers.exit()     // I have no idea of what's going on there. Why just papers.exit().remove() doesn't work?
+        .remove();
 }
 
 
