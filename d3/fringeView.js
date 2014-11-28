@@ -101,9 +101,12 @@ function manageDynamicElements(animate){
         .append("g")
         .attr("class","paper")
 
+    enteringPapers.append("rect")
+    .attr("class","card")
+
     enteringPapers.append("circle")
     .attr("class", "node")
-    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
+    .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
     enteringPapers.append("circle")
     .attr("class", "innerNode")
@@ -111,8 +114,8 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("text")
     .attr("class", "title")
-    .classed("highlighted", function(d,i) {return userData.papers[d].selected;})
-    .text(function(d,i) { return global.papers[d].title;} );
+    .classed("highlighted", function(d) {return userData.papers[d].selected;})
+    .text(function(d) { return global.papers[d].title;} );
 
 
     //------------------ENTER+UPDATE-------------------//
@@ -122,38 +125,47 @@ function manageDynamicElements(animate){
 
     var t0=papers.transition().duration(animate?fringePapersPositionTransitionDuration:0).ease(fringePapersTransitionEasing)
 
+    t0.select(".card")
+    .attr("x", function(d) { return fringePaperXCard(d);} )
+    .attr("y", function(d) { return fringePaperYCard(d);} )
+    .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+    .attr("height",2*paperMaxRadius)
+
     t0.select(".node")
-    .attr("cx", function(d,i) { return fringePaperX(d);} )
-    .attr("cy", function(d,i) { return fringePaperY(d);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} ) 
+    .attr("cx", function(d) { return fringePaperX(d);} )
+    .attr("cy", function(d) { return fringePaperY(d);} )
+    .attr("r", function(d) {return radius(global.papers[d].citation_count);} ) 
     
     // staging the change of color by chaining transitions
     t0.each("end",function(){
         d3.select(this).transition().duration(animate?fringePapersColorTransitionDuration:0)
         .select(".node")
-        .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
+        .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
     })
 
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(animate?fringePapersColorTransitionDuration:0)
     .select(".node")
-    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
+    .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
     t0.select(".innerNode")
-    .attr("cx", function(d,i) { return fringePaperX(d);} )
-    .attr("cy", function(d,i) { return fringePaperY(d);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
+    .attr("cx", function(d) { return fringePaperX(d);} )
+    .attr("cy", function(d) { return fringePaperY(d);} )
+    .attr("r", function(d) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
 
     t0.select(".title")
-    .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
-    .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
+    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d) {return fringePaperY(d)+titleBaselineOffset;} )
 
 
     //--------------------EXIT---------------------//
     // Remove old elements as needed.
 
-    papers.exit()     // I have no idea of what's going on there. Why just papers.exit().remove() doesn't work?
+    papers.exit()
+        // Trying to shrink the exiting papers. Works, but the coordinate space is not relative to current position => big translation     
+/*        .transition().duration(animate?fringePapersPositionTransitionDuration:0)
+        .attr("transform","matrix(1,0,0,.5,0,0)")*/
         .remove();
 }
 
@@ -174,21 +186,27 @@ function manageDynamicElements(animate){
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
+        d3.select(this).select(".card")
+            .classed("highlighted",true)
+            .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
     .on("mouseleave",function() {
+        // remove shadow
         d3.select(this).select(".node").attr("filter","none")
-        d3.select(this)
-            // to keep the selected elements bold
+        
+        // keep the selected elements highlighted
+        var nonSelectedOnly=d3.select(this)
             .filter(function(){ 
                 // this is ugly as hell, but I don't know how to access d cleanly...
                 var res;
-                d3.select(this).each(function(d,i){
+                d3.select(this).each(function(d){
                     res=!userData.papers[d].selected;
                 })
                 return res;
             })
-            .select(".title").attr("font-weight","normal").classed("highlighted",false)     // remove class
-        })
+        nonSelectedOnly.select(".title").classed("highlighted",false)     // remove class
+        nonSelectedOnly.select(".card").classed("highlighted",false)     // remove class
+    })
 
     // clicking papers on the fringe translates them to the left
     .on("click",function() {
@@ -200,10 +218,12 @@ function manageDynamicElements(animate){
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
             // We need the index in the original list (visibleFringe), because here paper.each has only one element
             var i=userData.papers[d].index;
+            paper.select(".card").attr("x", function(d) { return fringePaperXCard(d);} )
             paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
         
+
             if(userData.papers[d].selected)
                 algorithm.updateRelevanceScoresWhenInserting(d);
             else
@@ -226,6 +246,16 @@ function fringePaperX(d){
 function fringePaperY(d){
     var index=global.visibleFringe.indexOf(d);
     return paperMaxRadius+index*(2*paperMaxRadius+paperMarginBottom);
+}
+
+// Compute X coordinate for the "card" (the rectangle label) of the i-th paper on the fringe
+function fringePaperXCard(d){
+    return fringePaperX(d)+paperMaxRadius+titleXOffset;
+}
+
+// Compute Y coordinate for the "card" (the rectangle label) of the i-th paper on the fringe
+function fringePaperYCard(d){
+    return fringePaperY(d)-paperMaxRadius;
 }
 
 // Compute how many papers can be displayed on the fringe

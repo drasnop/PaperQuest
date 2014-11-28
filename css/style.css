@@ -45,3 +45,10 @@ svg{
 	letter-spacing: normal;
 }
 
+.card{
+	fill:white;
+}
+
+.card.highlighted{
+	fill:#eee;
+}

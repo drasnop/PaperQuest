@@ -10,7 +10,7 @@ var paperMinRadius = 5,
     titleBaselineOffset = 6,  // depends on font size
     titleXOffset = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
-    fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;
+    fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
 
 var fringePapersTransitionEasing="quad-in-out",
     fringePapersPositionTransitionDuration="1000",
