@@ -9,9 +9,13 @@ function generateFringe(){
 	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
 }
 
-// this is probably useless
-function updateFringe(){
-	fringeView.updateVis();
+// doiSource is provided by the callback in forEach
+function updateRelevanceScoresWhenInserting(doiSource){
+	updateRelevanceScores(doiSource, true);
+}
+
+function updateRelevanceScoresWhenRemoving(doiSource){
+	updateRelevanceScores(doiSource, false);
 }
 
 
@@ -20,15 +24,6 @@ function updateFringe(){
 function initializeRelevanceScore(doi){
 	userData.papers[doi].score=adjustedCitationCount(doi);
 	userData.papers[doi].upvoters=0;
-}
-
-// doiSource is provided by the callback in forEach
-function updateRelevanceScoresWhenInserting(doiSource){
-	updateRelevanceScores(doiSource, true);
-}
-
-function updateRelevanceScoresWhenRemoving(doiSource){
-	updateRelevanceScores(doiSource, false);
 }
 
 // Update the score for all papers (not only the ones on the Fringe)

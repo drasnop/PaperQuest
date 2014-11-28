@@ -14,11 +14,15 @@ var fringeView = (function () {
 // Update the vis after a change of zoom/window size 
  function updateVis(){
     computeVisibleFringe();
+    drawStaticElements();
     manageDynamicElements();
-    drawVis();
     bindListeners();
 }
 
+function animatedUpdate(){
+    console.log("animatedUpdate")
+    updateVis()
+}
 
 //////////////////  Drawing functions   ///////////////////////
 
@@ -45,7 +49,7 @@ var fringeView = (function () {
     .attr("id","updateFringe")
     .attr("class","visControl")
     .text("Update fringe")
-    .attr("onclick","updateFringe()")
+    .attr("onclick","fringeView.animatedUpdate()")
 
     d3.select("body").append("label")
     .attr("id","updateFringeContinuously")
@@ -55,57 +59,10 @@ var fringeView = (function () {
     d3.select("#updateFringeContinuously")
     .append("span")
     .text("update continuously")
-
-}
-
-// Build the components of the vis, in the appropriate z-index order
- function manageDynamicElements(){
-
-    // fringe
-    var papers = svg.selectAll(".paper")
-    .data(global.visibleFringe)       // what is the selection on this line? svg?
-
-    .enter()
-        .append("g")
-        .attr("class","paper")
-
-    papers.append("circle")
-    .attr("class", "node")
-    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })  // eventually this style attr should be defined in drawVis based on a tag
-
-    papers.append("circle")
-    .attr("class", "innerNode")
-
-    papers.append("text")
-    .attr("class", "title")
-    .text(function(d,i) { return global.papers[d].title;} );
-
-    svg.selectAll(".paper")     // I have no idea of what's going on there. Why just paper.exit().remove() doesn't work?
-    .data(global.visibleFringe)
-    .exit().remove();
 }
 
 
-// Specify positions and styles
- function drawVis(){
-    // fringe
-
-    d3.selectAll(".node")
-    .attr("cx", function(d,i) { return fringePaperX(d);} )
-    .attr("cy", function(d,i) { return fringePaperY(d);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
-
-    d3.selectAll(".innerNode")
-    .attr("cx", function(d,i) { return fringePaperX(d);} )
-    .attr("cy", function(d,i) { return fringePaperY(d);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
-    .style("fill","white")
-
-    d3.selectAll(".title")
-    .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
-    .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
-    .classed("highlighted", function(d,i) {return userData.papers[d].selected;})
-
+function drawStaticElements(){
     d3.select("#updateFringe")
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")
@@ -129,6 +86,60 @@ var fringeView = (function () {
     .attr("cy","50%")
     .attr("r",coreRadius[global.view])
     .style("fill",colors.core[global.view])
+}
+
+
+// Build the components of the vis, in the appropriate z-index order
+function manageDynamicElements(){
+
+
+    //--------------------ENTER---------------------//
+    
+    var enteringPapers = svg.selectAll(".paper")
+    .data(global.visibleFringe)
+    .enter()
+        .append("g")
+        .attr("class","paper")
+
+    enteringPapers.append("circle")
+    .attr("class", "node")
+    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })  // eventually this style attr should be defined in drawVis based on a tag
+
+    enteringPapers.append("circle")
+    .attr("class", "innerNode")
+    .style("fill","white")
+
+    enteringPapers.append("text")
+    .attr("class", "title")
+    .classed("highlighted", function(d,i) {return userData.papers[d].selected;})
+    .text(function(d,i) { return global.papers[d].title;} );
+
+
+    //------------------ENTER+UPDATE-------------------//
+
+    d3.selectAll(".node")
+    .transition().duration("2000").ease("quad-in-out")
+    .attr("cx", function(d,i) { return fringePaperX(d);} )
+    .attr("cy", function(d,i) { return fringePaperY(d);} )
+    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
+
+    d3.selectAll(".innerNode")
+    .transition().duration("2000").ease("quad-in-out")
+    .attr("cx", function(d,i) { return fringePaperX(d);} )
+    .attr("cy", function(d,i) { return fringePaperY(d);} )
+    .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
+
+    d3.selectAll(".title")
+    .transition().duration("2000").ease("quad-in-out")
+    .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
+
+
+    //--------------------EXIT---------------------//
+
+    svg.selectAll(".paper")     // I have no idea of what's going on there. Why just enteringPapers.exit().remove() doesn't work?
+    .data(global.visibleFringe)
+    .exit().remove();
 }
 
 
@@ -158,6 +169,7 @@ var fringeView = (function () {
                 var res;
                 d3.select(this).each(function(d,i){
                     res=!userData.papers[d].selected;
+                    //console.log(global.visibleFringe.indexOf(d))
                 })
                 return res;
             })
@@ -169,7 +181,7 @@ var fringeView = (function () {
         var paper=d3.select(this);
         paper.each(function(d) {
             userData.papers[d].selected=!userData.papers[d].selected;
-        
+
             // Updates the position of each element (so far I haven't found a way to simply offset the group, 
             // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
             // We need the index in the original list (visibleFringe), because here paper.each has only one element
@@ -199,6 +211,7 @@ function fringePaperX(d){
 // Compute Y coordinate for the i-th paper on the fringe
 function fringePaperY(d){
     var index=global.visibleFringe.indexOf(d);
+    console.log(index)
     return paperMaxRadius+index*(2*paperMaxRadius+paperMarginBottom);
 }
 
@@ -234,7 +247,6 @@ function randomColor(){
 }
 
 function colorFromUpvoters(n){
-    console.log(n)
     if(n>5)
         return colors.tags[4];
     return colors.tags[n-1];  // between 1..4
@@ -246,6 +258,7 @@ var fringeView = {};
 
 fringeView.initializeVis=initializeVis;
 fringeView.updateVis=updateVis;
+fringeView.animatedUpdate=animatedUpdate;
 
 return fringeView;
 
