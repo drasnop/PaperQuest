@@ -117,6 +117,9 @@ function manageDynamicElements(animate){
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
     .text(function(d) { return global.papers[d].title;} );
 
+    enteringPapers.append("text")
+    .attr("class", "metadata")
+    .text(function(d) { return global.papers[d].year;} );
 
     //------------------ENTER+UPDATE-------------------//
     // Appending to the enter selection expands the update selection to include
@@ -157,6 +160,10 @@ function manageDynamicElements(animate){
     t0.select(".title")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
     .attr("y", function(d) {return fringePaperY(d)+titleBaselineOffset;} )
+
+    t0.select(".metadata")
+    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+titleBaselineOffset;} )
 
 
     //--------------------EXIT---------------------//
@@ -232,6 +239,11 @@ function manageDynamicElements(animate){
 
     // detect zoom in and out
     svg.on("wheel",function(){
+
+        // first, update the view if this hasn't been done before
+        fringeView.updateVis(true);
+
+        // then, compute the new zoom level
         if(d3.event.wheelDelta<0){
             if(global.zoom<paperHeights.length-1)
                 global.zoom++;
@@ -242,6 +254,9 @@ function manageDynamicElements(animate){
                 global.zoom--;
         }
         console.log("zoom: "+global.zoom)
+
+        // finally, update the view again, to take into account the new heights of the selected papers
+        fringeView.updateVis(true);
     })
 }
 

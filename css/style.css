@@ -33,6 +33,14 @@ svg{
 	cursor:pointer;
 }
 
+.card{
+	fill:white;
+}
+
+.card.highlighted{
+	fill:white; 	/* #eee */
+}
+
 .title{
 	font-weight: normal;
 	fill: #222;
@@ -45,10 +53,6 @@ svg{
 	letter-spacing: normal;
 }
 
-.card{
-	fill:white;
-}
-
-.card.highlighted{
-	fill:white; 	/* #eee */
+.metadata{
+	fill:#006621;
 }
