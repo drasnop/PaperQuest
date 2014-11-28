@@ -5,6 +5,8 @@
 var global={
     // Current view: 0=core, 1=to read, 2=fringe
     "view":2,
+    // Current zoom level: 0=titles only, 1=authors, 2=first line of abstract, 3=full abstract
+    "zoom":0,
     // papers dataset, accessed by global.papers[doi]
     "papers":false,
     // automatically computed by fringeView

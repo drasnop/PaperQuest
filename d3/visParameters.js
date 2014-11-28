@@ -16,6 +16,9 @@ var fringePapersTransitionEasing="quad-in-out",
     fringePapersPositionTransitionDuration="1000",
     fringePapersColorTransitionDuration="500";
 
+// heights of a paper title, authors, first line of the abstract, rest of the abstract (the latter will be made dynamic in the future)
+var paperHeights = [2*paperMaxRadius, 2*paperMaxRadius, 2*paperMaxRadius, 100]
+
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen
 // An appropriate offset for the x-position of the center will be computed as -radius+apparentWidth

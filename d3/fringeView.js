@@ -223,7 +223,6 @@ function manageDynamicElements(animate){
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
         
-
             if(userData.papers[d].selected)
                 algorithm.updateRelevanceScoresWhenInserting(d);
             else
@@ -234,7 +233,21 @@ function manageDynamicElements(animate){
 
 ////////////////    helper functions    //////////////
 
-// Compute X coordinate for the i-th paper on the fringe, based on a circle
+// Compute the height of a paper on the fringe, depending on the zoom level and whether it is selected
+function fringePaperHeight(d){
+    // If the paper is not selected, its height decreases with the zoom level
+    if(!userData.papers[d].selected)
+        return 2*paperMaxRadius+paperMarginBottom;
+
+    // If the paper is selected, its height increases with the zoom level
+    var height=0;
+    for(var i=0; i<=global.zoom; i++){
+        height+=paperHeights[i];
+    }
+    return height;
+}
+
+// Compute X coordinate for a paper on the fringe, based on a circle
 function fringePaperX(d){
     var h=window.innerHeight;
     var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
@@ -242,18 +255,25 @@ function fringePaperX(d){
     return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(d),2))+paperMaxRadius+selectedOffset;
 }
 
-// Compute Y coordinate for the i-th paper on the fringe
+// Compute Y coordinate for a paper on the fringe
 function fringePaperY(d){
     var index=global.visibleFringe.indexOf(d);
-    return paperMaxRadius+index*(2*paperMaxRadius+paperMarginBottom);
+    
+    // compute the sum of the height of the papers that are above the current one in the fringe
+    var offset=0;
+    for(var i=0; i<index; i++){
+        offset+=fringePaperHeight(global.visibleFringe[i])
+    }   
+    
+    return offset+paperMaxRadius;
 }
 
-// Compute X coordinate for the "card" (the rectangle label) of the i-th paper on the fringe
+// Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperXCard(d){
     return fringePaperX(d)+paperMaxRadius+titleXOffset;
 }
 
-// Compute Y coordinate for the "card" (the rectangle label) of the i-th paper on the fringe
+// Compute Y coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperYCard(d){
     return fringePaperY(d)-paperMaxRadius;
 }
