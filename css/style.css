@@ -50,5 +50,5 @@ svg{
 }
 
 .card.highlighted{
-	fill:#eee;
+	fill:white; 	/* #eee */
 }
