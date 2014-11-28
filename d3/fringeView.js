@@ -229,6 +229,20 @@ function manageDynamicElements(animate){
                 algorithm.updateRelevanceScoresWhenRemoving(d);
         });
     })
+
+    // detect zoom in and out
+    svg.on("wheel",function(){
+        if(d3.event.wheelDelta<0){
+            if(global.zoom<paperHeights.length-1)
+                global.zoom++;
+            // if the user keeps scrolling down, this will be interpreted as a scrolling down
+        }
+        else{
+            if(global.zoom>0)
+                global.zoom--;
+        }
+        console.log("zoom: "+global.zoom)
+    })
 }
 
 ////////////////    helper functions    //////////////
