@@ -8,7 +8,7 @@ var fringeView = (function () {
 // Except for the (static) background elements, everything is computed on-the-fly
  function initializeVis(){
     createStaticElements();
-    updateVis();
+    updateVis(false);
 }
 
 // Update the vis, with or without animating the transitions
@@ -120,25 +120,31 @@ function manageDynamicElements(animate){
     // entering elements; so, operations on the update selection after appending to
     // the enter selection will apply to both entering and updating nodes.
 
-    papers.select(".node")
-    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
+    var t0=papers.transition().duration(animate?fringePapersPositionTransitionDuration:0).ease(fringePapersTransitionEasing)
+
+    t0.select(".node")
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} ) 
     
-    // staging the change of color
-    papers.select(".node")
-    .transition().delay(fringePapersPositionTransitionDuration).duration(fringePapersColorTransitionDuration)
-    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
+    // staging the change of color by chaining transitions
+    t0.each("end",function(){
+        d3.select(this).transition().duration(animate?fringePapersColorTransitionDuration:0)
+        .select(".node")
+        .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
+    })
+
+    // I really don't understand why this doesn't work on page update (animate=false) (cancels the other part of the animation)
+/*   t0.transition().duration(animate?fringePapersColorTransitionDuration:0)
+    .select(".node")
+    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
-    papers.select(".innerNode")
-    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
+    t0.select(".innerNode")
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
 
-    papers.select(".title")
-    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
+    t0.select(".title")
     .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
     .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
 
@@ -177,7 +183,6 @@ function manageDynamicElements(animate){
                 var res;
                 d3.select(this).each(function(d,i){
                     res=!userData.papers[d].selected;
-                    //console.log(global.visibleFringe.indexOf(d))
                 })
                 return res;
             })
@@ -219,7 +224,6 @@ function fringePaperX(d){
 // Compute Y coordinate for the i-th paper on the fringe
 function fringePaperY(d){
     var index=global.visibleFringe.indexOf(d);
-    console.log(index)
     return paperMaxRadius+index*(2*paperMaxRadius+paperMarginBottom);
 }
 
