@@ -134,7 +134,8 @@ function manageDynamicElements(animate){
         .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
     })
 
-    // I really don't understand why this doesn't work on page update (animate=false) (cancels the other part of the animation)
+    // I really don't understand why this doesn't work on page update (animate=false)
+    // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(animate?fringePapersColorTransitionDuration:0)
     .select(".node")
     .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
