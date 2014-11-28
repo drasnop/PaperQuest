@@ -32,7 +32,7 @@ function animatedUpdate(){
     global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,numberOfVisiblePapers());
 }
 
-// Create some svg elements once and for all
+// Create some svg elements, once and for all
  function createStaticElements(){
     // toread
     svg.append("circle")
@@ -61,7 +61,7 @@ function animatedUpdate(){
     .text("automatically")
 }
 
-
+// draw the static elements at their appropriate positions
 function drawStaticElements(){
     d3.select("#updateFringe")
     .style("top",updateFringeButtonY()+"px")
@@ -89,7 +89,7 @@ function drawStaticElements(){
 }
 
 
-// Build the components of the vis, in the appropriate z-index order
+// Manage papers on the fringe
 function manageDynamicElements(){
 
     //------------------DATA JOIN-------------------//
@@ -97,7 +97,7 @@ function manageDynamicElements(){
 
     var papers = svg.selectAll(".paper")
         .data(global.visibleFringe, function(d){ return global.visibleFringe.indexOf(d); })
-
+        // using this key function is critical to ensure papers will change position when updating the fringe
 
     //--------------------ENTER---------------------//
     // Create new elements as needed
@@ -108,7 +108,7 @@ function manageDynamicElements(){
 
     enteringPapers.append("circle")
     .attr("class", "node")
-    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })  // eventually this style attr should be defined in drawVis based on a tag
+    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
     enteringPapers.append("circle")
     .attr("class", "innerNode")
@@ -126,19 +126,24 @@ function manageDynamicElements(){
     // the enter selection will apply to both entering and updating nodes.
 
     papers.select(".node")
-    .transition().duration("2000").ease("quad-in-out")
+    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
-    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} )  
-
+    .attr("r", function(d,i) {return radius(global.papers[d].citation_count);} ) 
+    
+    // staging the change of color
+    papers.select(".node")
+    .transition().delay(fringePapersPositionTransitionDuration).duration(fringePapersColorTransitionDuration)
+    .style("fill", function(d,i) { return colorFromUpvoters(userData.papers[d].upvoters); })
+    
     papers.select(".innerNode")
-    .transition().duration("2000").ease("quad-in-out")
+    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
     .attr("cx", function(d,i) { return fringePaperX(d);} )
     .attr("cy", function(d,i) { return fringePaperY(d);} )
     .attr("r", function(d,i) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
 
     papers.select(".title")
-    .transition().duration("2000").ease("quad-in-out")
+    .transition().duration(fringePapersPositionTransitionDuration).ease(fringePapersTransitionEasing)
     .attr("x", function(d,i) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
     .attr("y", function(d,i) {return fringePaperY(d)+titleBaselineOffset;} )
 

@@ -12,6 +12,10 @@ var paperMinRadius = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
     fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;
 
+var fringePapersTransitionEasing="quad-in-out",
+    fringePapersPositionTransitionDuration="1000",
+    fringePapersColorTransitionDuration="500";
+
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen
 // An appropriate offset for the x-position of the center will be computed as -radius+apparentWidth
