@@ -8,11 +8,11 @@ var fringeView = (function () {
 // Except for the (static) background elements, everything is computed on-the-fly
  function initializeVis(){
     createStaticElements();
-    updateVis(false);
+    updateVis(0);   //don't animate at creation
 }
 
-// Update the vis, with or without animating the transitions
- function updateVis(animate){
+// Update the vis, with or without animating the transitions. The callback will be called at the end of all animations
+ function updateVis(animate,callback){
     computeVisibleFringe();
     drawStaticElements();
     manageDynamicElements(animate);
@@ -44,7 +44,7 @@ var fringeView = (function () {
     .attr("id","updateFringe")
     .attr("class","visControl")
     .text("Update fringe")
-    .attr("onclick","fringeView.updateVis(true)")
+    .attr("onclick","fringeView.updateVis(1)")
 
     d3.select("body").append("label")
     .attr("id","updateFringeAutomatically")
@@ -126,7 +126,8 @@ function manageDynamicElements(animate){
     // entering elements; so, operations on the update selection after appending to
     // the enter selection will apply to both entering and updating nodes.
 
-    var t0=papers.transition().duration(animate?fringePapersPositionTransitionDuration:0).ease(fringePapersTransitionEasing)
+    var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
+    var t1;
 
     t0.select(".card")
     .attr("x", function(d) { return fringePaperXCard(d);} )
@@ -141,14 +142,22 @@ function manageDynamicElements(animate){
     
     // staging the change of color by chaining transitions
     t0.each("end",function(){
-        d3.select(this).transition().duration(animate?fringePapersColorTransitionDuration:0)
-        .select(".node")
+        t1=d3.select(this).transition().duration(fringePapersColorTransitionDuration[animate])
+        
+        t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
+
+        // end of animation callback ------ doesn't work
+        t1.each("end",function(){
+            console.log("callback")
+            if(typeof(callback) === typeof(Function))
+                callback();
+        })
     })
 
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
-/*   t0.transition().duration(animate?fringePapersColorTransitionDuration:0)
+/*   t0.transition().duration(fringePapersColorTransitionDuration[animate])
     .select(".node")
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
@@ -171,7 +180,7 @@ function manageDynamicElements(animate){
 
     papers.exit()
         // Trying to shrink the exiting papers. Works, but the coordinate space is not relative to current position => big translation     
-/*        .transition().duration(animate?fringePapersPositionTransitionDuration:0)
+/*        .transition().duration(fringePapersPositionTransitionDuration[animate])
         .attr("transform","matrix(1,0,0,.5,0,0)")*/
         .remove();
 }
@@ -240,9 +249,31 @@ function manageDynamicElements(animate){
     // detect zoom in and out
     svg.on("wheel",function(){
 
-        // first, update the view if this hasn't been done before
-        fringeView.updateVis(true);
+        // first, update the view if this hasn't been done before (slow)
+        // unless we want to implement semantic zoom indepently of reordering the fringe, but that would be harder
+        /*fringeView.updateVis(1, function(){
 
+            // then, compute the new zoom level
+            if(d3.event.wheelDelta<0){
+                if(global.zoom<paperHeights.length-1)
+                    global.zoom++;
+                // if the user keeps scrolling down, this will be interpreted as a scrolling down
+            }
+            else{
+                if(global.zoom>0)
+                    global.zoom--;
+            }
+            console.log("zoom: "+global.zoom)
+
+            // finally, update the view again, to take into account the new heights of the selected papers (fast)
+            fringeView.updateVis(2);
+
+        });*/
+    
+        // first, update the view if this hasn't been done before (slow)
+        // unless we want to implement semantic zoom indepently of reordering the fringe, but that would be harder
+        fringeView.updateVis(1);
+        
         // then, compute the new zoom level
         if(d3.event.wheelDelta<0){
             if(global.zoom<paperHeights.length-1)
@@ -255,8 +286,8 @@ function manageDynamicElements(animate){
         }
         console.log("zoom: "+global.zoom)
 
-        // finally, update the view again, to take into account the new heights of the selected papers
-        fringeView.updateVis(true);
+        // finally, update the view again, to take into account the new heights of the selected papers (fast)
+        fringeView.updateVis(2);
     })
 }
 

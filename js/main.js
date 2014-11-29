@@ -22,5 +22,5 @@ d3.json("data/citeology.json", function(data){
 window.onresize = function(){
     svg.attr("width", window.innerWidth)
        .attr("height", window.innerHeight);
-    fringeView.updateVis(false);
+    fringeView.updateVis(0);    // don't animate on resize
 }

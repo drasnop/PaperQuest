@@ -12,9 +12,10 @@ var paperMinRadius = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
     fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
 
+// Defines 3 types of animation: none, slow, fast
 var fringePapersTransitionEasing="quad-in-out",
-    fringePapersPositionTransitionDuration="1000",
-    fringePapersColorTransitionDuration="500";
+    fringePapersPositionTransitionDuration=[0,1000,500],
+    fringePapersColorTransitionDuration=[0,500,500];
 
 // heights of a paper title, authors, first line of the abstract, rest of the abstract (the latter will be made dynamic in the future)
 var paperHeights = [2*paperMaxRadius, 2*paperMaxRadius, 2*paperMaxRadius, 100]
