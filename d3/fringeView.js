@@ -111,12 +111,17 @@ function manageDynamicElements(animate){
     .attr("class","card")
 
     enteringPapers.append("circle")
+    .attr("class","outerNode")
+    .style("fill","white")
+
+    enteringPapers.append("circle")
     .attr("class", "node")
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
     enteringPapers.append("circle")
     .attr("class", "innerNode")
     .style("fill","rgba(255,255,255,.5)")
+
 
     enteringPapers.append("text")
     .attr("class", "title")
@@ -173,13 +178,19 @@ function manageDynamicElements(animate){
     .attr("r", function(d) {return radius(userData.getInternalCitationCount(d));} )
 
     t0.select(".title")
-    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+titleBaselineOffset;} )
 
     t0.select(".metadata")
-    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+titleBaselineOffset;} )
 
+    // the outerNodes (used to highlight the selected papers) are treated separately
+    t0.select(".outerNode")
+    .attr("cx", function(d) { return fringePaperX(d);} )
+    .attr("cy", function(d) { return fringePaperY(d);} )
+    .attr("r", function(d) {return radius(userData.getTotalCitationCount(d))+paperOuterBorderWidth;} )
+    .style("display", function(d) { return userData.papers[d].selected? "": "none";})
 
     //--------------------EXIT---------------------//
     // Remove old elements as needed.
@@ -241,9 +252,12 @@ function manageDynamicElements(animate){
             // We need the index in the original list (visibleFringe), because here paper.each has only one element
             var i=userData.papers[d].index;
             paper.select(".card").attr("x", function(d) { return fringePaperXCard(d);} )
+            paper.select(".outerNode")
+                .attr("cx", function(d) { return fringePaperX(d);} )
+                .style("display", function(d) { return userData.papers[d].selected? "": "none";})
             paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
-            paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
+            paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
         
             if(userData.papers[d].selected)
                 userData.addNewSelected(d);
@@ -311,7 +325,7 @@ function fringePaperY(d){
 
 // Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperXCard(d){
-    return fringePaperX(d)+paperMaxRadius+titleXOffset;
+    return fringePaperX(d)+paperMaxRadius+titleLeftMargin;
 }
 
 // Compute Y coordinate for the "card" (the rectangle label) of a paper on the fringe

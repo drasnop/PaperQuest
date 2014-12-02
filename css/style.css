@@ -1,13 +1,5 @@
-html {
-/*	width:100%;
-	height:100%;*/
-}
-
 body {
-/*	width:100%;
-	height:100%;*/
 	min-width: 1300px;
-/*	min-height: 600px;*/
 	overflow: hidden;
 }
 
@@ -22,7 +14,7 @@ body {
 
 svg{
 	text-align: left;
-	background-color: #fafafa;
+	background-color: white;	/* #fafafa */
 }
 
 .visControl{
@@ -38,7 +30,7 @@ svg{
 }
 
 .card.highlighted{
-	fill:white; 	/* #eee */
+	fill:white; 	/* #eee gray highlighting that I don't like */
 }
 
 .title{
@@ -54,5 +46,5 @@ svg{
 }
 
 .metadata{
-	fill:#006621;
+	fill:#006621;	/* Google dark green */
 }

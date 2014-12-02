@@ -5,11 +5,12 @@
 
 var paperMinRadius = 0,
     paperMaxRadius = 15,
-    paperInnerWhiteCircleRatio =.4,
-    paperMarginBottom = 0,
-    titleBaselineOffset = 6,  // depends on font size
-    titleXOffset = 5,
-    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
+    paperInnerWhiteCircleRatio =.4,     // deprecated
+    paperOuterBorderWidth = 4,
+    paperMarginBottom = 0,              // probably not useful
+    titleBaselineOffset = 6,            // depends on font size
+    titleLeftMargin = 5,
+    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
     fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
 
 // Defines 3 types of animation: none, slow, fast
@@ -28,7 +29,7 @@ var coreRadius = [120,120,120],
     fringeRadius = [2000,2000,2000],
     coreApparentWidth = [120,120,120],
     fringeApparentWidth = [420,420,420],
-    toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleXOffset];
+    toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleLeftMargin];
 
 var colors={
     // orange, green, blue, pink, darkblue
