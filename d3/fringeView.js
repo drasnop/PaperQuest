@@ -19,6 +19,12 @@ var fringeView = (function () {
     bindListeners();
 }
 
+// Update fringe and animate the change
+function updateFringe() {
+    algorithm.updateFringe();
+    updateVis(1);
+}
+
 //////////////////  Drawing functions   ///////////////////////
 
 
@@ -44,7 +50,7 @@ var fringeView = (function () {
     .attr("id","updateFringe")
     .attr("class","visControl")
     .text("Update fringe")
-    .attr("onclick","fringeView.updateVis(1)")
+    .attr("onclick","fringeView.updateFringe()")
 
     d3.select("body").append("label")
     .attr("id","updateFringeAutomatically")
@@ -147,12 +153,12 @@ function manageDynamicElements(animate){
         t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
-        // end of animation callback ------ doesn't work
+/*        // end of animation callback ------ doesn't work (add callback to arguments list)
         t1.each("end",function(){
             console.log("callback")
             if(typeof(callback) === typeof(Function))
                 callback();
-        })
+        })*/
     })
 
     // I really don't understand why this doesn't work on page update (animate=false)
@@ -240,41 +246,16 @@ function manageDynamicElements(animate){
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
         
             if(userData.papers[d].selected)
-                algorithm.updateRelevanceScoresWhenInserting(d);
+                userData.addNewSelected(d);
             else
-                algorithm.updateRelevanceScoresWhenRemoving(d);
+                userData.removeSelected(d);
         });
     })
 
     // detect zoom in and out
     svg.on("wheel",function(){
-
-        // first, update the view if this hasn't been done before (slow)
-        // unless we want to implement semantic zoom indepently of reordering the fringe, but that would be harder
-        /*fringeView.updateVis(1, function(){
-
-            // then, compute the new zoom level
-            if(d3.event.wheelDelta<0){
-                if(global.zoom<paperHeights.length-1)
-                    global.zoom++;
-                // if the user keeps scrolling down, this will be interpreted as a scrolling down
-            }
-            else{
-                if(global.zoom>0)
-                    global.zoom--;
-            }
-            console.log("zoom: "+global.zoom)
-
-            // finally, update the view again, to take into account the new heights of the selected papers (fast)
-            fringeView.updateVis(2);
-
-        });*/
-    
-        // first, update the view if this hasn't been done before (slow)
-        // unless we want to implement semantic zoom indepently of reordering the fringe, but that would be harder
-        fringeView.updateVis(1);
         
-        // then, compute the new zoom level
+        // compute the new zoom level
         if(d3.event.wheelDelta<0){
             if(global.zoom<paperHeights.length-1)
                 global.zoom++;
@@ -286,7 +267,7 @@ function manageDynamicElements(animate){
         }
         console.log("zoom: "+global.zoom)
 
-        // finally, update the view again, to take into account the new heights of the selected papers (fast)
+        // Update the view (quickly), to take into account the new heights of the selected papers
         fringeView.updateVis(2);
     })
 }
@@ -381,6 +362,7 @@ var fringeView = {};
 
 fringeView.initializeVis=initializeVis;
 fringeView.updateVis=updateVis;
+fringeView.updateFringe=updateFringe;
 
 return fringeView;
 

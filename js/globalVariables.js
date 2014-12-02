@@ -63,6 +63,22 @@ userData.getAllButNonSelected=function(){
     });
 }
 
+userData.addNewSelected=function(doi){
+    var index=userData.newDeselectedPapers.indexOf(doi);
+    if(index>-1)
+        userData.newDeselectedPapers.splice(index,1);
+    else
+        userData.newSelectedPapers.push(doi);
+}   
+
+userData.removeSelected=function(doi){
+    var index=userData.newSelectedPapers.indexOf(doi);
+    if(index>-1)
+        userData.newSelectedPapers.splice(index,1);
+    else
+        userData.newDeselectedPapers.push(doi);
+}
+
 userData.getAll=function(){
     return Object.keys(userData.papers);
 }
