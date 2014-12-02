@@ -105,12 +105,13 @@ userData.metadataToString=function(doi){
 }
 
 // Return the i-th line of the abstract (counting from 0 as any good programmer should count)
+// Deprecated! use helpers.js
 userData.getLineOfAbstract=function(doi,i){
     return global.papers[doi].abstract.slice(i*charactersPerLine,(i+1)*charactersPerLine);
 }
 
 // Counts the number of lines of the abstract, depending on the line width
-userData.getNumberOfLineOfAbstract=function(doi){
+userData.getAbstractLineCount=function(doi){
     return global.papers[doi].abstract.length/charactersPerLine;
 }
 

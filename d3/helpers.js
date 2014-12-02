@@ -21,6 +21,7 @@ function d3TextWrap(text, width, paddingRightLeft, paddingTopBottom) {
     width = width - (paddingRightLeft * 2); //Take the padding into account
 
     var arrLineCreatedCount = [];
+    console.log("begin word brake for one abstract...");
     text.each(function() {
         var text = d3.select(this),
             words = text.text().split(/[ \f\n\r\t\v]+/).reverse(), //Don't cut non-breaking space (\xA0), as well as the Unicode characters \u00A0 \u2028 \u2029)
@@ -84,6 +85,7 @@ function d3TextWrap(text, width, paddingRightLeft, paddingTopBottom) {
         }
 
         arrLineCreatedCount.push(createdLineCount); //Store the line count in the array
+        console.log(arrLineCreatedCount);
     });
     return arrLineCreatedCount;
 }

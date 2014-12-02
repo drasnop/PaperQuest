@@ -315,9 +315,13 @@ function fringePaperHeight(d){
 
     // If the paper is selected, its height increases with the zoom level
     var height=0;
-    for(var i=0; i<=global.zoom; i++){
+    for(var i=0; i<=Math.min(global.zoom,2); i++){
         height+=paperHeights[i];
     }
+
+    if(global.zoom==3)
+        height+=userData.getAbstractLineCount(d)*paperHeights[3];
+
     return height;
 }
 
