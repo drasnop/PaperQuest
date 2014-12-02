@@ -184,8 +184,9 @@ function manageDynamicElements(animate){
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+titleBaselineOffset;} )
+    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
-    // the outerNodes (used to highlight the selected papers) are treated separately
+    // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
