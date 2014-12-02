@@ -264,30 +264,35 @@ function manageDynamicElements(animate){
         paper.each(function(d) {
             userData.papers[d].selected=!userData.papers[d].selected;
 
-            // Updates the position of each element (so far I haven't found a way to simply offset the group, 
-            // except by applying a transform to it, but this is not great (problems if redrawing in the meantime)
-            // We need the index in the original list (visibleFringe), because here paper.each has only one element
-            var i=userData.papers[d].index;
-            paper.select(".card").attr("x", function(d) { return fringePaperXCard(d);} )
-            paper.select(".outerNode")
-                .attr("cx", function(d) { return fringePaperX(d);} )
-                .style("display", function(d) { return userData.papers[d].selected? "": "none";})
-            paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
-            paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
-            paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-            paper.select(".metadata").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-            paper.select(".metadata").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-        
+            // Add or remove the paper to the list that will update the fringe
             if(userData.papers[d].selected)
                 userData.addNewSelected(d);
             else
                 userData.removeSelected(d);
+
+            // Update the vis (using different animation speeds depending on the zoom level, just because it's pretty)
+            switch(global.zoom){
+                case 0:
+                    updateVis(4);
+                    break;
+                case 1:
+                case 2:
+                    updateVis(3);
+                    break;
+                case 3:
+                    updateVis(2);
+                    break;
+            }
         });
     })
 
     // detect zoom in and out
     svg.on("wheel",function(){
         
+        // Do nothing if it is a browser zoom (ctrl+wheel)
+        if(d3.event.ctrlKey)
+            return;
+
         // compute the new zoom level
         if(d3.event.wheelDelta<0){
             if(global.zoom<paperHeights.length-1)
