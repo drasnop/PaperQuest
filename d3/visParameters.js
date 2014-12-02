@@ -3,7 +3,7 @@
 * All the other appearance parameters are defined in CSS.
 */
 
-var paperMinRadius = 5,
+var paperMinRadius = 0,
     paperMaxRadius = 15,
     paperInnerWhiteCircleRatio =.4,
     paperMarginBottom = 0,
