@@ -116,7 +116,7 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("circle")
     .attr("class", "innerNode")
-    .style("fill","white")
+    .style("fill","rgba(255,255,255,.5)")
 
     enteringPapers.append("text")
     .attr("class", "title")
@@ -144,7 +144,7 @@ function manageDynamicElements(animate){
     t0.select(".node")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(global.papers[d].citation_count);} ) 
+    .attr("r", function(d) {return radiusWithMinimum(userData.getTotalCitationCount(d));} ) 
     
     // staging the change of color by chaining transitions
     t0.each("end",function(){
@@ -170,7 +170,7 @@ function manageDynamicElements(animate){
     t0.select(".innerNode")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(global.papers[d].citation_count)*paperInnerWhiteCircleRatio;} )
+    .attr("r", function(d) {return radius(userData.getInternalCitationCount(d));} )
 
     t0.select(".title")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleXOffset;} )
@@ -341,7 +341,11 @@ function updateFringeButtonX(){
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
 function radius(citationCount){
     return Math.min(paperMaxRadius, 
-        paperMinRadius+(paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/citationCountCutoff));
+        (paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/citationCountCutoff));
+}
+
+function radiusWithMinimum(citationCount){
+    return Math.max(paperMinRadius, radius(citationCount));   
 }
 
 // Return a random color except red or turquoise

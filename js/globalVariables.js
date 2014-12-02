@@ -83,6 +83,17 @@ userData.getAll=function(){
     return Object.keys(userData.papers);
 }
 
+// this should be a method of P
+userData.getInternalCitationCount=function(doi){
+    return global.papers[doi].citations.length;
+}
+
+// this should be a method of P
+userData.getTotalCitationCount=function(doi){
+    return Math.max(global.papers[doi].citation_count,
+        userData.getInternalCitationCount(doi));
+}
+    
 // debug
 userData.computeTotalScore=function(){
     var sum=0;
