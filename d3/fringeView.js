@@ -133,7 +133,12 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("text")
     .attr("class","abstract")
-    .text(function(d) { return userData.getLineOfAbstract(d,0);} );
+    .text(function(d) { return global.papers[d].abstract;} );
+    d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
+    enteringPapers.selectAll("text.abstract")
+    .selectAll("tspan")
+    .attr("class","abstract")
+
 
     //------------------ENTER+UPDATE-------------------//
     // Appending to the enter selection expands the update selection to include
@@ -189,7 +194,7 @@ function manageDynamicElements(animate){
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0];} )
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
-    t0.select(".abstract")
+    t0.selectAll("tspan.abstract")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1];} )
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})

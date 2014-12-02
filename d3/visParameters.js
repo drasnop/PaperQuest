@@ -12,6 +12,7 @@ var paperMinRadius = 0,
     titleLeftMargin = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
     charactersPerLine = 120,            // so far used only for wrapping the text of the abstract
+    abstractLineWidth = 800,
     fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
 
 // Defines 3 types of animation: none, slow, fast
