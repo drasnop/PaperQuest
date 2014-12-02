@@ -15,8 +15,11 @@ var global={
 
 
 var userData={ 
-    // contains the tags and all useful information about the papers that have been visited
+    // contains the tags and all useful (non-static) information about the papers that have been visited
     "papers":{},
+    // temporary list of the papers that have just been selected; used when updating the fringe
+    "newSelectedPapers":[],
+    "newDeselectedPapers":[]
 }; 
 
 userData.getCore=function(){

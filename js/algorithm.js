@@ -4,13 +4,23 @@
 
 var algorithm = (function(){
 
+// Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
 	userData.getAll().forEach(initializeRelevanceScore);
 	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
 }
 
-// doiSource is provided by the callback in forEach
+// Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
+function updateFringe(){
+	userData.newSelectedPapers.forEach(updateRelevanceScoresWhenInserting);
+	userData.newDeselectedPapers.forEach(updateRelevanceScoresWhenRemoving);
+	userData.newSelectedPapers=[];
+	userData.newDeselectedPapers=[];
+}
+
+
 function updateRelevanceScoresWhenInserting(doiSource){
+	// doiSource is provided to the callback in forEach
 	updateRelevanceScores(doiSource, true);
 }
 
@@ -70,6 +80,7 @@ function adjustedCitationCount(doi){
 	
 	var algorithm={};
 	algorithm.generateFringe=generateFringe;
+	algorithm.updateFringe=updateFringe;
 	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
 	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;
 	return algorithm;
