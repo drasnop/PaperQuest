@@ -11,6 +11,7 @@ var paperMinRadius = 0,
     titleBaselineOffset = 6,            // depends on font size
     titleLeftMargin = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
+    charactersPerLine = 120,            // so far used only for wrapping the text of the abstract
     fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
 
 // Defines 3 types of animation: none, slow, fast
@@ -19,7 +20,7 @@ var fringePapersTransitionEasing="quad-in-out",
     fringePapersColorTransitionDuration=[0,500,500];
 
 // heights of a paper title, authors, first line of the abstract, rest of the abstract (the latter will be made dynamic in the future)
-var paperHeights = [2*paperMaxRadius, 2*paperMaxRadius, 2*paperMaxRadius, 100]
+var paperHeights = [2*paperMaxRadius, 1.5*paperMaxRadius, 1.5*paperMaxRadius, 100]
 
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen

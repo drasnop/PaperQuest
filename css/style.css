@@ -46,5 +46,10 @@ svg{
 }
 
 .metadata{
-	fill:#006621;	/* Google dark green */
+	fill:#258B46;	/* Google dark green: #006621*/
+}
+
+.abstract{
+	font-style: italic;
+	fill:#444;
 }

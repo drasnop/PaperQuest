@@ -122,7 +122,6 @@ function manageDynamicElements(animate){
     .attr("class", "innerNode")
     .style("fill","rgba(255,255,255,.5)")
 
-
     enteringPapers.append("text")
     .attr("class", "title")
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
@@ -131,6 +130,10 @@ function manageDynamicElements(animate){
     enteringPapers.append("text")
     .attr("class", "metadata")
     .text(function(d) { return userData.metadataToString(d);} );
+
+    enteringPapers.append("text")
+    .attr("class","abstract")
+    .text(function(d) { return userData.getLineOfAbstract(d,0);} );
 
     //------------------ENTER+UPDATE-------------------//
     // Appending to the enter selection expands the update selection to include
@@ -183,8 +186,13 @@ function manageDynamicElements(animate){
 
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+titleBaselineOffset;} )
+    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0];} )
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
+
+    t0.select(".abstract")
+    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
+    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1];} )
+    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
@@ -259,6 +267,7 @@ function manageDynamicElements(animate){
             paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
+            paper.select(".metadata").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
             paper.select(".metadata").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
         
             if(userData.papers[d].selected)

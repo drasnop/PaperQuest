@@ -94,7 +94,7 @@ userData.getTotalCitationCount=function(doi){
         userData.getInternalCitationCount(doi));
 }
    
-
+// Return Author1, Author2, Author3 – CHI '96
 userData.metadataToString=function(doi){
     var paper=global.papers[doi];
     var string=paper.authors[0];
@@ -102,6 +102,16 @@ userData.metadataToString=function(doi){
         string+= ", " + paper.authors[i];
     string+= " – " + paper.conference + " '" + paper.year.slice(2);
     return string;
+}
+
+// Return the i-th line of the abstract (counting from 0 as any good programmer should count)
+userData.getLineOfAbstract=function(doi,i){
+    return global.papers[doi].abstract.slice(i*charactersPerLine,(i+1)*charactersPerLine);
+}
+
+// Counts the number of lines of the abstract, depending on the line width
+userData.getNumberOfLineOfAbstract=function(doi){
+    return global.papers[doi].abstract.length/charactersPerLine;
 }
 
 // debug
