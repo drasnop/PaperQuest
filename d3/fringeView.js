@@ -130,7 +130,7 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("text")
     .attr("class", "metadata")
-    .text(function(d) { return global.papers[d].year;} );
+    .text(function(d) { return userData.metadataToString(d);} );
 
     //------------------ENTER+UPDATE-------------------//
     // Appending to the enter selection expands the update selection to include
@@ -259,6 +259,7 @@ function manageDynamicElements(animate){
             paper.select(".node").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".innerNode").attr("cx", function(d) { return fringePaperX(d);} )
             paper.select(".title").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
+            paper.select(".metadata").attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
         
             if(userData.papers[d].selected)
                 userData.addNewSelected(d);

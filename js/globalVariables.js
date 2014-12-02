@@ -93,7 +93,17 @@ userData.getTotalCitationCount=function(doi){
     return Math.max(global.papers[doi].citation_count,
         userData.getInternalCitationCount(doi));
 }
-    
+   
+
+userData.metadataToString=function(doi){
+    var paper=global.papers[doi];
+    var string=paper.authors[0];
+    for(var i=1; i<paper.authors.length; i++)
+        string+= ", " + paper.authors[i];
+    string+= " – " + paper.conference + " '" + paper.year.slice(2);
+    return string;
+}
+
 // debug
 userData.computeTotalScore=function(){
     var sum=0;
