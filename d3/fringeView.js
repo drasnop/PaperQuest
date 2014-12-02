@@ -134,10 +134,10 @@ function manageDynamicElements(animate){
     enteringPapers.append("text")
     .attr("class","abstract")
     .text(function(d) { return global.papers[d].abstract;} );
+
     d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
-    enteringPapers.selectAll("text.abstract")
-    .selectAll("tspan")
-    .attr("class","abstract")
+    enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract");
+    enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class
 
 
     //------------------ENTER+UPDATE-------------------//
@@ -197,6 +197,9 @@ function manageDynamicElements(animate){
     t0.selectAll("tspan.abstract")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1];} )
+    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
+
+    t0.select("tspan.firstLine")
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
