@@ -7,6 +7,8 @@ var global={
     "view":2,
     // Current zoom level: 0=titles only, 1=metadata (authors/conf/date), 2=first line of abstract, 3=full abstract
     "zoom":0,
+    // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
+    "updateAutomatically":false,
     // papers dataset, accessed by global.papers[doi]
     "papers":false,
     // automatically computed by fringeView

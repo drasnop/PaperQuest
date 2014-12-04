@@ -57,6 +57,7 @@ function updateFringe() {
     .attr("class","visControl")
     .append("input")
     .attr("type","checkbox")
+    .attr("onclick","global.updateAutomatically=!global.updateAutomatically; fringeView.updateFringe()")
     d3.select("#updateFringeAutomatically")
     .append("span")
     .text("automatically")
@@ -260,7 +261,7 @@ function manageDynamicElements(animate){
     })
 
     // clicking papers on the fringe translates them to the left
-    .on("click",function() {
+    .on("mousedown",function() {
         var paper=d3.select(this);
         paper.each(function(d) {
             userData.papers[d].selected=!userData.papers[d].selected;
@@ -285,6 +286,12 @@ function manageDynamicElements(animate){
                     break;
             }
         });
+    })
+
+    // After (de)selecting a paper, update the fringe if updateAutomatically is true
+    .on("mouseup",function(){
+        if(global.updateAutomatically)
+            updateFringe();
     })
 
     // detect zoom in and out
