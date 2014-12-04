@@ -30,7 +30,7 @@ function updateFringe() {
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
  function computeVisibleFringe(){
-    global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,numberOfVisiblePapers());
+    global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,maxNumberOfVisiblePapers());
 }
 
 // Create some svg elements, once and for all
@@ -365,15 +365,16 @@ function fringePaperYCard(d){
     return fringePaperY(d)-paperMaxRadius;
 }
 
-// Compute how many papers can be displayed on the fringe
-// taking into account some space at the bottom to show an update button
-function numberOfVisiblePapers(){
+/* Compute how many papers can be displayed on the fringe at the minimum zoom level
+* When zooming in, some of these papers will get pushed outside the view, but it's fine (nice animation).
+* Takes into account some space at the bottom of the fringe to show an update button. */
+function maxNumberOfVisiblePapers(){
     var availableHeight=window.innerHeight-fringeBottomMargin;
     return Math.floor(availableHeight/(2*paperMaxRadius));
 }
 
 function updateFringeButtonY(){
-    return window.innerHeight-2*paperMaxRadius;
+    return window.innerHeight-fringeBottomMargin;
 }
 
 // Compute the horizontal position of the updateFringe button
