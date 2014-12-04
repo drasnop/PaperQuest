@@ -7,12 +7,13 @@ var paperMinRadius = 0,
     paperMaxRadius = 15,
     paperInnerWhiteCircleRatio =.4,     // deprecated
     paperOuterBorderWidth = 4,
-    paperMarginBottom = 0,              // probably not useful
+    negativeInternalMargin = -3,        // between the title and the metadata (to create visual grouping)
+    paperMarginBottom = 1,              // between on paper and the next (again, to create visual grouping)
     titleLeftMargin = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
     charactersPerLine = 120,            // [deprecated]
     abstractLineWidth = 800,            // so far used only for wrapping the text of the abstract
-    fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;    // to leave room for the "update" button
+    fringeBottomMargin = 30;    // to leave room for the "update" button
 
 // Defines 3 types of animation: none, slow, fast, very fast
 var fringePapersTransitionEasing="quad-in-out",

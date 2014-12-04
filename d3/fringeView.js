@@ -192,12 +192,12 @@ function manageDynamicElements(animate){
 
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0];} )
+    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+negativeInternalMargin;} )
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll("tspan.abstract")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1];} )
+    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1]+negativeInternalMargin;} )
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
 
     t0.select("tspan.firstLine")
@@ -317,7 +317,7 @@ function manageDynamicElements(animate){
 function fringePaperHeight(d){
     // If the paper is not selected, its height decreases with the zoom level
     if(!userData.papers[d].selected)
-        return 2*paperMaxRadius+paperMarginBottom;
+        return 2*paperMaxRadius;
 
     // If the paper is selected, its height increases with the zoom level
     var height=0;
@@ -327,6 +327,9 @@ function fringePaperHeight(d){
 
     if(global.zoom==3)
         height+=userData.getAbstractLineCount(d)*paperHeights[3];
+
+    if(global.zoom>0)
+        height+=paperMarginBottom;
 
     return height;
 }
@@ -366,11 +369,11 @@ function fringePaperYCard(d){
 // taking into account some space at the bottom to show an update button
 function numberOfVisiblePapers(){
     var availableHeight=window.innerHeight-fringeBottomMargin;
-    return Math.floor(availableHeight/(2*paperMaxRadius+paperMarginBottom));
+    return Math.floor(availableHeight/(2*paperMaxRadius));
 }
 
 function updateFringeButtonY(){
-    return window.innerHeight-2*paperMaxRadius-paperMarginBottom;
+    return window.innerHeight-2*paperMaxRadius;
 }
 
 // Compute the horizontal position of the updateFringe button
