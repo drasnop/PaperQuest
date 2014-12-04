@@ -28,9 +28,24 @@ var sessionManager = function(){
 		}
 		else{
 			console.log("Loading hard-coded seedPapers")
-			userData.uploadSeedPapers();
+			uploadSeedPapers();
 		}
 	}
+
+        /**
+         * Adds a hardcoded list of papers to the user's core.  Used
+         * to initialize the core.
+         */
+        function uploadSeedPapers = function() {
+            var p;
+            for (var i in seedPapers) {
+                console.log("seed paper: " + seedPapers[i]);
+                p = PQ(seedPapers[i]);
+                if (typeof p !== "undefined") {
+                    p.core = true;
+                }
+            }
+        }
 
 	// we could just store userData.papers, but eh. Having the methods could be useful for debugging
 	function saveSession(){

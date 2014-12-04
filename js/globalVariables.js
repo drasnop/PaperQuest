@@ -135,18 +135,10 @@ function info(){
     console.log("length: "+userData.getSortedAndPrunedFringe().length+"  total_score: "+userData.computeTotalScore());
 }
 
-///////     hard-coded implementation of seed papers    /////////////////
+///////     hard-coded set of seed papers    /////////////////
 
 var seedPapers=[
     "10.1145/108844.108867",    // Triggers and barriers to customization
     "10.1145/97243.97271",      // User-tailorable systems: pressing the issues with buttons
     "10.1145/238386.238541"    // User customization of a word processor
 ]
-
-userData.uploadSeedPapers=function(){
-    for(var i in seedPapers){
-        console.log("seed paper: "+seedPapers[i])
-        if (global.papers.hasOwnProperty(""+seedPapers[i]))      ///////// why is this not working???
-            userData.papers[seedPapers[i]]={"core":true};
-    }
-}
