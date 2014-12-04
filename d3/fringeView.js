@@ -125,6 +125,7 @@ function manageDynamicElements(animate){
     enteringPapers.append("text")
     .attr("class", "title")
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
+    .attr("dy",".35em")     // align with the middle of node
     .text(function(d) { return global.papers[d].title;} );
 
     enteringPapers.append("text")
@@ -187,7 +188,7 @@ function manageDynamicElements(animate){
 
     t0.select(".title")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+titleBaselineOffset;} )
+    .attr("y", function(d) {return fringePaperY(d);} )
 
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )

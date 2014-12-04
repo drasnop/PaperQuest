@@ -8,7 +8,6 @@ var paperMinRadius = 0,
     paperInnerWhiteCircleRatio =.4,     // deprecated
     paperOuterBorderWidth = 4,
     paperMarginBottom = 0,              // probably not useful
-    titleBaselineOffset = 6,            // depends on font size
     titleLeftMargin = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
     charactersPerLine = 120,            // [deprecated]
