@@ -294,8 +294,10 @@ function manageDynamicElements(animate){
         if(d3.event.ctrlKey)
             return;
 
+        console.log(d3.event.deltaY)
+
         // compute the new zoom level
-        if(d3.event.wheelDelta<0){
+        if(d3.event.deltaY>0){
             if(global.zoom<paperHeights.length-1)
                 global.zoom++;
             // if the user keeps scrolling down, this will be interpreted as a scrolling down
