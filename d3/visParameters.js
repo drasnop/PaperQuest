@@ -6,11 +6,11 @@
 var paperMinRadius = 5,
     paperMaxRadius = 15,
     paperInnerWhiteCircleRatio =.4,
-    paperOutlineWidth = 4,	// UNUSED - this divided by 2 must be > min radius
-    paperMarginBottom = 5,
+    paperMarginBottom = 0,
     titleBaselineOffset = 6,  // depends on font size
     titleXOffset = 5,
-    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset);
+    paperXOffsetWhenSelected = - (2*paperMaxRadius - titleXOffset),
+    fringeBottomMargin = 2*paperMaxRadius+paperMarginBottom;
 
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen
@@ -23,8 +23,8 @@ var coreRadius = [120,120,120],
     toreadApparentWidth = [420,420,fringeApparentWidth[2]-paperMaxRadius+titleXOffset];
 
 var colors={
-    // blue, green, pink, orange, darkblue
-    "tags":["#00A1CB","#61AE24","#D70060","#F18D05","#113F8C"],
+    // orange, green, blue, pink, darkblue
+    "tags":["#F18D05","#61AE24","#00A1CB","#D70060","#113F8C"],
 	// thése two colors are pretty, but probably shouldn't be used for tags (too similar)
     "turquoise":"#01A4A4",	    
 	"red":"#E54028",		
@@ -35,3 +35,4 @@ var colors={
 }
 
 var currentYear=2010;
+var citationCountCutoff=150;
