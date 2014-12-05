@@ -127,12 +127,12 @@ function manageDynamicElements(animate){
     .attr("class", "title")
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
     .attr("dy",".35em")     // align with the middle of node
-    .text(function(d) { return global.papers[d].title;} );
+    .text(function(d) { return global.papers[d].title;} )
+    .style("opacity","0")   // otherwise it looks ugly when they come in
 
     enteringPapers.append("text")
     .attr("class", "metadata")
     .text(function(d) { return userData.metadataToString(d);} )
-    .style("display","none")    // hidden at first
     .style("opacity","0")       // used for smooth fade-in apparition
 
     enteringPapers.append("text")
@@ -142,7 +142,6 @@ function manageDynamicElements(animate){
     d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
     enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract")
     .style("opacity","0")       // used for smooth fade-in apparition
-    //.style("display","none")    // hidden at first
     enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class
 
 
@@ -198,6 +197,11 @@ function manageDynamicElements(animate){
     t0.select(".title")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d);} )
+    .style("opacity","1")
+
+    /* the following elements are sometimes not visible. we use a fade-in to show and hide them,
+    * but it also necessary to remove them from the display when they aren't suppose to be there,
+    * otherwise they will impede selection of other elements (as they may be drawn on top of these). */
 
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
