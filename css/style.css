@@ -53,3 +53,7 @@ svg{
 	font-style: italic;
 	fill:#444;
 }
+
+button:disabled{
+	opacity:.5;
+}

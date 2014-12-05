@@ -23,6 +23,8 @@ function updateVis(animate,callback){
 function updateFringe() {
     algorithm.updateFringe();
     updateVis(1);
+    // the updateFringe button becomes useless until new papers are (de)selected
+    d3.select("#updateFringe").attr("disabled","disabled");
 }
 
 //////////////////  Drawing functions   ///////////////////////
@@ -51,6 +53,7 @@ function createStaticElements(){
     .attr("class","visControl")
     .text("Update fringe")
     .attr("onclick","fringeView.updateFringe()")
+    .attr("disabled","disabled");   // there's nothing to update when the fringe has just been created
 
     d3.select("body").append("label")
     .attr("id","updateFringeAutomatically")
@@ -287,7 +290,14 @@ function bindListeners(){
             else
                 userData.removeSelected(d);
 
-            // Update the vis (using different animation speeds depending on the zoom level, just because it's pretty)
+            // Enable or disable the updateFringe button, if new papers have been (de)selected
+            if((userData.newSelectedPapers.length>0 || userData.newDeselectedPapers.length>0) && !global.updateAutomatically)
+                d3.select("#updateFringe").attr("disabled",null);
+            else
+                d3.select("#updateFringe").attr("disabled","disabled");
+
+            // Update the vis to move the selected papers left or right
+            // (using different animation speeds depending on the zoom level, just because it's pretty)
             switch(global.zoom){
                 case 0:
                 updateVis(4);
