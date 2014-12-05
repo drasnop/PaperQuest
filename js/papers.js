@@ -5,6 +5,7 @@ PQ = (function() {
     var defaultInitialValues =  {};
 
 
+    /// NOT CURRENTLY USED, REMOVE IF NOT NEEDED
     function getStumpProperty(paramName) {
         return function() {
             // Assume variable "this" is bound to a stump.  Inflate it
@@ -133,7 +134,7 @@ PQ = (function() {
             var subset = Object.keys(userData.papers).filter(filterFunction)
                 .map(function(doi) { return userData.papers[doi] });
 
-            if (typeof callback !== "undefined") {
+            if (typeof callback === "function") {
                 subset.forEach(callback);
             }
 
