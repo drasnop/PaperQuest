@@ -12,7 +12,10 @@ var global={
     // papers dataset, accessed by global.papers[doi]
     "papers":false,
     // automatically computed by fringeView
-    "visibleFringe":[]
+    "visibleFringe":[],
+    //
+    "updateFringeAnimationRunning":false,
+    "updateFringeAnimationWaiting":false
 };
 
 
