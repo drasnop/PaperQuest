@@ -18,7 +18,7 @@ var paperMinRadius = 0,
 // Defines 3 types of animation: none, slow, fast, very fast
 var fringePapersTransitionEasing="quad-in-out",
     fringePapersPositionTransitionDuration=[0,1000,450,250,120],
-    fringePapersColorTransitionDuration=[0,500,500,500,500];
+    fringePapersColorTransitionDuration=[0,500,0,0,0];
 
 // heights of a paper title, authors, first line of the abstract, rest of the abstract (the latter will be made dynamic in the future)
 var paperHeights = [2*paperMaxRadius, 1.5*paperMaxRadius, 1.5*paperMaxRadius, 1.2*paperMaxRadius];

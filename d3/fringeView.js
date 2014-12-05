@@ -1,12 +1,9 @@
-/*
+ /*
 * Creates, draw and specify interaction for the Fringe global.view
 */
 
 // To create a class with static methods (basically, a namespace)
 var fringeView = (function () {
-
-// transition
-var t1;
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
@@ -151,6 +148,7 @@ function manageDynamicElements(animate){
     // the enter selection will apply to both entering and updating nodes.
 
     var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
+    global.animationRunning=true;
 
     t0.select(".card")
     .attr("x", function(d) { return fringePaperXCard(d);} )
@@ -164,12 +162,22 @@ function manageDynamicElements(animate){
     .attr("r", function(d) {return radiusWithMinimum(userData.getTotalCitationCount(d));} ) 
     
     // staging the change of color by chaining transitions
-    t0.each("end",function(){
-        t1=d3.select(this).transition().duration(fringePapersColorTransitionDuration[animate])
-        
+    t0.call(endAll, function () {
+        var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
+
         t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
-})
+
+        t1.call(endAll, function(){
+            global.animationRunning=false;
+            console.log("waiting: "+global.animationWaiting)
+            if(global.animationWaiting){
+                updateFringe();
+                global.animationWaiting=false;
+            }
+        })
+    });
+
 
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
@@ -290,19 +298,15 @@ function bindListeners(){
             return;
 
         // We have to make sure that the animation for "selected" is finished   
-        console.log(t1)
-        if (t1.empty())
-            updateFringe(1);
-        else{
-            var n = 0; 
-            t1.each(function() { ++n; console.log(n); }) 
-            t1.each("end", function() { if(!--n) updateFringe(1); });        
-        }
+        if(global.animationRunning)
+            global.animationWaiting=true;
+        else
+            updateFringe();
     })
 
     d3.select("#core").on("click",function(){
         console.log(t1)
-        console.log(t1.empty())
+        console.log(t1.empty()+" "+t1.size())
     })
 
     // detect zoom in and out

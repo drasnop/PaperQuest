@@ -89,3 +89,19 @@ function d3TextWrap(text, width, paddingRightLeft, paddingTopBottom) {
     //console.log(arrLineCreatedCount);
     return arrLineCreatedCount;
 }
+
+function endAll (transition, callback) {
+
+    if (transition.empty()) {
+        callback();
+    }
+    else {
+        var n = transition.size();
+        transition.each("end", function () {
+            n--;
+            if (n === 0) {
+                callback();
+            }
+        });
+    }
+}
