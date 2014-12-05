@@ -147,10 +147,6 @@ function manageDynamicElements(animate){
     // entering elements; so, operations on the update selection after appending to
     // the enter selection will apply to both entering and updating nodes.
 
-    global.updateFringeAnimationRunning=true;
-    console.log("running")
-    nElementsAnimated=0;
-
     var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
     var t1;
 
@@ -171,20 +167,6 @@ function manageDynamicElements(animate){
         
         t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
-
-        t1.each(function() { nElementsAnimated++; }) 
-        t1.each("end", function() {
-            nElementsAnimated--;
-            if(nElementsAnimated<=0){
-                global.updateFringeAnimationRunning=false;
-                console.log("stop")
-                if(global.updateFringeAnimationWaiting){
-                    updateVis();
-                    global.updateFringeAnimationWaiting=false;
-                }
-            }
-                //callback.apply(this, arguments);
-        }); 
 
 /*        // end of animation callback ------ doesn't work (add callback to arguments list)
         t1.each("end",function(){
@@ -308,16 +290,8 @@ function manageDynamicElements(animate){
 
     // After (de)selecting a paper, update the fringe if updateAutomatically is true
     .on("mouseup",function(){
-        
-        if(!global.updateAutomatically)
-            return;
-
-        if(global.updateFringeAnimationRunning){
-            global.updateFringeAnimationWaiting=true;
-        }
-        else{
+        if(global.updateAutomatically)
             updateFringe();
-        }
     })
 
     // detect zoom in and out
