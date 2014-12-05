@@ -5,14 +5,17 @@
 // To create a class with static methods (basically, a namespace)
 var fringeView = (function () {
 
+// transition
+var t1;
+
 // Except for the (static) background elements, everything is computed on-the-fly
- function initializeVis(){
+function initializeVis(){
     createStaticElements();
     updateVis(0);   //don't animate at creation
 }
 
 // Update the vis, with or without animating the transitions. The callback will be called at the end of all animations
- function updateVis(animate,callback){
+function updateVis(animate,callback){
     computeVisibleFringe();
     drawStaticElements();
     manageDynamicElements(animate);
@@ -29,12 +32,12 @@ function updateFringe() {
 
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
- function computeVisibleFringe(){
+function computeVisibleFringe(){
     global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,maxNumberOfVisiblePapers());
 }
 
 // Create some svg elements, once and for all
- function createStaticElements(){
+function createStaticElements(){
     // toread
     svg.append("circle")
     .attr("id","toread")
@@ -98,15 +101,15 @@ function manageDynamicElements(animate){
     // Join new data with old elements, if any
 
     var papers = svg.selectAll(".paper")
-        .data(global.visibleFringe, function(d){ return global.visibleFringe.indexOf(d); })
+    .data(global.visibleFringe, function(d){ return global.visibleFringe.indexOf(d); })
         // using this key function is critical to ensure papers will change position when updating the fringe
 
     //--------------------ENTER---------------------//
     // Create new elements as needed
 
     var enteringPapers = papers.enter()
-        .append("g")
-        .attr("class","paper")
+    .append("g")
+    .attr("class","paper")
 
     enteringPapers.append("rect")
     .attr("class","card")
@@ -148,7 +151,6 @@ function manageDynamicElements(animate){
     // the enter selection will apply to both entering and updating nodes.
 
     var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
-    var t1;
 
     t0.select(".card")
     .attr("x", function(d) { return fringePaperXCard(d);} )
@@ -167,14 +169,7 @@ function manageDynamicElements(animate){
         
         t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
-
-/*        // end of animation callback ------ doesn't work (add callback to arguments list)
-        t1.each("end",function(){
-            console.log("callback")
-            if(typeof(callback) === typeof(Function))
-                callback();
-        })*/
-    })
+})
 
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
@@ -217,13 +212,13 @@ function manageDynamicElements(animate){
     papers.exit()
         // Trying to shrink the exiting papers. Works, but the coordinate space is not relative to current position => big translation     
 /*        .transition().duration(fringePapersPositionTransitionDuration[animate])
-        .attr("transform","matrix(1,0,0,.5,0,0)")*/
-        .remove();
+.attr("transform","matrix(1,0,0,.5,0,0)")*/
+.remove();
 }
 
 
 // Specify interaction
- function bindListeners(){
+function bindListeners(){
 
     d3.selectAll(".shadowOnHover")
     .on("mouseover",function() {
@@ -239,8 +234,8 @@ function manageDynamicElements(animate){
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
         d3.select(this).select(".card")
-            .classed("highlighted",true)
-            .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+        .classed("highlighted",true)
+        .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
     .on("mouseleave",function() {
         // remove shadow
@@ -248,7 +243,7 @@ function manageDynamicElements(animate){
         
         // keep the selected elements highlighted
         var nonSelectedOnly=d3.select(this)
-            .filter(function(){ 
+        .filter(function(){ 
                 // this is ugly as hell, but I don't know how to access d cleanly...
                 var res;
                 d3.select(this).each(function(d){
@@ -275,28 +270,44 @@ function manageDynamicElements(animate){
             // Update the vis (using different animation speeds depending on the zoom level, just because it's pretty)
             switch(global.zoom){
                 case 0:
-                    updateVis(4);
-                    break;
+                updateVis(4);
+                break;
                 case 1:
                 case 2:
-                    updateVis(3);
-                    break;
+                updateVis(3);
+                break;
                 case 3:
-                    updateVis(2);
-                    break;
+                updateVis(2);
+                break;
             }
         });
     })
 
     // After (de)selecting a paper, update the fringe if updateAutomatically is true
     .on("mouseup",function(){
-        if(global.updateAutomatically)
-            updateFringe();
+
+        if(!global.updateAutomatically)
+            return;
+
+        // We have to make sure that the animation for "selected" is finished   
+        console.log(t1)
+        if (t1.empty())
+            updateFringe(1);
+        else{
+            var n = 0; 
+            t1.each(function() { ++n; console.log(n); }) 
+            t1.each("end", function() { if(!--n) updateFringe(1); });        
+        }
+    })
+
+    d3.select("#core").on("click",function(){
+        console.log(t1)
+        console.log(t1.empty())
     })
 
     // detect zoom in and out
     svg.on("wheel",function(){
-        
+
         // Do nothing if it is a browser zoom (ctrl+wheel)
         if(d3.event.ctrlKey)
             return;
@@ -423,6 +434,7 @@ var fringeView = {};
 fringeView.initializeVis=initializeVis;
 fringeView.updateVis=updateVis;
 fringeView.updateFringe=updateFringe;
+//fringeView.t1=t1;
 
 return fringeView;
 
