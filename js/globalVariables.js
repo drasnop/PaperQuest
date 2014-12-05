@@ -13,8 +13,9 @@ var global={
     "papers":false,
     // automatically computed by fringeView
     "visibleFringe":[],
-    //
+    // flag indicating that a long animation is currently running
     "animationRunning":false,
+    // flag indicating that another animation is waiting for the current one to complete
     "animationWaiting":false
 };
 

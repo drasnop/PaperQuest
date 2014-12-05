@@ -131,14 +131,18 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("text")
     .attr("class", "metadata")
-    .text(function(d) { return userData.metadataToString(d);} );
+    .text(function(d) { return userData.metadataToString(d);} )
+    .style("display","none")    // hidden at first
+    .style("opacity","0")       // used for smooth fade-in apparition
 
     enteringPapers.append("text")
     .attr("class","abstract")
-    .text(function(d) { return global.papers[d].abstract;} );
+    .text(function(d) { return global.papers[d].abstract;} )
 
     d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
-    enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract");
+    enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract")
+    .style("opacity","0")       // used for smooth fade-in apparition
+    //.style("display","none")    // hidden at first
     enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class
 
 
@@ -161,16 +165,17 @@ function manageDynamicElements(animate){
     .attr("cy", function(d) { return fringePaperY(d);} )
     .attr("r", function(d) {return radiusWithMinimum(userData.getTotalCitationCount(d));} ) 
     
-    // staging the change of color by chaining transitions
+    // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
+        // A new transition is generated after all elements of t0 have finished
         var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
 
         t1.select(".node")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
+        // When t1 finishes, check whether an animation is waiting (for update automatically)
         t1.call(endAll, function(){
             global.animationRunning=false;
-            console.log("waiting: "+global.animationWaiting)
             if(global.animationWaiting){
                 updateFringe();
                 global.animationWaiting=false;
@@ -197,14 +202,17 @@ function manageDynamicElements(animate){
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+negativeInternalMargin;} )
+    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? 1: 0;})
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll("tspan.abstract")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1]+negativeInternalMargin;} )
+    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0;})
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
 
     t0.select("tspan.firstLine")
+    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? 1: 0;})
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
@@ -298,10 +306,10 @@ function bindListeners(){
             return;
 
         // We have to make sure that the animation for "selected" is finished   
-        if(global.animationRunning)
-            global.animationWaiting=true;
-        else
+        if(!global.animationRunning)
             updateFringe();
+        else    
+            global.animationWaiting=true; // otherwise we wait for it to end
     })
 
     d3.select("#core").on("click",function(){
