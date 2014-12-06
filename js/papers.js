@@ -41,11 +41,25 @@ PQ = (function() {
         this.doi = doi;
         this.isStump = true;  // Can be checked externally.  Not used internally.
 
-        this.inflate = function(initialValues) {
-            if (typeof initialValues === "undefined") {  // Optional parameter
-                initialValues = defaultInitialValues;
+        /**
+         * Adds all key/value pairs from the given dictionary to the
+         * paper, replacing values if they already exist.
+         */
+        this.merge = function(values) {
+            for (var key in values) {
+                this[key] = values[key];
             }
+        }
 
+        this.merge(defaultInitialValues);  // Initialize other properties of the paper.
+
+        /**
+         * Blows the paper object up into a full object so that its
+         * references and citations can be accessed.  This technique
+         * allows us to have relevant information only for papers that
+         * we're actually using in the vis.
+         */
+        this.inflate = function() {
             delete that.isStump;  // Remove stump flag.
 
             // Cached filtered lists of references and citations.
@@ -62,14 +76,10 @@ PQ = (function() {
                 };
             });
 
-            // Copy any other values from initialValues.  This might
-            // override previously defined elements.
-            for (var key in initialValues) {
-                that[key] = initialValues[key];
-            }
 
             return that;  // Return same object for chaining.
         }
+
     }
 
     function propertyGetter(prop) {
