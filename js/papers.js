@@ -47,8 +47,10 @@ PQ = (function() {
          */
         this.merge = function(values) {
             for (var key in values) {
-                this[key] = values[key];
+                that[key] = values[key];
             }
+
+            return that;  // For chaining
         }
 
         this.merge(defaultInitialValues);  // Initialize other properties of the paper.
