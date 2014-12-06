@@ -22,7 +22,7 @@ var sessionManager = function(){
             console.log(retrievedData);
             // We re-wrap each retrieved item in a paper object.
             Object.keys(retrievedData.papers).forEach(function(doi) {
-                var p = PQ(doi);
+                var p = P(doi);
                 if (typeof p !== "undefined") {   // Check just in case an external doi made it in
                     if (typeof p.isStump === "undefined") {
                         // Re-inflate papers that need it
@@ -47,7 +47,7 @@ var sessionManager = function(){
         var p;
         for (var i in seedPapers) {
             console.log("seed paper: " + seedPapers[i]);
-            p = PQ(seedPapers[i]);
+            p = P(seedPapers[i]);
             if (typeof p !== "undefined") {  // ignore seed papers that are not internal
                 p.core = true;
             }

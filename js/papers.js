@@ -1,4 +1,4 @@
-PQ = (function() {
+P = (function() {
 
     var stumpedCollections = ["internalReferences", "externalReferences", "internalCitations", "externalCitations"];
     var readOnlyProperties = ["conference", "title", "abstract", "year", "citation_count", "authors", "references", "citations"];
