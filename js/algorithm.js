@@ -40,9 +40,12 @@ function initializeRelevanceScore(doi){
 function updateRelevanceScores(doiSource, inserting){
 	console.log( (inserting?"inserting ":"removing ") + doiSource)
 
-	// update both references and citations of this paper
+	// update both (internal) references and citations of this paper
 	global.papers[doiSource].references
 		.concat(global.papers[doiSource].citations)
+		.filter(function(doi){
+			return global.papers.hasOwnProperty(doi);
+		})
 		.forEach(function(doiTarget){
 			// if paper has never been seen before, add it to the fringe
 			if (!userData.papers.hasOwnProperty(doiTarget)) {
@@ -72,7 +75,8 @@ function updatePaper(doiSource, doiTarget,inserting){
 }
 	
 function adjustedCitationCount(doi){
-	return 0;
+	console.log(Math.log(userData.getTotalCitationCount(doi) * (1-.5*(currentYear-global.papers[doi].year)) ))
+	return Math.log(userData.getTotalCitationCount(doi) * (1-.5*(currentYear-global.papers[doi].year)) );
 }
 
 

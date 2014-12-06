@@ -460,7 +460,6 @@ var fringeView = {};
 fringeView.initializeVis=initializeVis;
 fringeView.updateVis=updateVis;
 fringeView.updateFringe=updateFringe;
-//fringeView.t1=t1;
 
 return fringeView;
 
