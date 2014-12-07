@@ -75,8 +75,7 @@ function updatePaper(doiSource, doiTarget,inserting){
 }
 	
 function adjustedCitationCount(doi){
-	console.log(Math.log(userData.getTotalCitationCount(doi) * (1-.5*(currentYear-global.papers[doi].year)) ))
-	return Math.log(userData.getTotalCitationCount(doi) * (1-.5*(currentYear-global.papers[doi].year)) );
+	return Math.log(1+ userData.getTotalCitationCount(doi) / (currentYear-global.papers[doi].year));
 }
 
 

@@ -46,5 +46,5 @@ var colors={
     "toreadBorder":["rgb(242, 210, 166)","rgb(242, 210, 166)","rgb(242, 210, 166)"]
 }
 
-var currentYear=2010; // 2010 for the citeology dataset...
+var currentYear=2011; // Must always be one year after the latest year in the dataset (2010 for citeology)
 var citationCountCutoff=150;
