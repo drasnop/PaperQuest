@@ -110,6 +110,7 @@ function manageDynamicElements(animate){
     var enteringPapers = papers.enter()
     .append("g")
     .attr("class","paper")
+    .attr("id", function(d) { return d;})
 
     enteringPapers.append("rect")
     .attr("class","card")
@@ -138,14 +139,18 @@ function manageDynamicElements(animate){
     .text(function(d) { return userData.metadataToString(d);} )
     .style("opacity","0")       // used for smooth fade-in apparition
 
-    enteringPapers.append("text")
+    enteringPapers.append("foreignObject")
+    .attr("class","abstractWrapper")
+    //.style("opacity","0.5")       // used for smooth fade-in apparition
+    .style("visibility","hidden")
+    .append("xhtml:body")
+    .append("div")
     .attr("class","abstract")
     .text(function(d) { return global.papers[d].abstract;} )
 
-    d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
+/*    d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
     enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract")
-    .style("opacity","0")       // used for smooth fade-in apparition
-    enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class
+    enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class*/
 
 
     //------------------ENTER+UPDATE-------------------//
@@ -212,15 +217,26 @@ function manageDynamicElements(animate){
     .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? 1: 0;})
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
-    t0.selectAll("tspan.abstract")
+    t0.selectAll(".abstract")
+    .style("width",abstractLineWidth+"px")
+    //.style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0;})
+    //.style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
+
+    t0.selectAll(".abstractWrapper")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1]+negativeInternalMargin;} )
-    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0;})
-    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
+    .attr("width",abstractLineWidth)
+    .each(function(){
+        var h=d3.select(this).select(".abstract").node().offsetHeight;
+        d3.select(this).attr("height",h);
+    })
+    .style("visibility", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "visible": "hidden";})
+    //.style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0.5;})
 
-    t0.select("tspan.firstLine")
+
+/*    t0.select("tspan.firstLine")
     .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? 1: 0;})
-    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})
+    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})*/
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
@@ -338,8 +354,6 @@ function bindListeners(){
         if(d3.event.ctrlKey)
             return;
 
-        console.log(d3.event.deltaY)
-
         // compute the new zoom level
         if(d3.event.deltaY>0){
             if(global.zoom<paperHeights.length-1)
@@ -368,14 +382,16 @@ function fringePaperHeight(d){
     // If the paper is selected, its height increases with the zoom level
     var height=0;
     for(var i=0; i<=Math.min(global.zoom,2); i++){
-        height+=paperHeights[i];
+        height += paperHeights[i];
     }
 
+    // The height of the abstract must be computed for each paper individually
     if(global.zoom==3)
-        height+=userData.getAbstractLineCount(d)*paperHeights[3];
+        height += document.getElementById(d).querySelector(".abstract").offsetHeight;
 
+    // add some whitespace at the bottom to distinguish one paper from the next
     if(global.zoom>0)
-        height+=paperMarginBottom;
+        height += paperMarginBottom;
 
     return height;
 }
