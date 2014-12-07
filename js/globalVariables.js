@@ -100,6 +100,10 @@ userData.getTotalCitationCount=function(doi){
         userData.getInternalCitationCount(doi));
 }
    
+userData.getEscapedId = function(doi){
+    return "#" + doi.slice(0,doi.indexOf("/")) + "\\" + doi.slice(doi.indexOf("/")) 
+}
+
 // Return Author1, Author2, Author3 – CHI '96
 userData.metadataToString=function(doi){
     var paper=global.papers[doi];

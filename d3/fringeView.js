@@ -141,12 +141,17 @@ function manageDynamicElements(animate){
 
     enteringPapers.append("foreignObject")
     .attr("class","abstractWrapper")
-    //.style("opacity","0.5")       // used for smooth fade-in apparition
-    .style("visibility","hidden")
     .append("xhtml:body")
     .append("div")
     .attr("class","abstract")
     .text(function(d) { return global.papers[d].abstract;} )
+    .style("width",abstractLineWidth+"px")
+    .each(function(doi){
+        // stores the height of the abstract, to be used later
+        userData.papers[doi].abstractHeight=d3.select(this).node().offsetHeight;
+        console.log(d3.select(this).node().offsetHeight)
+    })
+    .style("height","0px")   // for a nice unfolding entrance animation
 
 /*    d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
     enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract")
@@ -218,21 +223,14 @@ function manageDynamicElements(animate){
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll(".abstract")
-    .style("width",abstractLineWidth+"px")
-    //.style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0;})
-    //.style("display", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "": "none";})
+    .style("height", function(d) { return (userData.papers[d].selected && global.zoom>=3) ?
+                                            userData.papers[d].abstractHeight+"px": "0px";})
 
     t0.selectAll(".abstractWrapper")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
     .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1]+negativeInternalMargin;} )
     .attr("width",abstractLineWidth)
-    .each(function(){
-        var h=d3.select(this).select(".abstract").node().offsetHeight;
-        d3.select(this).attr("height",h);
-    })
-    .style("visibility", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? "visible": "hidden";})
-    //.style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=3) ? 1: 0.5;})
-
+    .attr("height", function(d) { return userData.papers[d].abstractHeight;})
 
 /*    t0.select("tspan.firstLine")
     .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? 1: 0;})
@@ -387,7 +385,7 @@ function fringePaperHeight(d){
 
     // The height of the abstract must be computed for each paper individually
     if(global.zoom==3)
-        height += document.getElementById(d).querySelector(".abstract").offsetHeight;
+        height += userData.papers[d].abstractHeight;
 
     // add some whitespace at the bottom to distinguish one paper from the next
     if(global.zoom>0)
