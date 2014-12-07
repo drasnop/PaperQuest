@@ -130,7 +130,7 @@ function manageDynamicElements(animate){
     enteringPapers.append("text")
     .attr("class", "title")
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
-    .attr("dy",".35em")     // align with the middle of node
+    .attr("dy",".35em")     // align ligne middle
     .text(function(d) { return global.papers[d].title;} )
     .style("opacity","0")   // otherwise it looks ugly when they come in
 
@@ -152,11 +152,6 @@ function manageDynamicElements(animate){
         console.log(d3.select(this).node().offsetHeight)
     })
     .style("height","0px")   // for a nice unfolding entrance animation
-
-/*    d3TextWrap(enteringPapers.selectAll("text.abstract"),abstractLineWidth);
-    enteringPapers.selectAll("text.abstract").selectAll("tspan").attr("class","abstract")
-    enteringPapers.selectAll("text.abstract").select("tspan").classed("firstLine",true);    // add class*/
-
 
     //------------------ENTER+UPDATE-------------------//
     // Appending to the enter selection expands the update selection to include
@@ -218,23 +213,19 @@ function manageDynamicElements(animate){
 
     t0.select(".metadata")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+negativeInternalMargin;} )
+    .attr("y", function(d) {return fringePaperY(d)+metadataYoffset;} )
     .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? 1: 0;})
     .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
 
-    t0.selectAll(".abstract")
-    .style("height", function(d) { return (userData.papers[d].selected && global.zoom>=3) ?
-                                            userData.papers[d].abstractHeight+"px": "0px";})
-
     t0.selectAll(".abstractWrapper")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+paperHeights[0]+paperHeights[1]+negativeInternalMargin;} )
+    .attr("y", function(d) {return fringePaperY(d)+metadataYoffset+abstractYoffset;} )
     .attr("width",abstractLineWidth)
     .attr("height", function(d) { return userData.papers[d].abstractHeight;})
 
-/*    t0.select("tspan.firstLine")
-    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? 1: 0;})
-    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=2) ? "": "none";})*/
+    t0.selectAll(".abstract")
+    .style("height", function(d) { return (userData.papers[d].selected && global.zoom>=2) ?
+                                            userData.papers[d].abstractHeight+"px": "0px";})
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
@@ -354,7 +345,7 @@ function bindListeners(){
 
         // compute the new zoom level
         if(d3.event.deltaY>0){
-            if(global.zoom<paperHeights.length-1)
+            if(global.zoom<2)
                 global.zoom++;
             // if the user keeps scrolling down, this will be interpreted as a scrolling down
         }
@@ -378,13 +369,13 @@ function fringePaperHeight(d){
         return 2*paperMaxRadius;
 
     // If the paper is selected, its height increases with the zoom level
-    var height=0;
-    for(var i=0; i<=Math.min(global.zoom,2); i++){
-        height += paperHeights[i];
-    }
+    var height=2*paperMaxRadius;
+
+    if(global.zoom>=1)
+        height += metadataYoffset-paperMaxRadius;
 
     // The height of the abstract must be computed for each paper individually
-    if(global.zoom==3)
+    if(global.zoom>=2)
         height += userData.papers[d].abstractHeight;
 
     // add some whitespace at the bottom to distinguish one paper from the next

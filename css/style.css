@@ -49,6 +49,10 @@ svg{
 	fill:#258B46;	/* Google dark green: #006621*/
 }
 
+.metadata:hover{
+	text-decoration: underline;
+}
+
 .abstract{
 	font-style: italic;
 	fill:#444;
