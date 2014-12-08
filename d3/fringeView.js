@@ -117,19 +117,20 @@ function manageDynamicElements(animate){
 
     zoom0.append("rect")
     .attr("class","card")
-    .moveToBackOf(svg)
+    .moveToBackOf(svg)  // eventually we'll have to make these follow the selected papers during animations
 
     zoom0.append("circle")
     .attr("class","outerNode")
     .style("fill","white")
 
+    // the outer circle displays the larger (relative) citation count
     zoom0.append("circle")
-    .attr("class", "node")
-    .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
+    .attr("class", "outerCitationsCircle")
+    .style("fill", function(d) { return fringePaperOuterColor(d); })
 
     zoom0.append("circle")
-    .attr("class", "innerNode")
-    .style("fill","rgba(255,255,255,.5)")
+    .attr("class", "innerCitationsCircle")
+    .style("fill", function(d) { return fringePaperInnerColor(d); })
 
     zoom0.append("text")
     .attr("class", "title")
@@ -194,7 +195,7 @@ function manageDynamicElements(animate){
     .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     .attr("height",2*paperMaxRadius)
 
-    t0.select(".node")
+    t0.select(".outerCitationsCircle")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
     .attr("r", function(d) {return radiusWithMinimum(userData.getTotalCitationCount(d));} ) 
@@ -204,7 +205,7 @@ function manageDynamicElements(animate){
         // A new transition is generated after all elements of t0 have finished
         var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
 
-        t1.select(".node")
+        t1.select(".outerCitationsCircle")
         .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
         // When t1 finishes, check whether an animation is waiting (for update automatically)
@@ -221,10 +222,10 @@ function manageDynamicElements(animate){
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(fringePapersColorTransitionDuration[animate])
-    .select(".node")
+    .select(".outerCitationsCircle")
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
-    t0.select(".innerNode")
+    t0.select(".innerCitationsCircle")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
     .attr("r", function(d) {return radius(userData.getInternalCitationCount(d));} )
@@ -286,7 +287,7 @@ function bindListeners(){
     // highlight nodes and titles
     d3.selectAll(".zoom0")
     .on("mouseover",function() {
-        d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
+        d3.select(this).select(".outerCitationsCircle").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
         d3.select(this).select(".card")
         .classed("highlighted",true)
@@ -294,7 +295,7 @@ function bindListeners(){
     })
     .on("mouseleave",function() {
         // remove shadow
-        d3.select(this).select(".node").attr("filter","none")
+        d3.select(this).select(".outerCitationsCircle").attr("filter","none")
         
         // keep the selected elements highlighted
         var nonSelectedOnly=d3.select(this)
@@ -465,14 +466,14 @@ function updateFringeButtonX(){
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
 function radius(citationCount){
     return Math.min(paperMaxRadius, 
-        (paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/citationCountCutoff));
+        (paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/externalCitationCountCutoff));
 }
 
 function radiusWithMinimum(citationCount){
     return Math.max(paperMinRadius, radius(citationCount));   
 }
 
-// Return a random color except red or turquoise
+// Return a random color from the set of tag colors
 function randomColor(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
@@ -482,6 +483,20 @@ function colorFromUpvoters(n){
     if(n>5)
         return colors.tags[4];
     return colors.tags[n-1];  // between 1..4
+}
+
+function fringePaperOuterColor(doi) {
+    var base=colorFromUpvoters(userData.papers[doi].upvoters);
+    if(global.papers[doi].citations.length >= userData.papers[doi].citation_count)
+        return base;
+    return shadeHexColor(base,shadingDifferenceInnerOuter);
+}
+
+function fringePaperInnerColor(doi) {
+    var base=colorFromUpvoters(userData.papers[doi].upvoters);
+    if(global.papers[doi].citations.length < userData.papers[doi].citation_count)
+        return base;
+    return shadeHexColor(base,shadingDifferenceInnerOuter);
 }
 
 ///////////////     Define public static methods, and return    /////////////
