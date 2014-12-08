@@ -6,8 +6,8 @@ var algorithm = (function(){
 
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
-	userData.getAll().forEach(initializeRelevanceScore);
-	userData.getAllButNonSelected().forEach(updateRelevanceScoresWhenInserting);
+	P.all(initializeRelevanceScore);
+  P.interesting(updateRelevanceScoresWhenInserting);
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -19,63 +19,62 @@ function updateFringe(){
 }
 
 
-function updateRelevanceScoresWhenInserting(doiSource){
-	// doiSource is provided to the callback in forEach
-	updateRelevanceScores(doiSource, true);
+function updateRelevanceScoresWhenInserting(pSource){
+	// pSource is provided to the callback in forEach
+	updateRelevanceScores(pSource, true);
 }
 
-function updateRelevanceScoresWhenRemoving(doiSource){
-	updateRelevanceScores(doiSource, false);
+function updateRelevanceScoresWhenRemoving(pSource){
+	updateRelevanceScores(pSource, false);
 }
 
 
 /////////////////////	Private	functions 	////////////////////////////
 
-function initializeRelevanceScore(doi){
-	userData.papers[doi].score=adjustedCitationCount(doi);
-	userData.papers[doi].upvoters=0;
+function initializeRelevanceScore(p) {
+	p.score = adjustedCitationCount(p);
+	p.upvoters = 0;
 }
 
 // Update the score for all papers (not only the ones on the Fringe)
-function updateRelevanceScores(doiSource, inserting){
-	console.log( (inserting?"inserting ":"removing ") + doiSource)
+// TODO: refactor
+function updateRelevanceScores(pSource, inserting){
+	console.log( (inserting?"inserting ":"removing ") + pSource.doi)
 
-	// update both (internal) references and citations of this paper
-	global.papers[doiSource].references
-		.concat(global.papers[doiSource].citations)
-		.filter(function(doi){
-			return global.papers.hasOwnProperty(doi);
-		})
-		.forEach(function(doiTarget){
-			// if paper has never been seen before, add it to the fringe
-			if (!userData.papers.hasOwnProperty(doiTarget)) {
-				userData.papers[doiTarget]={"fringe":true};
-				initializeRelevanceScore(doiTarget);
-			}
-			// update relevance score of this paper
-			updatePaper(doiSource,doiTarget,inserting);
+  // update both (internal) references and citations of this paper
+  pSource.internalReferences().concat(pSource.internalCitations())
+    .forEach(function(pTarget) {
+      // if paper has never been seen before, initialize it and add it to the fringe
+      if (pTarget.isNew) {
+        pTarget.isNew = false;
+        pTarget.fringe = true;
+        initializeRelevanceScore(pTarget);
+      }
+      // update relevance score of this paper
+      updatePaper(pSource, pTarget, inserting);
 
-			if(userData.papers[doiTarget].upvoters<=0)
-				delete userData.papers[doiTarget];
-		})
+      // remove the paper if it's no longer linked by interesting papers
+      if (pTarget.upvoters <= 0)
+        delete userData.papers[pTarget.doi];
+    });
 }
 
 
 ///////////////		helper functions	/////////////////////////////
 
-function updatePaper(doiSource, doiTarget,inserting){
+function updatePaper(pSource, pTarget, inserting){
 	if(inserting){
-		userData.papers[doiTarget].score+=1;
-		userData.papers[doiTarget].upvoters+=1;
+		pTarget.score+=1;
+		pTarget.upvoters+=1;
 	}
 	else{
-		userData.papers[doiTarget].score-=1;
-		userData.papers[doiTarget].upvoters-=1;
+		pTarget.score-=1;
+		pTarget.upvoters-=1;
 	}
 }
 	
-function adjustedCitationCount(doi){
-	return Math.log(1+ userData.getTotalCitationCount(doi) / (currentYear-global.papers[doi].year));
+function adjustedCitationCount(p) {
+	return Math.log(1 + p.getTotalCitationCount() / (currentYear - p.year));
 }
 
 

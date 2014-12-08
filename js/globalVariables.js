@@ -30,115 +30,40 @@ var userData={
     "newDeselectedPapers":[]
 }; 
 
-userData.getCore=function(){
-    return Object.keys(userData.papers).filter(function(doi){
-        return userData.papers[doi].core;
-    });
+
+userData.addNewSelected = function(p) {
+  var index = userData.newDeselectedPapers.indexOf(p);
+  if(index >- 1)
+    userData.newDeselectedPapers.splice(index,1);
+  else
+    userData.newSelectedPapers.push(p);
 }
 
-userData.getFringe=function(){
-    return Object.keys(userData.papers).filter(function(doi){
-        return userData.papers[doi].fringe;
-    });
+userData.removeSelected = function(p) {
+  var index = userData.newSelectedPapers.indexOf(p);
+  if(index >- 1)
+    userData.newSelectedPapers.splice(index,1);
+  else
+    userData.newDeselectedPapers.push(p);
 }
 
-// Return fringe sorted by relevance score
-userData.getSortedFringe=function(){
-    return userData.getFringe()
-        .sort(function(a,b){
-            // decreasing order!
-            return userData.papers[b].score-userData.papers[a].score;
-        });
-}
 
-// Return fringe sorted and without the "external" papers
-userData.getSortedAndPrunedFringe=function(){
-    return userData.getSortedFringe().filter(function(doi){
-        return global.papers.hasOwnProperty(doi);
-    });
-}
-
-userData.getSelected=function(){
-    return Object.keys(userData.papers).filter(function(doi){
-        return userData.papers[doi].selected;
-    });
-}
-
-// All the papers of interest to the user
-userData.getAllButNonSelected=function(){
-    return Object.keys(userData.papers).filter(function(doi){
-        return (userData.papers[doi].core || userData.papers[doi].toRead || userData.papers[doi].selected);
-    });
-}
-
-userData.addNewSelected=function(doi){
-    var index=userData.newDeselectedPapers.indexOf(doi);
-    if(index>-1)
-        userData.newDeselectedPapers.splice(index,1);
-    else
-        userData.newSelectedPapers.push(doi);
-}   
-
-userData.removeSelected=function(doi){
-    var index=userData.newSelectedPapers.indexOf(doi);
-    if(index>-1)
-        userData.newSelectedPapers.splice(index,1);
-    else
-        userData.newDeselectedPapers.push(doi);
-}
-
-userData.getAll=function(){
-    return Object.keys(userData.papers);
-}
-
-// this should be a method of P
-userData.getInternalCitationCount=function(doi){
-    return global.papers[doi].citations.length;
-}
-
-// this should be a method of P
-userData.getTotalCitationCount=function(doi){
-    return Math.max(global.papers[doi].citation_count,
-        userData.getInternalCitationCount(doi));
-}
-   
 userData.getEscapedId = function(doi){
-    return "#" + doi.slice(0,doi.indexOf("/")) + "\\" + doi.slice(doi.indexOf("/")) 
+  return "#" + doi.slice(0,doi.indexOf("/")) + "\\" + doi.slice(doi.indexOf("/")) 
 }
 
-// Return Author1, Author2, Author3 – CHI '96
-userData.metadataToString=function(doi){
-    var paper=global.papers[doi];
-    var string=paper.authors[0];
-    for(var i=1; i<paper.authors.length; i++)
-        string+= ", " + paper.authors[i];
-    string+= " – " + paper.conference + " '" + paper.year.slice(2);
-    return string;
-}
 
-// Return the i-th line of the abstract (counting from 0 as any good programmer should count)
-// Deprecated! use helpers.js
-userData.getLineOfAbstract=function(doi,i){
-    return global.papers[doi].abstract.slice(i*charactersPerLine,(i+1)*charactersPerLine);
-}
-
-// Counts the number of lines of the abstract, depending on the line width
-userData.getAbstractLineCount=function(doi){
-    return global.papers[doi].abstract.length/charactersPerLine;
-}
 
 // debug
-userData.computeTotalScore=function(){
-    var sum=0;
-    userData.getFringe().forEach(function(doi){
-        sum+=userData.papers[doi].score;
-    });   
-    return sum;
+userData.computeTotalScore=function() {
+  return P.fringe().reduce(function(a, b) {
+    return a + b.score;
+  }, 0);
 }
 
 // debug info
 function info(){
-    console.log("length: "+userData.getSortedAndPrunedFringe().length+"  total_score: "+userData.computeTotalScore());
+    console.log("length: "+P.getSortedFringe().length+"  total_score: "+userData.computeTotalScore());
 }
 
 ///////     hard-coded set of seed papers    /////////////////

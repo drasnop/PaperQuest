@@ -32,7 +32,7 @@ function updateFringe() {
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
 function computeVisibleFringe(){
-    global.visibleFringe=userData.getSortedAndPrunedFringe().slice(0,maxNumberOfVisiblePapers());
+  global.visibleFringe = P.sortedFringe().slice(0,maxNumberOfVisiblePapers());
 }
 
 // Create some svg elements, once and for all
@@ -101,7 +101,7 @@ function manageDynamicElements(animate){
     // Join new data with old elements, if any
 
     var papers = svg.selectAll(".paper")
-    .data(global.visibleFringe, function(d){ return global.visibleFringe.indexOf(d); })
+    .data(global.visibleFringe, function(p) { return global.visibleFringe.indexOf(p); })
         // using this key function is critical to ensure papers will change position when updating the fringe
 
     //--------------------ENTER---------------------//
@@ -110,7 +110,7 @@ function manageDynamicElements(animate){
     var enteringPapers = papers.enter()
     .append("g")
     .attr("class","paper")
-    .attr("id", function(d) { return d;})
+    .attr("id", function(p) { return p.doi;})
 
     var zoom0 = enteringPapers.append("g")
     .attr("class","zoom0")
@@ -126,29 +126,29 @@ function manageDynamicElements(animate){
     // the outer circle displays the larger (relative) citation count
     zoom0.append("circle")
     .attr("class", "outerCitationsCircle")
-    .style("fill", function(d) { return fringePaperOuterColor(d); })
+    .style("fill", function(p) { return fringePaperOuterColor(p); })
 
     zoom0.append("circle")
     .attr("class", "innerCitationsCircle")
-    .style("fill", function(d) { return fringePaperInnerColor(d); })
+    .style("fill", function(p) { return fringePaperInnerColor(p); })
 
     zoom0.append("text")
     .attr("class", "title")
-    .classed("highlighted", function(d) {return userData.papers[d].selected;})
+    .classed("highlighted", function(p) { return p.selected; })
     .attr("dy",".35em")     // align ligne middle
-    .text(function(d) { return global.papers[d].title;} )
+    .text(function(p) { return p.title; })
     .style("opacity","0")   // otherwise it looks ugly when they come in
     .append("svg:title")
-    .text(function(d){ return global.papers[d].citation_count + " external, " + global.papers[d].citations.length + " internal; "
-        + global.papers[d].citation_count/externalCitationCountCutoff+ " adjusted external, "
-        + global.papers[d].citations.length/internalCitationCountCutoff+ " adjusted internal";})
+    .text(function(p){ return p.citation_count + " external, " + p.citations.length + " internal; "
+        + p.citation_count/externalCitationCountCutoff+ " adjusted external, "
+        + p.citations.length/internalCitationCountCutoff+ " adjusted internal";})
 
     enteringPapers.append("a")
-    .attr("xlink:href",function(d){ return "http://dl.acm.org/citation.cfm?id="+d.slice(d.indexOf("/")+1); })
+    .attr("xlink:href",function(p) { return "http://dl.acm.org/citation.cfm?id="+p.doi.slice(p.doi.indexOf("/")+1); })
     .attr("xlink:show","new")   // open in a new tab
     .append("text")
     .attr("class", "metadata")
-    .text(function(d) { return userData.metadataToString(d);} )
+    .text(function(p) { return p.metadataToString(); } )
     .style("opacity","0")       // used for smooth fade-in apparition
 
     enteringPapers.append("foreignObject")
@@ -156,11 +156,11 @@ function manageDynamicElements(animate){
     .append("xhtml:body")
     .append("div")
     .attr("class","abstract")
-    .text(function(d) { return global.papers[d].abstract;} )
+    .text(function(p) { return p.abstract; })
     .style("width",abstractLineWidth+"px")
-    .each(function(doi){
-        // stores the height of the abstract, to be used later
-        userData.papers[doi].abstractHeight=d3.select(this).node().offsetHeight;
+    .each(function(p) {
+      // stores the height of the abstract, to be used later
+      p.abstractHeight = d3.select(this).node().offsetHeight;
     })
     .style("height","0px")   // for a nice unfolding entrance animation
 
@@ -172,16 +172,16 @@ function manageDynamicElements(animate){
     var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
     global.animationRunning=true;
 
-    t0.each(function(d){
-        if(!P(d).selected && !userData.newSelectedPapers.hasOwnProperty(d)){
+    t0.each(function(p) {
+        if(!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)){
             // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
             var scaling="matrix(" + compressionRatio[global.zoom] + ",0,0," + compressionRatio[global.zoom] +","
-                + (fringePaperX(d)-compressionRatio[global.zoom]*fringePaperX(d)) +","
-                + (fringePaperY(d)-compressionRatio[global.zoom]*fringePaperY(d)) +")";   
+                + (fringePaperX(p)-compressionRatio[global.zoom]*fringePaperX(p)) +","
+                + (fringePaperY(p)-compressionRatio[global.zoom]*fringePaperY(p)) +")";   
 
             d3.select(this).attr("transform",scaling)
 
-            if(userData.newSelectedPapers.length>0 || userData.getSelected().length>0)
+            if(userData.newSelectedPapers.length>0 || P.selected().length>0)
                 d3.select(this).style("opacity",opacityOfNonSelectedPapers[global.zoom])
             else
                 d3.select(this).style("opacity",1)
@@ -193,16 +193,17 @@ function manageDynamicElements(animate){
 
     })
 
+      // TODO: refactoring, not sure what this does, doesn't seem to trigger
     t0.select(".card")
-    .attr("x", function(d) { return fringePaperXCard(d);} )
-    .attr("y", function(d) { return fringePaperYCard(d);} )
-    .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+    .attr("x", function(p) { return fringePaperXCard(p);} )
+    .attr("y", function(p) { return fringePaperYCard(p);} )
+    .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     .attr("height",2*paperMaxRadius)
 
     t0.select(".outerCitationsCircle")
-    .attr("cx", function(d) { return fringePaperX(d);} )
-    .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(d,true);} )
+    .attr("cx", function(p) { return fringePaperX(p);} )
+    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("r", function(p) {return radius(p,true);} )
     
     // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
@@ -210,10 +211,10 @@ function manageDynamicElements(animate){
         var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
 
         t1.select(".outerCitationsCircle")
-        .style("fill", function(d) { return fringePaperOuterColor(d); })
+        .style("fill", function(p) { return fringePaperOuterColor(p); })
 
         t1.select(".innerCitationsCircle")
-        .style("fill", function(d) { return fringePaperInnerColor(d); })
+        .style("fill", function(p) { return fringePaperInnerColor(p); })
 
         // When t1 finishes, check whether an animation is waiting (for update automatically)
         t1.call(endAll, function(){
@@ -233,13 +234,13 @@ function manageDynamicElements(animate){
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
     t0.select(".innerCitationsCircle")
-    .attr("cx", function(d) { return fringePaperX(d);} )
-    .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(d,false);} )
+    .attr("cx", function(p) { return fringePaperX(p);} )
+    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("r", function(p) {return radius(p,false);} )
 
     t0.select(".title")
-    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d);} )
+    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
+    .attr("y", function(p) {return fringePaperY(p);} )
     .style("opacity","1")
 
     /* the following elements are sometimes not visible. we use a fade-in to show and hide them,
@@ -247,27 +248,27 @@ function manageDynamicElements(animate){
     * otherwise they will impede selection of other elements (as they may be drawn on top of these). */
 
     t0.select(".metadata")
-    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+metadataYoffset;} )
-    .style("opacity", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? 1: 0;})
-    .style("display", function(d) { return (userData.papers[d].selected && global.zoom>=1) ? "": "none";})
+    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
+    .attr("y", function(p) {return fringePaperY(p)+metadataYoffset;} )
+    .style("opacity", function(p) { return (p.selected && global.zoom>=1) ? 1: 0;})
+    .style("display", function(p) { return (p.selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll(".abstractWrapper")
-    .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(d) {return fringePaperY(d)+metadataYoffset+abstractYoffset;} )
+    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
+    .attr("y", function(p) {return fringePaperY(p)+metadataYoffset+abstractYoffset;} )
     .attr("width",abstractLineWidth)
-    .attr("height", function(d) { return userData.papers[d].abstractHeight;})
+    .attr("height", function(p) { return p.abstractHeight;})
 
     t0.selectAll(".abstract")
-    .style("height", function(d) { return (userData.papers[d].selected && global.zoom>=2) ?
-                                            userData.papers[d].abstractHeight+"px": "0px";})
+    .style("height", function(p) { return (p.selected && global.zoom>=2) ?
+                                            p.abstractHeight+"px": "0px";})
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
-    .attr("cx", function(d) { return fringePaperX(d);} )
-    .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return maxRadius(d)+paperOuterBorderWidth;} )
-    .style("display", function(d) { return userData.papers[d].selected? "": "none";})
+    .attr("cx", function(p) { return fringePaperX(p);} )
+    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("r", function(p) {return maxRadius(p)+paperOuterBorderWidth;} )
+    .style("display", function(p) { return p.selected ? "" : "none"; })
 
     //--------------------EXIT---------------------//
     // Remove old elements as needed.
@@ -298,7 +299,7 @@ function bindListeners(){
         d3.select(this).select(".title").classed("highlighted",true)    // add class
         d3.select(this).select(".card")
         .classed("highlighted",true)
-        .attr("width", function(d) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+        .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
     .on("mouseleave",function() {
         // remove shadow
@@ -309,8 +310,8 @@ function bindListeners(){
         .filter(function(){ 
                 // this is ugly as hell, but I don't know how to access d cleanly...
                 var res;
-                d3.select(this).each(function(d){
-                    res=!userData.papers[d].selected;
+                d3.select(this).each(function(p) {
+                    res=!p.selected;
                 })
                 return res;
             })
@@ -321,14 +322,14 @@ function bindListeners(){
     // clicking papers on the fringe translates them to the left
     .on("mousedown",function() {
         var paper=d3.select(this);
-        paper.each(function(d) {
-            userData.papers[d].selected=!userData.papers[d].selected;
+        paper.each(function(p) {
+            p.selected = !p.selected;
 
             // Add or remove the paper to the list that will update the fringe
-            if(userData.papers[d].selected)
-                userData.addNewSelected(d);
+            if(p.selected)
+              userData.addNewSelected(p);
             else
-                userData.removeSelected(d);
+              userData.removeSelected(p);
 
             // Enable or disable the updateFringe button, if new papers have been (de)selected
             if((userData.newSelectedPapers.length>0 || userData.newDeselectedPapers.length>0) && !global.updateAutomatically)
@@ -403,9 +404,9 @@ function bindListeners(){
 ////////////////    helper functions    //////////////
 
 // Compute the height of a paper on the fringe, depending on the zoom level and whether it is selected
-function fringePaperHeight(d){
+function fringePaperHeight(p) {
     // If the paper is not selected, its height decreases with the zoom level
-    if(!userData.papers[d].selected)
+    if(!p.selected)
         return 2*paperMaxRadius*compressionRatio[global.zoom];
 
     // If the paper is selected, its height increases with the zoom level
@@ -416,7 +417,7 @@ function fringePaperHeight(d){
 
     // The height of the abstract must be computed for each paper individually
     if(global.zoom>=2)
-        height += userData.papers[d].abstractHeight;
+        height += p.abstractHeight;
 
     // add some whitespace at the bottom to distinguish one paper from the next
     if(global.zoom>0)
@@ -426,34 +427,37 @@ function fringePaperHeight(d){
 }
 
 // Compute X coordinate for a paper on the fringe, based on a circle
-function fringePaperX(d){
-    var h=window.innerHeight;
-    var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
-    var selectedOffset=userData.papers[d].selected? paperXOffsetWhenSelected : 0 ;
-    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-fringePaperY(d),2))+paperMaxRadius+selectedOffset;
+function fringePaperX(p) {
+  var h = window.innerHeight;
+  var centerXoffset = -fringeRadius[global.view] + fringeApparentWidth[global.view];
+  var selectedOffset = p.selected ? paperXOffsetWhenSelected : 0;
+  return centerXoffset +
+    Math.sqrt(Math.pow(fringeRadius[global.view], 2) -
+              Math.pow(h/2 - fringePaperY(p), 2)) +
+    paperMaxRadius+selectedOffset;
 }
 
 // Compute Y coordinate for a paper on the fringe
-function fringePaperY(d){
-    var index=global.visibleFringe.indexOf(d);
+function fringePaperY(p) {
+  var index = global.visibleFringe.indexOf(p);
     
-    // compute the sum of the height of the papers that are above the current one in the fringe
-    var offset=global.scrollOffset;
-    for(var i=0; i<index; i++){
-        offset+=fringePaperHeight(global.visibleFringe[i])
-    }   
-    
-    return offset+paperMaxRadius;
+  // compute the sum of the height of the papers that are above the current one in the fringe
+  var offset = global.scrollOffset;
+  for(var i=0; i<index; i++){
+    offset += fringePaperHeight(global.visibleFringe[i])
+  }
+
+  return offset + paperMaxRadius;
 }
 
 // Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
-function fringePaperXCard(d){
-    return fringePaperX(d)+paperMaxRadius+titleLeftMargin;
+function fringePaperXCard(p){
+    return fringePaperX(p)+paperMaxRadius+titleLeftMargin;
 }
 
 // Compute Y coordinate for the "card" (the rectangle label) of a paper on the fringe
-function fringePaperYCard(d){
-    return fringePaperY(d)-paperMaxRadius;
+function fringePaperYCard(p){
+    return fringePaperY(p)-paperMaxRadius;
 }
 
 /* Compute how many papers can be displayed on the fringe at the minimum zoom level
@@ -477,20 +481,20 @@ function updateFringeButtonX(){
 
 // Compute a node radius for the appropriate citation count supplied, up to a certain max radius
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
-function radius(doi, outer){
+function radius(p, outer){
 
-    var externalLarger = isExternalRelativelyLargerThanInternal(doi);
+    var externalLarger = isExternalRelativelyLargerThanInternal(p);
     console.log(externalLarger)
     var representingExternal= (externalLarger == outer);
     //console.log(representingExternal+ " "+outer+" "+externalLarger)
-    var count=representingExternal? global.papers[doi].citation_count/externalCitationCountCutoff
-     : global.papers[doi].citations.length/internalCitationCountCutoff;
+    var count=representingExternal? p.citation_count/externalCitationCountCutoff
+     : p.citations.length/internalCitationCountCutoff;
 
     return Math.min(paperMaxRadius, (paperMaxRadius-paperMinRadius)*count);
 }
 
-function maxRadius(doi){
-    return Math.max(radius(doi,true), radius(doi,false));
+function maxRadius(p){
+    return Math.max(radius(p,true), radius(p,false));
 }
 
 // Return a random color from the set of tag colors
@@ -505,27 +509,27 @@ function colorFromUpvoters(n){
     return colors.tags[n-1];  // between 1..4
 }
 
-function fringePaperOuterColor(doi) {
-    var base=colorFromUpvoters(userData.papers[doi].upvoters);
+function fringePaperOuterColor(p) {
+    var base=colorFromUpvoters(p.upvoters);
     //console.log(global.papers[doi].citations.length/internalCitationCountCutoff + " " +global.papers[doi].citation_count/externalCitationCountCutoff)
-    if(!isExternalRelativelyLargerThanInternal(doi))
+    if(!isExternalRelativelyLargerThanInternal(p))
         return base;
     //console.log("outer "+shadeHexColor(base,shadingDifferenceInnerOuter))
     return shadeHexColor(base,shadingDifferenceInnerOuter);
 }
 
-function fringePaperInnerColor(doi) {
-    var base=colorFromUpvoters(userData.papers[doi].upvoters);
-    if(isExternalRelativelyLargerThanInternal(doi)){
+function fringePaperInnerColor(p) {
+    var base=colorFromUpvoters(p.upvoters);
+    if(isExternalRelativelyLargerThanInternal(p)){
         //console.log("internal "+base)       
         return base;
     }
     return shadeHexColor(base,shadingDifferenceInnerOuter);
 }
 
-function isExternalRelativelyLargerThanInternal(doi){
-    return global.papers[doi].citation_count/externalCitationCountCutoff
-    > global.papers[doi].citations.length/internalCitationCountCutoff;
+function isExternalRelativelyLargerThanInternal(p){
+    return p.citation_count/externalCitationCountCutoff
+    > p.citations.length/internalCitationCountCutoff;
 }
 
 ///////////////     Define public static methods, and return    /////////////
