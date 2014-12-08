@@ -112,29 +112,35 @@ function manageDynamicElements(animate){
     .attr("class","paper")
     .attr("id", function(d) { return d;})
 
-    enteringPapers.append("rect")
+    var zoom0 = enteringPapers.append("g")
+    .attr("class","zoom0")
+
+    zoom0.append("rect")
     .attr("class","card")
 
-    enteringPapers.append("circle")
+    zoom0.append("circle")
     .attr("class","outerNode")
     .style("fill","white")
 
-    enteringPapers.append("circle")
+    zoom0.append("circle")
     .attr("class", "node")
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
 
-    enteringPapers.append("circle")
+    zoom0.append("circle")
     .attr("class", "innerNode")
     .style("fill","rgba(255,255,255,.5)")
 
-    enteringPapers.append("text")
+    zoom0.append("text")
     .attr("class", "title")
     .classed("highlighted", function(d) {return userData.papers[d].selected;})
     .attr("dy",".35em")     // align ligne middle
     .text(function(d) { return global.papers[d].title;} )
     .style("opacity","0")   // otherwise it looks ugly when they come in
 
-    enteringPapers.append("text")
+    enteringPapers.append("a")
+    .attr("xlink:href",function(d){ return "http://dl.acm.org/citation.cfm?id="+d.slice(d.indexOf("/")+1); })
+    .attr("xlink:show","new")   // open in a new tab
+    .append("text")
     .attr("class", "metadata")
     .text(function(d) { return userData.metadataToString(d);} )
     .style("opacity","0")       // used for smooth fade-in apparition
@@ -149,7 +155,6 @@ function manageDynamicElements(animate){
     .each(function(doi){
         // stores the height of the abstract, to be used later
         userData.papers[doi].abstractHeight=d3.select(this).node().offsetHeight;
-        console.log(d3.select(this).node().offsetHeight)
     })
     .style("height","0px")   // for a nice unfolding entrance animation
 
@@ -256,8 +261,8 @@ function bindListeners(){
         d3.select(this).attr("filter","none")
     })
 
-    // highlight papers
-    d3.selectAll(".paper")
+    // highlight nodes and titles
+    d3.selectAll(".zoom0")
     .on("mouseover",function() {
         d3.select(this).select(".node").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
