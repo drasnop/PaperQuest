@@ -105,3 +105,13 @@ function endAll (transition, callback) {
         });
     }
 }
+
+d3.selection.prototype.moveToBackOf = function(elem) { 
+    return this.each(function() { 
+        var firstChild = elem.node().firstChild; 
+        console.log(firstChild)
+        if (firstChild) { 
+            elem.node().insertBefore(this, firstChild); 
+        } 
+    }); 
+};

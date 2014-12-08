@@ -19,6 +19,9 @@ var paperMinRadius = 0,
 var metadataYoffset = 1.8*paperMaxRadius,
     abstractYoffset = 7;   // in addition to metadaYoffset
 
+// Indicates how much the non-selected papers are shrunk when zoom=0,1,2
+var compressionRatio = [1,.8,0],
+    opacityOfNonSelectedPapers = [.75,.45,0];
 
 // Defines 3 types of animation: none, slow, fast, very fast
 var fringePapersTransitionEasing="quad-in-out",

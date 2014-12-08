@@ -117,6 +117,7 @@ function manageDynamicElements(animate){
 
     zoom0.append("rect")
     .attr("class","card")
+    .moveToBackOf(svg)
 
     zoom0.append("circle")
     .attr("class","outerNode")
@@ -165,6 +166,27 @@ function manageDynamicElements(animate){
 
     var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
     global.animationRunning=true;
+
+    t0.each(function(d){
+        if(!P(d).selected && !userData.newSelectedPapers.hasOwnProperty(d)){
+            // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
+            var scaling="matrix(" + compressionRatio[global.zoom] + ",0,0," + compressionRatio[global.zoom] +","
+                + (fringePaperX(d)-compressionRatio[global.zoom]*fringePaperX(d)) +","
+                + (fringePaperY(d)-compressionRatio[global.zoom]*fringePaperY(d)) +")";   
+
+            d3.select(this).attr("transform",scaling)
+
+            if(userData.newSelectedPapers.length>0 || userData.getSelected().length>0)
+                d3.select(this).style("opacity",opacityOfNonSelectedPapers[global.zoom])
+            else
+                d3.select(this).style("opacity",1)
+        }
+        else{
+            d3.select(this).attr("transform",null)
+            d3.select(this).style("opacity",1)
+        }
+
+    })
 
     t0.select(".card")
     .attr("x", function(d) { return fringePaperXCard(d);} )
@@ -337,8 +359,7 @@ function bindListeners(){
     })
 
     d3.select("#core").on("click",function(){
-        console.log(t1)
-        console.log(t1.empty()+" "+t1.size())
+        d3.select(this).attr("transform","matrix(sx, 0, 0, sy, cx-sx*cx, cy-sy*cy)")
     })
 
     // detect zoom in and out
@@ -371,7 +392,7 @@ function bindListeners(){
 function fringePaperHeight(d){
     // If the paper is not selected, its height decreases with the zoom level
     if(!userData.papers[d].selected)
-        return 2*paperMaxRadius;
+        return 2*paperMaxRadius*compressionRatio[global.zoom];
 
     // If the paper is selected, its height increases with the zoom level
     var height=2*paperMaxRadius;
