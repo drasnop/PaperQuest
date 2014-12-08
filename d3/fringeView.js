@@ -138,6 +138,10 @@ function manageDynamicElements(animate){
     .attr("dy",".35em")     // align ligne middle
     .text(function(d) { return global.papers[d].title;} )
     .style("opacity","0")   // otherwise it looks ugly when they come in
+    .append("svg:title")
+    .text(function(d){ return global.papers[d].citation_count + " external, " + global.papers[d].citations.length + " internal; "
+        + global.papers[d].citation_count/externalCitationCountCutoff+ " adjusted external, "
+        + global.papers[d].citations.length/internalCitationCountCutoff+ " adjusted internal";})
 
     enteringPapers.append("a")
     .attr("xlink:href",function(d){ return "http://dl.acm.org/citation.cfm?id="+d.slice(d.indexOf("/")+1); })
@@ -198,7 +202,7 @@ function manageDynamicElements(animate){
     t0.select(".outerCitationsCircle")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radiusWithMinimum(userData.getTotalCitationCount(d));} ) 
+    .attr("r", function(d) {return radius(d,true);} )
     
     // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
@@ -206,7 +210,10 @@ function manageDynamicElements(animate){
         var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
 
         t1.select(".outerCitationsCircle")
-        .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })
+        .style("fill", function(d) { return fringePaperOuterColor(d); })
+
+        t1.select(".innerCitationsCircle")
+        .style("fill", function(d) { return fringePaperInnerColor(d); })
 
         // When t1 finishes, check whether an animation is waiting (for update automatically)
         t1.call(endAll, function(){
@@ -228,7 +235,7 @@ function manageDynamicElements(animate){
     t0.select(".innerCitationsCircle")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(userData.getInternalCitationCount(d));} )
+    .attr("r", function(d) {return radius(d,false);} )
 
     t0.select(".title")
     .attr("x", function(d) { return fringePaperX(d)+paperMaxRadius+titleLeftMargin;} )
@@ -259,7 +266,7 @@ function manageDynamicElements(animate){
     t0.select(".outerNode")
     .attr("cx", function(d) { return fringePaperX(d);} )
     .attr("cy", function(d) { return fringePaperY(d);} )
-    .attr("r", function(d) {return radius(userData.getTotalCitationCount(d))+paperOuterBorderWidth;} )
+    .attr("r", function(d) {return maxRadius(d)+paperOuterBorderWidth;} )
     .style("display", function(d) { return userData.papers[d].selected? "": "none";})
 
     //--------------------EXIT---------------------//
@@ -462,15 +469,22 @@ function updateFringeButtonX(){
     return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
 }
 
-// Compute a node radius from the citation count supplied, between min and max
+// Compute a node radius for the appropriate citation count supplied, up to a certain max radius
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
-function radius(citationCount){
-    return Math.min(paperMaxRadius, 
-        (paperMaxRadius-paperMinRadius)*Math.sqrt(citationCount/externalCitationCountCutoff));
+function radius(doi, outer){
+
+    var externalLarger = isExternalRelativelyLargerThanInternal(doi);
+    console.log(externalLarger)
+    var representingExternal= (externalLarger == outer);
+    //console.log(representingExternal+ " "+outer+" "+externalLarger)
+    var count=representingExternal? global.papers[doi].citation_count/externalCitationCountCutoff
+     : global.papers[doi].citations.length/internalCitationCountCutoff;
+
+    return Math.min(paperMaxRadius, (paperMaxRadius-paperMinRadius)*count);
 }
 
-function radiusWithMinimum(citationCount){
-    return Math.max(paperMinRadius, radius(citationCount));   
+function maxRadius(doi){
+    return Math.max(radius(doi,true), radius(doi,false));
 }
 
 // Return a random color from the set of tag colors
@@ -487,16 +501,25 @@ function colorFromUpvoters(n){
 
 function fringePaperOuterColor(doi) {
     var base=colorFromUpvoters(userData.papers[doi].upvoters);
-    if(global.papers[doi].citations.length >= userData.papers[doi].citation_count)
+    //console.log(global.papers[doi].citations.length/internalCitationCountCutoff + " " +global.papers[doi].citation_count/externalCitationCountCutoff)
+    if(!isExternalRelativelyLargerThanInternal(doi))
         return base;
+    //console.log("outer "+shadeHexColor(base,shadingDifferenceInnerOuter))
     return shadeHexColor(base,shadingDifferenceInnerOuter);
 }
 
 function fringePaperInnerColor(doi) {
     var base=colorFromUpvoters(userData.papers[doi].upvoters);
-    if(global.papers[doi].citations.length < userData.papers[doi].citation_count)
+    if(isExternalRelativelyLargerThanInternal(doi)){
+        //console.log("internal "+base)       
         return base;
+    }
     return shadeHexColor(base,shadingDifferenceInnerOuter);
+}
+
+function isExternalRelativelyLargerThanInternal(doi){
+    return global.papers[doi].citation_count/externalCitationCountCutoff
+    > global.papers[doi].citations.length/internalCitationCountCutoff;
 }
 
 ///////////////     Define public static methods, and return    /////////////

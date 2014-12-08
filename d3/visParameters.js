@@ -5,13 +5,11 @@
 
 var paperMinRadius = 0,
     paperMaxRadius = 15,
-    paperInnerWhiteCircleRatio =.4,     // deprecated
     paperOuterBorderWidth = 4,
     paperMarginBottom = 10,              // between on paper and the next (again, to create visual grouping)
     titleLeftMargin = 5,
     paperXOffsetWhenSelected = - (2*paperMaxRadius - titleLeftMargin),
     papersEnteringDistance = 60,        // how far to the right are paper that come in and out of the fringe (not used yet)
-    charactersPerLine = 120,            // [deprecated]
     abstractLineWidth = 800,            // so far used only for wrapping the text of the abstract
     fringeBottomMargin = 30;    // to leave room for the "update" button
 
@@ -54,5 +52,5 @@ var colors={
 var shadingDifferenceInnerOuter=20;
 
 var currentYear=2011; // Must always be one year after the latest year in the dataset (2010 for citeology)
-var externalCitationCountCutoff=150;
-var internalCitationCountCutoff=50;
+var externalCitationCountCutoff=200;
+var internalCitationCountCutoff=25;
