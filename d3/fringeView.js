@@ -381,11 +381,17 @@ function bindListeners(){
         if(d3.event.deltaY>0){
             if(global.zoom<2)
                 global.zoom++;
+            else
+                global.scrollOffset-=amountOfVerticalScrolling;
             // if the user keeps scrolling down, this will be interpreted as a scrolling down
         }
         else{
-            if(global.zoom>0)
-                global.zoom--;
+            if(global.scrollOffset<0)
+                global.scrollOffset+=amountOfVerticalScrolling;
+            else{
+                if(global.zoom>0)
+                    global.zoom--;
+            }
         }
         console.log("zoom: "+global.zoom)
 
@@ -432,7 +438,7 @@ function fringePaperY(d){
     var index=global.visibleFringe.indexOf(d);
     
     // compute the sum of the height of the papers that are above the current one in the fringe
-    var offset=0;
+    var offset=global.scrollOffset;
     for(var i=0; i<index; i++){
         offset+=fringePaperHeight(global.visibleFringe[i])
     }   

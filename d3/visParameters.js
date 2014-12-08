@@ -26,6 +26,7 @@ var fringePapersTransitionEasing="quad-in-out",
     fringePapersPositionTransitionDuration=[0,1000,450,250,120],
     fringePapersColorTransitionDuration=[0,500,0,0,0];
 
+var amountOfVerticalScrolling=100;
 
 // Defines the dimension of each region, index by the current view (core, toread, fringe)
 // The apparent width is the horizontal space that we want the region to occupy on the screen

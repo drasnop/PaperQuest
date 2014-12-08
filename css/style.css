@@ -54,7 +54,7 @@ svg{
 }
 
 .abstract{
-	font-style: italic;
+	/*font-family: Roboto;*/
 	fill:#444;
 	cursor:text;
 }
