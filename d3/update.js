@@ -184,7 +184,7 @@ t0.call(endAll, function () {
     t1.call(endAll, function(){
         global.animationRunning=false;
         if(global.animationWaiting){
-            updateFringe();
+            view.updateFringe();
             global.animationWaiting=false;
         }
     })
