@@ -42,6 +42,11 @@ function manageDynamicElements(animate){
 
 // Create some svg elements, once and for all
 function createStaticElements(){
+  
+/*  // white pannel at the bottom of the fringe  -- probably useless
+  svg.append("rect")
+  .attr("id","bottomPane")*/
+
   // toread
   svg.append("circle")
     .attr("id","toread")
@@ -94,6 +99,14 @@ function createStaticElements(){
 
 // draw the static elements at their appropriate positions
 function drawStaticElements(){
+
+/*    d3.select("#bottomPane")
+    .style("fill","white")
+    .attr("x", circleX(updateFringeButtonY())+parameters.paperMaxRadius)
+    .attr("y", updateFringeButtonY())
+    .attr("width", window.innerWidth)
+    .attr("height", parameters.fringeBottomMargin)*/
+
     d3.select("#updateFringe")
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")

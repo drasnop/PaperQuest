@@ -115,6 +115,12 @@ d3.selection.prototype.moveToBackOf = function(elem) {
     }); 
 };
 
+d3.selection.prototype.moveToFrontOf = function(elem) {
+  return this.each(function(){
+    d3.select(elem).node().appendChild(this);
+  });
+};
+
 // Changes the lightness of a color represented as #112233
 function shadeHexColor(color, percent) {  
     var num = parseInt(color.slice(1),16), amt = Math.round(2.55 * percent), R = (num >> 16) + amt, G = (num >> 8 & 0x00FF) + amt, B = (num & 0x0000FF) + amt;

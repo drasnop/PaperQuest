@@ -106,6 +106,10 @@ enteringPapers.append("foreignObject")
 var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate]).ease(parameters.fringePapersTransitionEasing)
 global.animationRunning=true;
 
+// do not display papers that are at the bottom of the fringe
+// TODO: bring to view selected papers that would be otherwise hidden
+t0.style("display",function(p) { return fringePaperY(p)+fringePaperHeight(p)-parameters.paperMaxRadius<updateFringeButtonY()? "" : "none" ; })
+
 // TODO: refactoring, not sure what this does, doesn't seem to trigger
 // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
 t0.select(".card")
@@ -222,6 +226,8 @@ t0.selectAll(".abstract")
 .style("height", function(p) { return (p.selected && global.zoom>=2) ?
                                         p.abstractHeight+"px": "0px";})
 
+/*d3.select("#bottomPane")
+.moveToFrontOf("#fringe-papers")*/
 
 //--------------------EXIT---------------------//
 // Remove old elements as needed.

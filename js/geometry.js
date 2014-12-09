@@ -59,12 +59,13 @@ function fringePaperLabelX(p){
     return fringePaperX(p)+butterflyOffset+parameters.paperMaxRadius+parameters.titleLeftMargin;
 }
 
-/* Compute how many papers can be displayed on the fringe at the minimum zoom level
-* When zooming in, some of these papers will get pushed outside the view, but it's fine (nice animation).
-* Takes into account some space at the bottom of the fringe to show an update button. */
+/* Compute how many papers can be displayed on the fringe at the zoom level 1 (when they are smallest)
+* Takes into account some space at the bottom of the fringe to show an update button.
+* It will oveflow at the bottom at zoom 0, but it's not a problem (the buttons are standing on top of the papers)
+* When zooming in, some of these papers will get pushed outside the view, but it's fine (nice animation). */
 function maxNumberOfVisiblePapers(){
     var availableHeight=window.innerHeight-parameters.fringeBottomMargin;
-    return Math.floor(availableHeight/(2*parameters.paperMaxRadius));
+    return Math.floor(availableHeight/(2*parameters.paperMaxRadius*parameters.compressionRatio[1]));
 }
 
 function updateFringeButtonY(){
