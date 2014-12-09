@@ -128,6 +128,7 @@ P = (function() {
     return this.citations.length;
   }
 
+  // unused?
   paper.prototype.getTotalCitationCount = function() {
     return Math.max(this.citation_count, this.getInternalCitationCount());
   }
