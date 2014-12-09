@@ -78,19 +78,19 @@ function drawStaticElements(){
 
     // toread
     d3.select("#toread")
-    .attr("cx",-toreadRadius[global.view]+toreadApparentWidth[global.view])
+    .attr("cx",-fringeRadius+global.fringeApparentWidth)
     .attr("cy","50%")
-    .attr("r",toreadRadius[global.view])
-    .style("fill",colors.toread[global.view])
-    .style("stroke",colors.toreadBorder[global.view])
+    .attr("r",fringeRadius)
+    .style("fill",colors.toread)
+    .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
     
-    // core
-    d3.select("#core")
+    // core  --- Deprecated
+/*    d3.select("#core")
     .attr("cx",-coreRadius[global.view]+coreApparentWidth[global.view])
     .attr("cy","50%")
     .attr("r",coreRadius[global.view])
-    .style("fill",colors.core[global.view])
+    .style("fill",colors.core[global.view])*/
 }
 
 
@@ -428,13 +428,15 @@ function fringePaperHeight(p) {
 
 // Compute X coordinate for a paper on the fringe, based on a circle
 function fringePaperX(p) {
-  var h = window.innerHeight;
-  var centerXoffset = -fringeRadius[global.view] + fringeApparentWidth[global.view];
   var selectedOffset = p.selected ? paperXOffsetWhenSelected : 0;
-  return centerXoffset +
-    Math.sqrt(Math.pow(fringeRadius[global.view], 2) -
-              Math.pow(h/2 - fringePaperY(p), 2)) +
-    paperMaxRadius+selectedOffset;
+  return selectedOffset + circleX(fringePaperY(p)) + paperMaxRadius + 2*titleLeftMargin;
+}
+
+// Return the x coordinate corresponding to a y position on the circle
+function circleX(y) {
+  var h = window.innerHeight;
+  var centerXoffset = -fringeRadius + global.fringeApparentWidth;
+  return centerXoffset + Math.sqrt(Math.pow(fringeRadius, 2) - Math.pow(h/2 - y, 2));
 }
 
 // Compute Y coordinate for a paper on the fringe
@@ -475,8 +477,8 @@ function updateFringeButtonY(){
 // Compute the horizontal position of the updateFringe button
 function updateFringeButtonX(){
     var h=window.innerHeight;
-    var centerXoffset=-fringeRadius[global.view]+fringeApparentWidth[global.view];
-    return centerXoffset+Math.sqrt(Math.pow(fringeRadius[global.view],2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
+    var centerXoffset=-fringeRadius+global.fringeApparentWidth;
+    return centerXoffset+Math.sqrt(Math.pow(fringeRadius,2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
 }
 
 // Compute a node radius for the appropriate citation count supplied, up to a certain max radius
@@ -484,13 +486,11 @@ function updateFringeButtonX(){
 function radius(p, outer){
 
     var externalLarger = isExternalRelativelyLargerThanInternal(p);
-    console.log(externalLarger)
     var representingExternal= (externalLarger == outer);
-    //console.log(representingExternal+ " "+outer+" "+externalLarger)
     var count=representingExternal? p.citation_count/externalCitationCountCutoff
      : p.citations.length/internalCitationCountCutoff;
 
-    return Math.min(paperMaxRadius, (paperMaxRadius-paperMinRadius)*count);
+    return Math.min(paperMaxRadius, paperMaxRadius*count);
 }
 
 function maxRadius(p){
