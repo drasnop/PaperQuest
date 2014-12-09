@@ -202,7 +202,7 @@ function bindListeners(){
       // Keep the node highlighted while using the menu.  Have to use
       // document.getElementById because the id (the DOI) contains
       // dots and d3 chokes
-      var selection = d3.select(document.getElementById(global.interactivePaper.doi)).select(".zoom0");
+      var selection = d3.select(document.getElementById(global.activePaper.doi)).select(".zoom0");
       selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".title").classed("highlighted",true)    // add class
@@ -219,11 +219,31 @@ function bindListeners(){
       // Remove highlighting from the node.  We use
       // document.getElementById because the id (the DOI) has dots and
       // d3 chokes.
-      var selection = d3.select(document.getElementById(global.interactivePaper.doi)).select(".zoom0");
+      var selection = d3.select(document.getElementById(global.activePaper.doi)).select(".zoom0");
       selection.select(".internalCitationsCircle").attr("filter","none")
       selection.select(".externalCitationsCircle").attr("filter","none")
       selection.select(".title").classed("highlighted", false);
       selection.select(".card").classed("highlighted", false);
+    });
+
+  d3.selectAll("#paper-menu .click")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      d3.select(this).classed("active", false);
+    });
+
+  d3.selectAll("#paper-menu .toggle")
+    .on("mousedown", function() {
+      // TODO: Temporary toggle mockup.  Eventually these should be
+      // mapped to paper state, particularly the starred icon.
+      var selection = d3.select(this);
+      if (this.className.indexOf("active") > -1) {
+        selection.classed("active", false);
+      } else {
+        selection.classed("active", true);
+      }
     });
 
   // Show/hide paper menus
@@ -238,7 +258,7 @@ function bindListeners(){
       }
 
       // Record interactive paper
-      global.interactivePaper = p;
+      global.activePaper = p;
       showMenu(p);
     })
 
@@ -315,7 +335,7 @@ function bindListeners(){
       });
 
       // Reposition the menu
-      showMenu(global.interactivePaper);
+      showMenu(global.activePaper);
     })
 
     // After (de)selecting a paper, update the fringe if updateAutomatically is true
@@ -371,9 +391,15 @@ function showMenu(p) {
 
 function hideMenu() {
   // Clear interactive paper
-  global.interactivePaper = null;
+  global.activePaper = null;
   d3.select("#paper-menu")
     .style("display", "none");
+  // TODO: This eventually won't be necessary, the buttons should be
+  // mapped to the paper's state.
+  // Clear all active buttons
+  d3.selectAll("#paper-menu .toggle").each(function() {
+    d3.select(this).classed("active", false);
+  });
 }
 
 

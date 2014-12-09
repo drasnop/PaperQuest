@@ -29,7 +29,7 @@ var global={
   // whether the fringe should be rounded
   "circular":true,
   // The paper that's currently interactive (menu is showing)
-  "interactivePaper": null
+  "activePaper": null
 };
 
 global.switchEncoding = function(){
