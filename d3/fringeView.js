@@ -64,6 +64,9 @@ function createStaticElements(){
     d3.select("#updateFringeAutomatically")
     .append("span")
     .text("automatically")
+
+  svg.append("rect")
+  .attr("id", "core-divisor");
 }
 
 // draw the static elements at their appropriate positions
@@ -85,12 +88,22 @@ function drawStaticElements(){
     .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
     
-    // core  --- Deprecated
-/*    d3.select("#core")
-    .attr("cx",-coreRadius[global.view]+coreApparentWidth[global.view])
-    .attr("cy","50%")
-    .attr("r",coreRadius[global.view])
-    .style("fill",colors.core[global.view])*/
+  // coreDivisor
+  var drag = d3.behavior.drag()
+    .on("drag", function(d, i) {
+      d3.select(this).attr("y", d3.event.y);
+    });
+
+  d3.select("#core-divisor")
+    .attr("x", 0)
+    .attr("y", "50%")
+    .attr("width", global.fringeApparentWidth)
+    .attr("height", 5)
+//    .attr("draggable", false)  // no drag shadow
+    .style("fill", colors.coreDivisor)
+    .style("stroke", colors.coreDivisor)
+    .style("fill-opacity", 0.5)
+    .call(drag);
 }
 
 

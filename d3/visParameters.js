@@ -64,16 +64,16 @@ var parameters= {
 
 
 var colors={
-    // orange, green, blue, pink, darkblue
-    "tags":["#F18D05","#61AE24","#00A1CB","#D70060","#113F8C"],
-    // how much lighter are the external citations
-    "shadingDifferenceInternalExternal":20,
-    // thése two colors are pretty, but probably shouldn't be used for tags (too similar)
-    "turquoise":"#01A4A4",      
-    "red":"#E54028",        
-    // background color of each region based on the current view
-    "core":"rgb(223, 111, 95)",
-    "toread":"rgb(242, 222, 195)",
-    "toreadBorder":"rgb(242, 210, 166)"
+  // orange, green, blue, pink, darkblue
+  "tags":["#F18D05","#61AE24","#00A1CB","#D70060","#113F8C"],
+  // how much lighter are the external citations
+  "shadingDifferenceInternalExternal":20,
+  // thése two colors are pretty, but probably shouldn't be used for tags (too similar)
+  "turquoise":"#01A4A4",      
+  "red":"#E54028",        
+  // background color of each region based on the current view
+  "core":"rgb(253, 141, 125)",
+  "coreDivisor":"rgb(223, 111, 95)",
+  "toread":"rgb(242, 222, 195)",
+  "toreadBorder":"rgb(242, 210, 166)"
 }
-
