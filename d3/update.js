@@ -29,7 +29,7 @@ var zoom0 = enteringPapers.append("g")
     .attr("class","outerNode")
     .style("fill","white")
 
-    if(global.butterfly){
+    if(global.butterfly){        
         glyph.append("circle")
         .attr("class", "internalCitationsCircle")
         .style("fill", function(p) { return fringePaperInternalColor(p); })
@@ -60,6 +60,11 @@ var zoom0 = enteringPapers.append("g")
         .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })  
     }
 
+    glyph.append("svg:title")
+    .text(function(p){ return p.citation_count + " external, " + p.citations.length + " internal; "
+        + p.citation_count/parameters.externalCitationCountCutoff+ " adjusted external, "
+        + p.citations.length/parameters.internalCitationCountCutoff+ " adjusted internal";})
+
 
 zoom0.append("rect")
 .attr("class","card")
@@ -71,10 +76,6 @@ zoom0.append("text")
 .attr("dy",".35em")     // align ligne middle
 .text(function(p) { return p.title; })
 .style("opacity","0")   // otherwise it looks ugly when they come in
-.append("svg:title")
-.text(function(p){ return p.citation_count + " external, " + p.citations.length + " internal; "
-    + p.citation_count/parameters.externalCitationCountCutoff+ " adjusted external, "
-    + p.citations.length/parameters.internalCitationCountCutoff+ " adjusted internal";})
 
 enteringPapers.append("a")
 .attr("xlink:href",function(p) { return "http://dl.acm.org/citation.cfm?id="+p.doi.slice(p.doi.indexOf("/")+1); })
@@ -196,7 +197,6 @@ t0.call(endAll, function () {
 .select(".externalCitationsCircle")
 .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
 
-
 t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return fringePaperY(p);} )
@@ -217,6 +217,7 @@ t0.selectAll(".abstractWrapper")
 .attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset+parameters.abstractYoffset;} )
 .attr("width",parameters.abstractLineWidth)
 .attr("height", function(p) { return p.abstractHeight;})
+.style("display", function(p) { return (p.selected && global.zoom>=2) ? "": "none";})
 
 t0.selectAll(".abstract")
 .style("height", function(p) { return (p.selected && global.zoom>=2) ?

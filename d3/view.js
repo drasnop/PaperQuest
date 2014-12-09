@@ -163,18 +163,20 @@ function drawStaticElements(){
 // Specify interaction
 function bindListeners(){
 
+/*  ---- Kinda deprecated - the glyph shadow highlighting is done below... 
     d3.selectAll(".shadowOnHover")
     .on("mouseover",function() {
         d3.select(this).attr("filter","url(#drop-shadow)")
     })
     .on("mouseleave",function() {
         d3.select(this).attr("filter","none")
-    })
+    })*/
 
     // highlight nodes and titles
     d3.selectAll(".zoom0")
     .on("mouseover",function() {
         d3.select(this).select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
+        d3.select(this).select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
         d3.select(this).select(".card")
         .classed("highlighted",true)
@@ -183,6 +185,7 @@ function bindListeners(){
     .on("mouseleave",function() {
         // remove shadow
         d3.select(this).select(".internalCitationsCircle").attr("filter","none")
+        d3.select(this).select(".externalCitationsCircle").attr("filter","none")
         
         // keep the selected elements highlighted
         var nonSelectedOnly=d3.select(this)
