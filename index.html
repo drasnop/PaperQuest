@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>PaperQuest</title>
+
+    <!-- From http://metroui.org.ua/icons.html -->
+    <link rel="stylesheet" href="css/iconFont.min.css"></link>
+
     <link rel="stylesheet" href="css/normalize.css"></link>
     <link rel="stylesheet" href="css/style.css"></link>
 
@@ -20,6 +24,16 @@
     <script type="text/javascript" src="d3/update.js"></script>
 </head>
 <body>
+  <ul id="paper-menu">
+    <li id="menu-remove"><span class="icon-cancel-2"></span></li>
+    <li id="menu-star"><span class="icon-star-4"></span></li>
+    <li id="menu-tocore"><span class="icon-checkmark"></span></li>
+    <li id="menu-tofringe"><span class="icon-arrow-right"></span></li>
+    <li id="menu-toread"><span class="icon-arrow-left"></span></li>
+    <li id="menu-links"><span class="icon-tree-view"></span></li>
+    <li id="menu-expand" class="active"><span class="icon-arrow-down-5"></span></li>
+  </ul>
+  
     <script type="text/javascript" src="js/main.js"></script>
     <div id="sidebar">
         <button onclick=sessionManager.saveSession()>Save</button>

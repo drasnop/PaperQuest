@@ -74,3 +74,41 @@ button:disabled{
 #fringe-separator:hover {
   cursor: col-resize;
 }
+
+#paper-menu {
+  position: absolute;
+  left: -1000px;
+  top: 0px;
+  list-style-type: none;
+  padding: 0px;
+  margin: 0px;
+  display: none;
+  border-color: #a0a0a0;
+  box-shadow: 0 0 10px #a0a0a0;
+}
+
+#paper-menu li {
+  width: 25px;
+  height: 25px;
+  background-color: #f0f0f0;
+  text-align: center;
+  position: relative;
+}
+
+#paper-menu li span {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}
+
+#paper-menu li.active {
+  background-color: #c0c0c0;
+}
+
+#paper-menu li:hover {
+  -webkit-box-shadow:inset 0px 0px 0px 1px #909090;
+  -moz-box-shadow:inset 0px 0px 0px 1px #909090;
+  box-shadow:inset 0px 0px 0px 1px #909090;
+  cursor: pointer;
+}
+

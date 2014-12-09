@@ -27,7 +27,9 @@ var global={
   "butterfly":true,
   // color.shadeDifferenceInternalExternal can be set to 0
   // whether the fringe should be rounded
-  "circular":true
+  "circular":true,
+  // The paper that's currently interactive (menu is showing)
+  "interactivePaper": null
 };
 
 global.switchEncoding = function(){

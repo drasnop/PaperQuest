@@ -185,33 +185,51 @@ function bindListeners(){
         d3.select(this).attr("filter","none")
     })*/
 
+  // Show/hide paper menus
+  d3.selectAll("g.paper")
+    .on("mouseover", function() {
+      var p = P(this.id);
+
+      // Record interactive paper
+      global.interactivePaper = p;
+      showMenu(p);
+    })
+
+    .on("mouseleave", function() {
+      // Clear interactive paper
+      global.interactivePaper = null;
+      hideMenu();
+    });
+
     // highlight nodes and titles
     d3.selectAll(".zoom0")
     .on("mouseover",function() {
-        d3.select(this).select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
-        d3.select(this).select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
-        d3.select(this).select(".title").classed("highlighted",true)    // add class
-        d3.select(this).select(".card")
+      var selection = d3.select(this);
+      selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
+      selection.select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
+      selection.select(".title").classed("highlighted",true)    // add class
+      selection.select(".card")
         .classed("highlighted",true)
         .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
+
     .on("mouseleave",function() {
-        // remove shadow
-        d3.select(this).select(".internalCitationsCircle").attr("filter","none")
-        d3.select(this).select(".externalCitationsCircle").attr("filter","none")
-        
-        // keep the selected elements highlighted
-        var nonSelectedOnly=d3.select(this)
+      // remove shadow
+      d3.select(this).select(".internalCitationsCircle").attr("filter","none")
+      d3.select(this).select(".externalCitationsCircle").attr("filter","none")
+
+      // keep the selected elements highlighted
+      var nonSelectedOnly=d3.select(this)
         .filter(function(){ 
-                // this is ugly as hell, but I don't know how to access d cleanly...
-                var res;
-                d3.select(this).each(function(p) {
-                    res=!p.selected;
-                })
-                return res;
-            })
-        nonSelectedOnly.select(".title").classed("highlighted",false)     // remove class
-        nonSelectedOnly.select(".card").classed("highlighted",false)     // remove class
+          // this is ugly as hell, but I don't know how to access d cleanly...
+          var res;
+          d3.select(this).each(function(p) {
+            res=!p.selected;
+          })
+            return res;
+        })
+      nonSelectedOnly.select(".title").classed("highlighted",false)     // remove class
+      nonSelectedOnly.select(".card").classed("highlighted",false)     // remove class
     })
 
     // clicking papers on the fringe translates them to the left
@@ -290,6 +308,19 @@ function bindListeners(){
         // Update the view (quickly), to take into account the new heights of the selected papers
         view.updateVis(2);
     })
+}
+
+
+function showMenu(p) {
+  d3.select("#paper-menu")
+    .style("left", (fringePaperX(p) - parameters.menuOffset) + "px")
+    .style("top", fringePaperY(p) - parameters.paperMaxRadius + "px")
+    .style("display", "block");
+}
+
+function hideMenu() {
+  d3.select("#paper-menu")
+    .style("display", "none");
 }
 
 

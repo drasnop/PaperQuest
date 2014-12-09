@@ -57,7 +57,13 @@ var parameters= {
   // Current year must always be one year after the latest year in the dataset (2010 for citeology)
   "currentYear": 2011,
   "externalCitationCountCutoff": 200,
-  "internalCitationCountCutoff": 25
+  "internalCitationCountCutoff": 25,
+
+
+  /*     misc parameters      */
+
+  // The space between a node's glyph and the menu to the left
+  "menuOffset": 60
 }
 
 
