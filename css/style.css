@@ -63,6 +63,10 @@ button:disabled{
 	opacity:.5;
 }
 
-#core-divisor:hover {
+#core-separator:hover {
   cursor: row-resize;
+}
+
+#fringe-separator:hover {
+  cursor: col-resize;
 }

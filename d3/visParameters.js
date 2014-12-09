@@ -75,5 +75,5 @@ var colors={
   "core":"rgb(255, 191, 175)",
   "coreDivisor":"rgb(223, 111, 95)",
   "toread":"rgb(242, 222, 195)",
-  "toreadBorder":"rgb(242, 210, 166)"
+  "toreadBorder":"rgb(202, 170, 126)"
 }

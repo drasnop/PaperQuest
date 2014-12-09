@@ -1,6 +1,7 @@
 /*
 * Global variables
 */
+var defaultView = 2;
 
 var global={
   // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
@@ -20,7 +21,9 @@ var global={
   // flag indicating that another animation is waiting for the current one to complete
   "animationWaiting":false,
   // The y-value at which the to-read list and the core are currently separated
-  "toReadHeight": window.innerHeight / 2
+  "toReadHeight": window.innerHeight / 2,
+  // The x-value at which the fringe is separated from the to-read and core views
+  "toReadWidth": toreadApparentWidth[defaultView]
 };
 
 

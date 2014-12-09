@@ -9,8 +9,8 @@ var leftViewClipPath;
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
-    createStaticElements();
-    updateVis(0);   //don't animate at creation
+  createStaticElements();
+  updateVis(0);   //don't animate at creation
 }
 
 // Update the vis, with different animation speeds. If animate=0, no animation.
@@ -39,10 +39,21 @@ function computeVisibleFringe(){
 
 // Create some svg elements, once and for all
 function createStaticElements(){
-    // toread
-    svg.append("circle")
+  // toread
+  svg.append("circle")
     .attr("id","toread")
     //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
+
+  var arc = d3.svg.arc()
+    .innerRadius(toreadRadius[global.view] - 2)
+    .outerRadius(toreadRadius[global.view] + 2)
+    .startAngle(0)
+    .endAngle(3);
+
+  svg.append("g")
+    .attr("id", "fringe-separator")
+    .append("path")
+    .attr("d", arc);
 
   // core
   svg.append("rect")
@@ -67,12 +78,16 @@ function createStaticElements(){
     .text("automatically")
 
   svg.append("rect")
-  .attr("id", "core-divisor");
+    .attr("id", "core-separator");
 
   // clipping path for the left side views
   leftViewClipPath = svg.append("clipPath")
     .attr("id", "left-views")
     .append("circle");
+
+  // The papers in the fringe region
+  svg.append("g")
+    .attr("id", "fringe-papers")
 }
 
 // draw the static elements at their appropriate positions
@@ -87,7 +102,7 @@ function drawStaticElements(){
 
     // toread
     d3.select("#toread")
-    .attr("cx",-parameters.fringeRadius+global.fringeApparentWidth)
+    .attr("cx", -toreadRadius[global.view] + global.toReadWidth)  // TODO: change to fringeApparentWidth
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius)
     .style("fill",colors.toread)
@@ -95,7 +110,7 @@ function drawStaticElements(){
     .style("stroke-width",2)
 
   leftViewClipPath
-    .attr("cx",-toreadRadius[global.view]+toreadApparentWidth[global.view])
+    .attr("cx",-toreadRadius[global.view] + global.toReadWidth)
     .attr("cy","50%")
     .attr("r",toreadRadius[global.view]);
 }
@@ -108,13 +123,13 @@ function manageDynamicElements(animate){
   var core = d3.select("#core")
     .attr("x", 0)
     .attr("y", global.toReadHeight)
-    .attr("width", toreadApparentWidth[global.view])
+    .attr("width", global.toReadWidth)
     .attr("height", window.innerHeight - global.toReadHeight)
     .attr("clip-path", "url(#left-views)")
     .style("fill",colors.core[global.view]);
 
-  // coreDivisor
-  var drag = d3.behavior.drag()
+  // coreSeparator
+  var dragCore = d3.behavior.drag()
     .on("drag", function(d, i) {
       global.toReadHeight = d3.event.y;
       d3.select(this).attr("y", d3.event.y);
@@ -122,7 +137,7 @@ function manageDynamicElements(animate){
       core.attr("height", window.innerHeight - global.toReadHeight);
     });
 
-  d3.select("#core-divisor")
+  d3.select("#core-separator")
     .attr("x", 0)
     .attr("y", global.toReadHeight)
     .attr("width", window.innerWidth)
@@ -132,14 +147,30 @@ function manageDynamicElements(animate){
     .style("fill", colors.coreDivisor)
     .style("stroke", colors.coreDivisor)
     .style("fill-opacity", 0.5)
-    .call(drag);
+    .call(dragCore);
+
+  // fringeSeparator
+  var dragFringe = d3.behavior.drag()
+    .on("drag", function(d, i) {
+      global.toReadWidth = d3.event.x;
+      d3.select(this).attr("transform", "translate(" + (-toreadRadius[global.view] + global.toReadWidth) + "," + (window.innerHeight / 2) + ")");
+      d3.select("#fringe-papers").attr("transform", "translate(" + (global.toReadWidth - toreadApparentWidth[global.view]) + ", 0)");
+      d3.select("#toread").attr("cx", -toreadRadius[global.view] + global.toReadWidth);
+      d3.select("#core").attr("width", global.toReadWidth);
+      leftViewClipPath.attr("cx", -toreadRadius[global.view] + global.toReadWidth);
+    });
+
+  d3.select("#fringe-separator")
+    .attr("transform", "translate(" + (-toreadRadius[global.view] + global.toReadWidth) + "," + (window.innerHeight / 2) + ")")
+    .style("fill", colors.toreadBorder[global.view])
+    .call(dragFringe);
 
   
 
   //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
 
-    var papers = svg.selectAll(".paper")
+    var papers = svg.select("#fringe-papers").selectAll(".paper")
     .data(global.visibleFringe, function(p) { return global.visibleFringe.indexOf(p); })
         // using this key function is critical to ensure papers will change position when updating the fringe
 
