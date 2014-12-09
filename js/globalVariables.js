@@ -4,7 +4,7 @@
 
 var global={
     // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
-    "fringeApparentWidth":fringeApparentWidthMin,
+    "fringeApparentWidth": fringeApparentWidthMin,
     // Current zoom level: 0=titles only, 1=metadata (authors/conf/date), 2=first line of abstract, 3=full abstract
     "zoom":0,
     // Vertical offset used to scroll the fringe

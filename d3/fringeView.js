@@ -428,8 +428,8 @@ function fringePaperHeight(p) {
 
 // Compute X coordinate for a paper on the fringe, based on a circle
 function fringePaperX(p) {
-  var selectedOffset = p.selected ? paperXOffsetWhenSelected : 0;
-  return selectedOffset + circleX(fringePaperY(p)) + paperMaxRadius + 2*titleLeftMargin;
+  var selectedOffset = p.selected ?  0 : paperXOffsetWhenSelected;
+  return circleX(fringePaperY(p)) + selectedOffset;
 }
 
 // Return the x coordinate corresponding to a y position on the circle
