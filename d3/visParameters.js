@@ -26,7 +26,6 @@ var parameters= {
   // Indicates how much the non-selected papers are shrunk when "zoom"=0,1,2
   "compressionRatio": [1,.8,0],
   "opacityOfNonSelectedPapers": [.7,.45,0],
-  "fontSizeRatioOfNonSelectedPapers": [1,.8,0],
 
 
   /*     views parameters       */
@@ -40,9 +39,6 @@ var parameters= {
 
   // to leave room for the "update" button     
   "fringeBottomMargin": 30, 
-
-  // default font size 
-  "fontSize": 15, 
 
 
   /*     dynamic parameters       */

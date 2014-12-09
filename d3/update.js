@@ -191,10 +191,15 @@ t0.select(".title")
     if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
-.style("font-size", function(p) { 
+.attr("transform", function(p) { 
+    // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
+    var scaling="matrix(" + parameters.compressionRatio[global.zoom] + ",0,0," + parameters.compressionRatio[global.zoom] +","
+                + (fringePaperX(p)-parameters.compressionRatio[global.zoom]*fringePaperX(p)) +","
+                + (fringePaperY(p)-parameters.compressionRatio[global.zoom]*fringePaperY(p)) +")";   
+
     if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
-        return parameters.fontSize*parameters.fontSizeRatioOfNonSelectedPapers[global.zoom]+"px";
-    return parameters.fontSize+"px"; })
+        return scaling;
+    return null; })
 
 /* the following elements are sometimes not visible. we use a fade-in to show and hide them,
 * but it also necessary to remove them from the display when they aren't suppose to be there,
