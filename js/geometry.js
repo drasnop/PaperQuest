@@ -80,11 +80,9 @@ function updateFringeButtonX(){
 
 // Compute a node radius for the appropriate citation count supplied, up to a certain max radius
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
-function radius(p, outer){
+function radius(p, external){
 
-    var externalLarger = isExternalRelativelyLargerThanInternal(p);
-    var representingExternal= (externalLarger == outer);
-    var count=representingExternal? p.citation_count/parameters.externalCitationCountCutoff
+    var count=external? p.citation_count/parameters.externalCitationCountCutoff
      : p.citations.length/parameters.internalCitationCountCutoff;
 
     return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*count);
@@ -94,37 +92,22 @@ function maxRadius(p){
     return Math.max(radius(p,true), radius(p,false));
 }
 
-// Return a random color from the set of tag colors
+// Return a random color from the set of tag colors  -- not used
 function randomColor(){
     var keys=Object.keys(colors.tags);
     return colors.tags[keys[ keys.length * Math.random() << 0]];
+}
+
+function fringePaperInternalColor(p) {
+    return colorFromUpvoters(p.upvoters);
+}
+
+function fringePaperExternalColor(p) {
+    return shadeHexColor(colorFromUpvoters(p.upvoters),colors.shadingDifferenceInternalExternal);
 }
 
 function colorFromUpvoters(n){
     if(n>5)
         return colors.tags[4];
     return colors.tags[n-1];  // between 1..4
-}
-
-function fringePaperOuterColor(p) {
-    var base=colorFromUpvoters(p.upvoters);
-    //console.log(global.papers[doi].citations.length/internalCitationCountCutoff + " " +global.papers[doi].citation_count/externalCitationCountCutoff)
-    if(!isExternalRelativelyLargerThanInternal(p))
-        return base;
-    //console.log("outer "+shadeHexColor(base,shadingDifferenceInternalExternal))
-    return shadeHexColor(base,colors.shadingDifferenceInternalExternal);
-}
-
-function fringePaperInnerColor(p) {
-    var base=colorFromUpvoters(p.upvoters);
-    if(isExternalRelativelyLargerThanInternal(p)){
-        //console.log("internal "+base)       
-        return base;
-    }
-    return shadeHexColor(base,colors.shadingDifferenceInternalExternal);
-}
-
-function isExternalRelativelyLargerThanInternal(p){
-    return p.citation_count/parameters.externalCitationCountCutoff
-    > p.citations.length/parameters.internalCitationCountCutoff;
 }

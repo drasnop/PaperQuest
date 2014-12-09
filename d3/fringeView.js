@@ -112,25 +112,42 @@ function manageDynamicElements(animate){
     .attr("class","paper")
     .attr("id", function(p) { return p.doi;})
 
+    // group of visible elements at lowest zoom level (= glyph + title)
     var zoom0 = enteringPapers.append("g")
     .attr("class","zoom0")
+
+        // group of elements that make up a glyph showing citation counts and number of upvoters
+        var glyph = zoom0.append("g")
+        .attr("class","glyph")
+
+        glyph.append("circle")
+        .attr("class","outerNode")
+        .style("fill","white")
+
+        var halfdisk=function(external){
+            return d3.svg.arc()
+            .innerRadius(0)
+            .outerRadius(function(d){ return external? radius(d,true) : radius(d,false); })
+            .startAngle(0)
+            .endAngle(external? -Math.PI : Math.PI)
+        }
+
+        glyph.append("path")
+        .attr("class", "internalCitationsCircle")
+        .attr("d", halfdisk(false))
+        .style("fill", function(p) { return fringePaperInternalColor(p); })
+        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+
+        glyph.append("path")
+        .attr("class", "externalCitationsCircle")
+        .attr("d", halfdisk(true))
+        .style("fill", function(p) { return fringePaperInternalColor(p); })
+        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+
 
     zoom0.append("rect")
     .attr("class","card")
     .moveToBackOf(svg)  // eventually we'll have to make these follow the selected papers during animations
-
-    zoom0.append("circle")
-    .attr("class","outerNode")
-    .style("fill","white")
-
-    // the outer circle displays the larger (relative) citation count
-    zoom0.append("circle")
-    .attr("class", "outerCitationsCircle")
-    .style("fill", function(p) { return fringePaperOuterColor(p); })
-
-    zoom0.append("circle")
-    .attr("class", "innerCitationsCircle")
-    .style("fill", function(p) { return fringePaperInnerColor(p); })
 
     zoom0.append("text")
     .attr("class", "title")
@@ -193,28 +210,30 @@ function manageDynamicElements(animate){
 
     })
 
-      // TODO: refactoring, not sure what this does, doesn't seem to trigger
+    // TODO: refactoring, not sure what this does, doesn't seem to trigger
+    // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
     t0.select(".card")
     .attr("x", function(p) { return fringePaperXCard(p);} )
     .attr("y", function(p) { return fringePaperYCard(p);} )
     .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     .attr("height",2*parameters.paperMaxRadius)
 
-    t0.select(".outerCitationsCircle")
-    .attr("cx", function(p) { return fringePaperX(p);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
-    .attr("r", function(p) {return radius(p,true);} )
+    t0.select(".externalCitationsCircle")
+    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
     
+    t0.select(".internalCitationsCircle")
+    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })    
+
     // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
         // A new transition is generated after all elements of t0 have finished
         var t1=papers.transition().duration(parameters.fringePapersColorTransitionDuration[animate]);
 
-        t1.select(".outerCitationsCircle")
-        .style("fill", function(p) { return fringePaperOuterColor(p); })
+        t1.select(".externalCitationsCircle")
+        .style("fill", function(p) { return fringePaperInternalColor(p); })
 
-        t1.select(".innerCitationsCircle")
-        .style("fill", function(p) { return fringePaperInnerColor(p); })
+        t1.select(".internalCitationsCircle")
+        .style("fill", function(p) { return fringePaperInternalColor(p); })
 
         // When t1 finishes, check whether an animation is waiting (for update automatically)
         t1.call(endAll, function(){
@@ -226,17 +245,19 @@ function manageDynamicElements(animate){
         })
     });
 
+    // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
+    t0.select(".outerNode")
+    .attr("cx", function(p) { return fringePaperX(p);} )
+    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
+    .style("display", function(p) { return p.selected ? "" : "none"; })
 
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(fringePapersColorTransitionDuration[animate])
-    .select(".outerCitationsCircle")
+    .select(".externalCitationsCircle")
     .style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
     
-    t0.select(".innerCitationsCircle")
-    .attr("cx", function(p) { return fringePaperX(p);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
-    .attr("r", function(p) {return radius(p,false);} )
 
     t0.select(".title")
     .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
@@ -263,12 +284,6 @@ function manageDynamicElements(animate){
     .style("height", function(p) { return (p.selected && global.zoom>=2) ?
                                             p.abstractHeight+"px": "0px";})
 
-    // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
-    t0.select(".outerNode")
-    .attr("cx", function(p) { return fringePaperX(p);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
-    .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
-    .style("display", function(p) { return p.selected ? "" : "none"; })
 
     //--------------------EXIT---------------------//
     // Remove old elements as needed.
@@ -295,7 +310,7 @@ function bindListeners(){
     // highlight nodes and titles
     d3.selectAll(".zoom0")
     .on("mouseover",function() {
-        d3.select(this).select(".outerCitationsCircle").attr("filter","url(#drop-shadow)")
+        d3.select(this).select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
         d3.select(this).select(".title").classed("highlighted",true)    // add class
         d3.select(this).select(".card")
         .classed("highlighted",true)
@@ -303,7 +318,7 @@ function bindListeners(){
     })
     .on("mouseleave",function() {
         // remove shadow
-        d3.select(this).select(".outerCitationsCircle").attr("filter","none")
+        d3.select(this).select(".internalCitationsCircle").attr("filter","none")
         
         // keep the selected elements highlighted
         var nonSelectedOnly=d3.select(this)
