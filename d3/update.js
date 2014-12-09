@@ -115,14 +115,20 @@ t0.each(function(p) {
 
         d3.select(this).attr("transform",scaling)
 
-        if(userData.newSelectedPapers.length>0 || P.selected().length>0)
-            d3.select(this).style("opacity", parameters.opacityOfNonSelectedPapers[global.zoom])
-        else
-            d3.select(this).style("opacity",1)
+        // dim out the non-selected papers by making them semi-transparent
+        if(userData.newSelectedPapers.length>0 || P.selected().length>0){
+            d3.select(this).select(".title").style("opacity", parameters.opacityOfNonSelectedPapers[global.zoom])
+            // at zoom 0, keep the glyphs at full opacity to allow accurate color comparison
+            d3.select(this).select(".glyph").style("opacity", global.zoom>0 ? parameters.opacityOfNonSelectedPapers[global.zoom] : 1)
+        }
+        else{
+            d3.select(this).select(".title").style("opacity",1)
+            d3.select(this).select(".glyph").style("opacity",1)
+        }
     }
     else{
         d3.select(this).attr("transform",null)
-        d3.select(this).style("opacity",1)
+        d3.select(this).select(".title").style("opacity",1)
     }
 
 })
@@ -200,7 +206,7 @@ t0.call(endAll, function () {
 t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return fringePaperY(p);} )
-.style("opacity","1")
+//.style("opacity","1")
 
 /* the following elements are sometimes not visible. we use a fade-in to show and hide them,
 * but it also necessary to remove them from the display when they aren't suppose to be there,

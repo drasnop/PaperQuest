@@ -25,7 +25,7 @@ var parameters= {
 
   // Indicates how much the non-selected papers are shrunk when "zoo":0,1,2
   "compressionRatio": [1,.8,0],
-  "opacityOfNonSelectedPapers": [.75,.45,0],
+  "opacityOfNonSelectedPapers": [.7,.45,0],
 
 
   /*     views parameters       */
