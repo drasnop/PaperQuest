@@ -42,7 +42,7 @@ var zoom0 = enteringPapers.append("g")
         var halfdisk=function(external){
             return d3.svg.arc()
             .innerRadius(0)
-            .outerRadius(function(d){ return external? radius(d,true) : radius(d,false); })
+            .outerRadius(function(p){ return external? radius(p,true) : radius(p,false); })
             .startAngle(0)
             .endAngle(external? -Math.PI : Math.PI)
         }
@@ -75,7 +75,7 @@ zoom0.append("text")
 .classed("highlighted", function(p) { return p.selected; })
 .attr("dy",".35em")     // align ligne middle
 .text(function(p) { return p.title; })
-.style("opacity","0")   // otherwise it looks ugly when they come in
+.style("opacity","0")   // otherwise it looks ugly when they come in - maybe not useful anymore...
 
 enteringPapers.append("a")
 .attr("xlink:href",function(p) { return "http://dl.acm.org/citation.cfm?id="+p.doi.slice(p.doi.indexOf("/")+1); })
@@ -105,33 +105,6 @@ enteringPapers.append("foreignObject")
 
 var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate]).ease(parameters.fringePapersTransitionEasing)
 global.animationRunning=true;
-
-t0.each(function(p) {
-    if(!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)){
-        // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
-        var scaling="matrix(" + parameters.compressionRatio[global.zoom] + ",0,0," + parameters.compressionRatio[global.zoom] +","
-            + (fringePaperX(p)-parameters.compressionRatio[global.zoom]*fringePaperX(p)) +","
-            + (fringePaperY(p)-parameters.compressionRatio[global.zoom]*fringePaperY(p)) +")";   
-
-        d3.select(this).attr("transform",scaling)
-
-        // dim out the non-selected papers by making them semi-transparent
-        if(userData.newSelectedPapers.length>0 || P.selected().length>0){
-            d3.select(this).select(".title").style("opacity", parameters.opacityOfNonSelectedPapers[global.zoom])
-            // at zoom 0, keep the glyphs at full opacity to allow accurate color comparison
-            d3.select(this).select(".glyph").style("opacity", global.zoom>0 ? parameters.opacityOfNonSelectedPapers[global.zoom] : 1)
-        }
-        else{
-            d3.select(this).select(".title").style("opacity",1)
-            d3.select(this).select(".glyph").style("opacity",1)
-        }
-    }
-    else{
-        d3.select(this).attr("transform",null)
-        d3.select(this).select(".title").style("opacity",1)
-    }
-
-})
 
 // TODO: refactoring, not sure what this does, doesn't seem to trigger
 // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
@@ -176,6 +149,14 @@ else{
     //.moveToBackOf("#fringe-papers")    
 }
 
+t0.select(".glyph")
+.style("opacity", function(p) { 
+    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi))
+     && (userData.newSelectedPapers.length>0 || P.selected().length>0)  && global.zoom>0)
+        return parameters.opacityOfNonSelectedPapers[global.zoom];
+    return 1; })
+
+
 // The change of color should occur AFTER the papers have moved to their new positions
 t0.call(endAll, function () {
     // A new transition is generated after all elements of t0 have finished
@@ -206,7 +187,14 @@ t0.call(endAll, function () {
 t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return fringePaperY(p);} )
-//.style("opacity","1")
+.style("opacity", function(p) { 
+    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
+        return parameters.opacityOfNonSelectedPapers[global.zoom];
+    return 1; })
+.style("font-size", function(p) { 
+    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
+        return parameters.fontSize*parameters.fontSizeRatioOfNonSelectedPapers[global.zoom]+"px";
+    return parameters.fontSize+"px"; })
 
 /* the following elements are sometimes not visible. we use a fade-in to show and hide them,
 * but it also necessary to remove them from the display when they aren't suppose to be there,

@@ -85,7 +85,9 @@ function radius(p, external){
     var count=external? p.citation_count/parameters.externalCitationCountCutoff
      : p.citations.length/parameters.internalCitationCountCutoff;
 
-    return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*count);
+    var scale = !p.selected ? parameters.compressionRatio[global.zoom] : 1  
+
+    return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*count) * scale;
 }
 
 function maxRadius(p){

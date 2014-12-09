@@ -23,9 +23,10 @@ var parameters= {
   // in addition to metadaYoffset, the abstract has an offset of:
   "abstractYoffset": 7,   
 
-  // Indicates how much the non-selected papers are shrunk when "zoo":0,1,2
+  // Indicates how much the non-selected papers are shrunk when "zoom"=0,1,2
   "compressionRatio": [1,.8,0],
   "opacityOfNonSelectedPapers": [.7,.45,0],
+  "fontSizeRatioOfNonSelectedPapers": [1,.8,0],
 
 
   /*     views parameters       */
@@ -38,7 +39,10 @@ var parameters= {
   // the current value of fringeApparentWidth varies, hence is define in global
 
   // to leave room for the "update" button     
-  "fringeBottomMargin": 30,  
+  "fringeBottomMargin": 30, 
+
+  // default font size 
+  "fontSize": 15, 
 
 
   /*     dynamic parameters       */
