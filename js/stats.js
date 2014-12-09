@@ -38,15 +38,26 @@ function initializeVis(){
       return externalCitationCounts;
     }
 
-    var values = internalCitationCounts();
-    console.log("number of papers: "+values.length)
+    function internalVsExternal(){
+        var internalVsExternal = [];
+        for(var doi in global.papers){
+            internalVsExternal.push({
+                "x":P(doi).getInternalCitationCount(),
+                "y":P(doi).citation_count
+            });
+        }
+        return internalVsExternal;
+    }
 
     var width=window.innerWidth/2,
         height=window.innerHeight/2;
 
-    var svgInternal=d3.select("body").append("svg");
-    histogram(svgInternal,width,height,internalCitationCounts(),20,20);
+    var histogramInternal=d3.select("body").append("svg");
+    histogram(histogramInternal,width,height,internalCitationCounts(),20,20);
     
-    var svgExternal=d3.select("body").append("svg");
-    histogram(svgExternal,width,height,externalCitationCounts(),20,400);
+    var histogramExternal=d3.select("body").append("svg");
+    histogram(histogramExternal,width,height,externalCitationCounts(),20,400);
+
+    var scatterplotInternalVsExternal=d3.select("body").append("svg");
+    scatterplot(scatterplotInternalVsExternal,width,height,internalVsExternal());
 }

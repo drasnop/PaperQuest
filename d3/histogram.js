@@ -1,8 +1,8 @@
 /*
-*	Builds an histogram
+*	Builds an histogram and appends it to the "svg" element
 */
 
-function histogram(svg,width,height,values,bins,maxX){
+function histogram(svg, width, height, values, bins, maxX){
 	// A formatter for counts.
 	var formatCount = d3.format(",.0f");
 

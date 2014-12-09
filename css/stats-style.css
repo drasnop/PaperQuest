@@ -18,3 +18,7 @@ body {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+
+.dot {
+	fill: steelblue;
+}
