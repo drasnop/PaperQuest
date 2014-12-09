@@ -6,6 +6,7 @@
 var view = (function () {
 
 var leftViewClipPath;
+var menuTimeout = null;
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
@@ -23,10 +24,16 @@ function updateVis(animate){
 
 // Update fringe and animate the change
 function updateFringe() {
-    algorithm.updateFringe();
-    updateVis(1);
-    // the updateFringe button becomes useless until new papers are (de)selected
-    d3.select("#updateFringe").attr("disabled","disabled");
+  // Manage the menu
+  if (menuTimeout) {
+    window.clearTimeout(menuTimeout);
+  }
+  hideMenu();
+
+  algorithm.updateFringe();
+  updateVis(1);
+  // the updateFringe button becomes useless until new papers are (de)selected
+  d3.select("#updateFringe").attr("disabled","disabled");
 }
 
 //////////////////  Drawing functions   ///////////////////////
@@ -185,10 +192,29 @@ function bindListeners(){
         d3.select(this).attr("filter","none")
     })*/
 
+  // Menu listeners
+  d3.select("#paper-menu")
+    .on("mouseenter", function() {
+      if (menuTimeout) {
+        window.clearTimeout(menuTimeout);  // Don't hide the menu if it's being used
+      }
+    })
+    .on("mouseleave", function() {
+      menuTimeout = window.setTimeout(function() {
+        hideMenu();
+      }, 150);  // Set a smaller timeout to hide the menu
+    });
+
   // Show/hide paper menus
   d3.selectAll("g.paper")
     .on("mouseover", function() {
       var p = P(this.id);
+
+      if (menuTimeout) {
+        window.clearTimeout(menuTimeout);
+        menuTimeout = null;
+        hideMenu();
+      }
 
       // Record interactive paper
       global.interactivePaper = p;
@@ -196,9 +222,10 @@ function bindListeners(){
     })
 
     .on("mouseleave", function() {
-      // Clear interactive paper
-      global.interactivePaper = null;
-      hideMenu();
+      // We don't remove the menu right away, so the user has time to get to it.
+      menuTimeout = window.setTimeout(function() {
+        hideMenu();
+      }, 1000);
     });
 
     // highlight nodes and titles
@@ -234,37 +261,40 @@ function bindListeners(){
 
     // clicking papers on the fringe translates them to the left
     .on("mousedown",function() {
-        var paper=d3.select(this);
-        paper.each(function(p) {
-            p.selected = !p.selected;
+      var paper=d3.select(this);
+      paper.each(function(p) {
+        p.selected = !p.selected;
 
-            // Add or remove the paper to the list that will update the fringe
-            if(p.selected)
-              userData.addNewSelected(p);
-            else
-              userData.removeSelected(p);
+        // Add or remove the paper to the list that will update the fringe
+        if(p.selected)
+          userData.addNewSelected(p);
+        else
+          userData.removeSelected(p);
 
-            // Enable or disable the updateFringe button, if new papers have been (de)selected
-            if((userData.newSelectedPapers.length>0 || userData.newDeselectedPapers.length>0) && !global.updateAutomatically)
-                d3.select("#updateFringe").attr("disabled",null);
-            else
-                d3.select("#updateFringe").attr("disabled","disabled");
+        // Enable or disable the updateFringe button, if new papers have been (de)selected
+        if((userData.newSelectedPapers.length>0 || userData.newDeselectedPapers.length>0) && !global.updateAutomatically)
+          d3.select("#updateFringe").attr("disabled",null);
+        else
+          d3.select("#updateFringe").attr("disabled","disabled");
 
-            // Update the vis to move the selected papers left or right
-            // (using different animation speeds depending on the zoom level, just because it's pretty)
-            switch(global.zoom){
-                case 0:
-                updateVis(4);
-                break;
-                case 1:
-                case 2:
-                updateVis(3);
-                break;
-                case 3:
-                updateVis(2);
-                break;
-            }
-        });
+        // Update the vis to move the selected papers left or right
+        // (using different animation speeds depending on the zoom level, just because it's pretty)
+        switch(global.zoom){
+        case 0:
+          updateVis(4);
+          break;
+        case 1:
+        case 2:
+          updateVis(3);
+          break;
+        case 3:
+          updateVis(2);
+          break;
+        }
+      });
+
+      // Reposition the menu
+      showMenu(global.interactivePaper);
     })
 
     // After (de)selecting a paper, update the fringe if updateAutomatically is true
@@ -319,6 +349,8 @@ function showMenu(p) {
 }
 
 function hideMenu() {
+  // Clear interactive paper
+  global.interactivePaper = null;
   d3.select("#paper-menu")
     .style("display", "none");
 }
