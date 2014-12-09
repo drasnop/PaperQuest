@@ -108,9 +108,9 @@ function endAll (transition, callback) {
 
 d3.selection.prototype.moveToBackOf = function(elem) { 
     return this.each(function() { 
-        var firstChild = elem.node().firstChild; 
+        var firstChild = d3.select(elem).node().firstChild; 
         if (firstChild) { 
-            elem.node().insertBefore(this, firstChild); 
+            d3.select(elem).node().insertBefore(this, firstChild); 
         } 
     }); 
 };

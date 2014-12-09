@@ -84,6 +84,9 @@ function createStaticElements(){
   leftViewClipPath = svg.append("clipPath")
     .attr("id", "left-views")
     .append("circle");
+
+    svg.append("g")
+    .attr("id","fringe-papers")
 }
 
 // draw the static elements at their appropriate positions
@@ -161,7 +164,7 @@ function manageDynamicElements(animate){
   //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
 
-    var papers = svg.selectAll(".paper")
+    var papers = svg.select("#fringe-papers").selectAll(".paper")
     .data(global.visibleFringe, function(p) { return global.visibleFringe.indexOf(p); })
         // using this key function is critical to ensure papers will change position when updating the fringe
 
@@ -185,30 +188,41 @@ function manageDynamicElements(animate){
         .attr("class","outerNode")
         .style("fill","white")
 
-        var halfdisk=function(external){
-            return d3.svg.arc()
-            .innerRadius(0)
-            .outerRadius(function(d){ return external? radius(d,true) : radius(d,false); })
-            .startAngle(0)
-            .endAngle(external? -Math.PI : Math.PI)
+        if(global.butterfly){
+            glyph.append("circle")
+            .attr("class", "internalCitationsCircle")
+            .style("fill", function(p) { return fringePaperInternalColor(p); })
+
+            glyph.append("circle")
+            .attr("class", "externalCitationsCircle")
+            .style("fill", function(p) { return fringePaperInternalColor(p); })
         }
+        else{
+            var halfdisk=function(external){
+                return d3.svg.arc()
+                .innerRadius(0)
+                .outerRadius(function(d){ return external? radius(d,true) : radius(d,false); })
+                .startAngle(0)
+                .endAngle(external? -Math.PI : Math.PI)
+            }
 
-        glyph.append("path")
-        .attr("class", "internalCitationsCircle")
-        .attr("d", halfdisk(false))
-        .style("fill", function(p) { return fringePaperInternalColor(p); })
-        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+            glyph.append("path")
+            .attr("class", "internalCitationsCircle")
+            .attr("d", halfdisk(false))
+            .style("fill", function(p) { return fringePaperInternalColor(p); })
+            .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
 
-        glyph.append("path")
-        .attr("class", "externalCitationsCircle")
-        .attr("d", halfdisk(true))
-        .style("fill", function(p) { return fringePaperInternalColor(p); })
-        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+            glyph.append("path")
+            .attr("class", "externalCitationsCircle")
+            .attr("d", halfdisk(true))
+            .style("fill", function(p) { return fringePaperExternalColor(p); })
+            .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })  
+        }
 
 
     zoom0.append("rect")
     .attr("class","card")
-    .moveToBackOf(svg)  // eventually we'll have to make these follow the selected papers during animations
+    .moveToBackOf("#fringe-papers")  // eventually we'll have to make these follow the selected papers during animations
 
     zoom0.append("text")
     .attr("class", "title")
@@ -274,16 +288,45 @@ function manageDynamicElements(animate){
     // TODO: refactoring, not sure what this does, doesn't seem to trigger
     // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
     t0.select(".card")
-    .attr("x", function(p) { return fringePaperXCard(p);} )
-    .attr("y", function(p) { return fringePaperYCard(p);} )
+    .attr("x", function(p) { return fringePaperLabelX(p);} )
+    .attr("y", function(p) { return fringePaperY(p)-parameters.paperMaxRadius;} )
     .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     .attr("height",2*parameters.paperMaxRadius)
 
-    t0.select(".externalCitationsCircle")
-    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
-    
-    t0.select(".internalCitationsCircle")
-    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })    
+    if(global.butterfly){
+        t0.select(".externalCitationsCircle")
+        .attr("cx", function(p) { return fringePaperX(p)-radius(p,true);} )
+        .attr("cy", function(p) { return fringePaperY(p);} )
+        .attr("r", function(p) {return radius(p,true);} )
+
+        t0.select(".internalCitationsCircle")
+        .attr("cx", function(p) { return fringePaperX(p)+radius(p,false);} )
+        .attr("cy", function(p) { return fringePaperY(p);} )
+        .attr("r", function(p) {return radius(p,false);} )
+
+        // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
+        t0.select(".outerNode")
+        .attr("cx", function(p) { return fringePaperX(p)-radius(p,true) ;} )
+        .attr("cy", function(p) { return fringePaperY(p);} )
+        .attr("r", function(p) {return radius(p,true)+parameters.paperOuterBorderWidth;} )
+        .style("display", function(p) { return p.selected ? "" : "none"; })
+        //.moveToBackOf("#fringe-papers")  I'm not sure how to do this...
+    }
+    else{
+        t0.select(".externalCitationsCircle")
+        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+        
+        t0.select(".internalCitationsCircle")
+        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })     
+
+        // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
+        t0.select(".outerNode")
+        .attr("cx", function(p) { return fringePaperX(p);} )
+        .attr("cy", function(p) { return fringePaperY(p);} )
+        .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
+        .style("display", function(p) { return p.selected ? "" : "none"; })   
+        //.moveToBackOf("#fringe-papers")    
+    }
 
     // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
@@ -291,7 +334,7 @@ function manageDynamicElements(animate){
         var t1=papers.transition().duration(parameters.fringePapersColorTransitionDuration[animate]);
 
         t1.select(".externalCitationsCircle")
-        .style("fill", function(p) { return fringePaperInternalColor(p); })
+        .style("fill", function(p) { return fringePaperExternalColor(p); })
 
         t1.select(".internalCitationsCircle")
         .style("fill", function(p) { return fringePaperInternalColor(p); })
@@ -306,13 +349,6 @@ function manageDynamicElements(animate){
         })
     });
 
-    // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
-    t0.select(".outerNode")
-    .attr("cx", function(p) { return fringePaperX(p);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
-    .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
-    .style("display", function(p) { return p.selected ? "" : "none"; })
-
     // I really don't understand why this doesn't work on page update (animate=false)
     // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(fringePapersColorTransitionDuration[animate])
@@ -321,7 +357,7 @@ function manageDynamicElements(animate){
     
 
     t0.select(".title")
-    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
+    .attr("x", function(p) { return fringePaperLabelX(p);} )
     .attr("y", function(p) {return fringePaperY(p);} )
     .style("opacity","1")
 
@@ -330,13 +366,13 @@ function manageDynamicElements(animate){
     * otherwise they will impede selection of other elements (as they may be drawn on top of these). */
 
     t0.select(".metadata")
-    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
+    .attr("x", function(p) { return fringePaperLabelX(p);} )
     .attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset;} )
     .style("opacity", function(p) { return (p.selected && global.zoom>=1) ? 1: 0;})
     .style("display", function(p) { return (p.selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll(".abstractWrapper")
-    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
+    .attr("x", function(p) { return fringePaperLabelX(p);} )
     .attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset+parameters.abstractYoffset;} )
     .attr("width",parameters.abstractLineWidth)
     .attr("height", function(p) { return p.abstractHeight;})

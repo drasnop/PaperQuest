@@ -25,12 +25,16 @@ function fringePaperHeight(p) {
 
 // Compute X coordinate for a paper on the fringe, based on a circle
 function fringePaperX(p) {
-  var selectedOffset = p.selected ?  0 : parameters.paperXOffsetWhenSelected;
-  return circleX(fringePaperY(p)) + selectedOffset;
+  var regularOffsetFromFringe = parameters.paperMaxRadius + 2*parameters.titleLeftMargin + global.butterfly*parameters.paperMaxRadius;
+  var selectedOffset = p.selected ? (global.butterfly? regularOffsetFromFringe-radius(p,true): regularOffsetFromFringe) : 0;
+  return circleX(fringePaperY(p)) + regularOffsetFromFringe - selectedOffset;
 }
 
 // Return the x coordinate corresponding to a y position on the circle
 function circleX(y) {
+  if(!global.circular)
+    return global.fringeApparentWidth;
+
   var h = window.innerHeight;
   var centerXoffset = -parameters.fringeRadius + global.fringeApparentWidth;
   return centerXoffset + Math.sqrt(Math.pow(parameters.fringeRadius, 2) - Math.pow(h/2 - y, 2));
@@ -50,13 +54,9 @@ function fringePaperY(p) {
 }
 
 // Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
-function fringePaperXCard(p){
-    return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;
-}
-
-// Compute Y coordinate for the "card" (the rectangle label) of a paper on the fringe
-function fringePaperYCard(p){
-    return fringePaperY(p)-parameters.paperMaxRadius;
+function fringePaperLabelX(p){
+    var butterflyOffset = global.butterfly ? parameters.paperMaxRadius : 0;
+    return fringePaperX(p)+butterflyOffset+parameters.paperMaxRadius+parameters.titleLeftMargin;
 }
 
 /* Compute how many papers can be displayed on the fringe at the minimum zoom level

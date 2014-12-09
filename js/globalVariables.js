@@ -21,7 +21,13 @@ var global={
   // flag indicating that another animation is waiting for the current one to complete
   "animationWaiting":false,
   // The y-value at which the to-read list and the core are currently separated
-  "toReadHeight": window.innerHeight / 2
+  "toReadHeight": window.innerHeight / 2,
+
+  // variables intended for exploratory use: butterfly vs halfmoon
+  "butterfly":true,
+  // color.shadeDifferenceInternalExternal can be set to 0
+  // whether the fringe should be rounded
+  "circular":true
 };
 
 

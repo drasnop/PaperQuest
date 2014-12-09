@@ -13,8 +13,6 @@ var parameters= {
   "paperMarginBottom": 10,
   // margin between node and title              
   "titleLeftMargin": 5,
-  // So far set as 2*parameters.paperMaxRadius - parameters.titleLeftMargin
-  "paperXOffsetWhenSelected": 25,
   // how far to the right are paper that come in and out of the fringe (not used yet)
   "papersEnteringDistance": 60,   
   // so far used only for wrapping the text of the abstract     
@@ -67,7 +65,7 @@ var colors={
   // orange, green, blue, pink, darkblue
   "tags":["#F18D05","#61AE24","#00A1CB","#D70060","#113F8C"],
   // how much lighter are the external citations
-  "shadingDifferenceInternalExternal":20,
+  "shadingDifferenceInternalExternal":10,
   // thése two colors are pretty, but probably shouldn't be used for tags (too similar)
   "turquoise":"#01A4A4",      
   "red":"#E54028",        
