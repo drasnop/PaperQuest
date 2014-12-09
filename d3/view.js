@@ -198,11 +198,32 @@ function bindListeners(){
       if (menuTimeout) {
         window.clearTimeout(menuTimeout);  // Don't hide the menu if it's being used
       }
+
+      // Keep the node highlighted while using the menu.  Have to use
+      // document.getElementById because the id (the DOI) contains
+      // dots and d3 chokes
+      var selection = d3.select(document.getElementById(global.interactivePaper.doi)).select(".zoom0");
+      selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
+      selection.select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
+      selection.select(".title").classed("highlighted",true)    // add class
+      selection.select(".card")
+        .classed("highlighted",true)
+        .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
+
     .on("mouseleave", function() {
       menuTimeout = window.setTimeout(function() {
         hideMenu();
       }, 150);  // Set a smaller timeout to hide the menu
+
+      // Remove highlighting from the node.  We use
+      // document.getElementById because the id (the DOI) has dots and
+      // d3 chokes.
+      var selection = d3.select(document.getElementById(global.interactivePaper.doi)).select(".zoom0");
+      selection.select(".internalCitationsCircle").attr("filter","none")
+      selection.select(".externalCitationsCircle").attr("filter","none")
+      selection.select(".title").classed("highlighted", false);
+      selection.select(".card").classed("highlighted", false);
     });
 
   // Show/hide paper menus
