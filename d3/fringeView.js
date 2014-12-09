@@ -5,6 +5,8 @@
 // To create a class with static methods (basically, a namespace)
 var fringeView = (function () {
 
+var leftViewClipPath;
+
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
     createStaticElements();
@@ -66,6 +68,11 @@ function createStaticElements(){
 
   svg.append("rect")
   .attr("id", "core-divisor");
+
+  // clipping path for the left side views
+  leftViewClipPath = svg.append("clipPath")
+    .attr("id", "left-views")
+    .append("circle");
 }
 
 // draw the static elements at their appropriate positions
@@ -86,11 +93,8 @@ function drawStaticElements(){
     .style("fill",colors.toread)
     .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
-    
-  // clipping path for the left side views
-  svg.append("clipPath")
-    .attr("id", "left-views")
-    .append("circle")
+
+  leftViewClipPath
     .attr("cx",-toreadRadius[global.view]+toreadApparentWidth[global.view])
     .attr("cy","50%")
     .attr("r",toreadRadius[global.view]);
@@ -106,7 +110,7 @@ function manageDynamicElements(animate){
     .attr("y", global.toReadHeight)
     .attr("width", toreadApparentWidth[global.view])
     .attr("height", window.innerHeight - global.toReadHeight)
-    .attr("clip-path", "url(#left-views")
+    .attr("clip-path", "url(#left-views)")
     .style("fill",colors.core[global.view]);
 
   // coreDivisor
@@ -121,9 +125,9 @@ function manageDynamicElements(animate){
   d3.select("#core-divisor")
     .attr("x", 0)
     .attr("y", global.toReadHeight)
-    .attr("width", global.fringeApparentWidth)
+    .attr("width", window.innerWidth)
     .attr("height", 5)
-    .attr("clip-path", "url(#left-views")
+    .attr("clip-path", "url(#left-views)")
 //    .attr("draggable", false)  // no drag shadow
     .style("fill", colors.coreDivisor)
     .style("stroke", colors.coreDivisor)
