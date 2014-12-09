@@ -106,8 +106,14 @@ function fringePaperExternalColor(p) {
     return shadeHexColor(colorFromUpvoters(p.upvoters),colors.shadingDifferenceInternalExternal);
 }
 
+/*function colorFromUpvoters(n){
+    if(n>=colors.tags.length)
+        return colors.tags[colors.tags.length-1];
+    return colors.tags[n-1];
+}*/
+
 function colorFromUpvoters(n){
-    if(n>5)
-        return colors.tags[4];
-    return colors.tags[n-1];  // between 1..4
+    if(n>=colors.monotone.length)
+        return colors.monotone[colors.monotone.length-1];
+    return colors.monotone[n-1];
 }
