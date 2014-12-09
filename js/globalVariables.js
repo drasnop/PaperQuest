@@ -4,21 +4,21 @@
 
 var global={
     // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
-    "fringeApparentWidth": fringeApparentWidthMin,
+    "fringeApparentWidth": parameters.fringeApparentWidthMin,
     // Current zoom level: 0=titles only, 1=metadata (authors/conf/date), 2=first line of abstract, 3=full abstract
-    "zoom":0,
+    "zoom": 0,
     // Vertical offset used to scroll the fringe
-    "scrollOffset":0,
+    "scrollOffset": 0,
     // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
-    "updateAutomatically":false,
+    "updateAutomatically": false,
     // papers dataset, accessed by global.papers[doi]
-    "papers":false,
+    "papers": false,
     // automatically computed by fringeView
-    "visibleFringe":[],
+    "visibleFringe": [],
     // flag indicating that a long animation is currently running
-    "animationRunning":false,
+    "animationRunning": false,
     // flag indicating that another animation is waiting for the current one to complete
-    "animationWaiting":false
+    "animationWaiting": false
 };
 
 

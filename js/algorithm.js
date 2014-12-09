@@ -74,7 +74,7 @@ function updatePaper(pSource, pTarget, inserting){
 }
 	
 function adjustedCitationCount(p) {
-	return Math.log(1 + p.getTotalCitationCount() / (currentYear - p.year));
+	return Math.log(1 + p.getTotalCitationCount() / (parameters.currentYear - p.year));
 }
 
 

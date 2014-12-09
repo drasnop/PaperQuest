@@ -78,9 +78,9 @@ function drawStaticElements(){
 
     // toread
     d3.select("#toread")
-    .attr("cx",-fringeRadius+global.fringeApparentWidth)
+    .attr("cx",-parameters.fringeRadius+global.fringeApparentWidth)
     .attr("cy","50%")
-    .attr("r",fringeRadius)
+    .attr("r",parameters.fringeRadius)
     .style("fill",colors.toread)
     .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
@@ -140,8 +140,8 @@ function manageDynamicElements(animate){
     .style("opacity","0")   // otherwise it looks ugly when they come in
     .append("svg:title")
     .text(function(p){ return p.citation_count + " external, " + p.citations.length + " internal; "
-        + p.citation_count/externalCitationCountCutoff+ " adjusted external, "
-        + p.citations.length/internalCitationCountCutoff+ " adjusted internal";})
+        + p.citation_count/parameters.externalCitationCountCutoff+ " adjusted external, "
+        + p.citations.length/parameters.internalCitationCountCutoff+ " adjusted internal";})
 
     enteringPapers.append("a")
     .attr("xlink:href",function(p) { return "http://dl.acm.org/citation.cfm?id="+p.doi.slice(p.doi.indexOf("/")+1); })
@@ -157,7 +157,7 @@ function manageDynamicElements(animate){
     .append("div")
     .attr("class","abstract")
     .text(function(p) { return p.abstract; })
-    .style("width",abstractLineWidth+"px")
+    .style("width", parameters.abstractLineWidth+"px")
     .each(function(p) {
       // stores the height of the abstract, to be used later
       p.abstractHeight = d3.select(this).node().offsetHeight;
@@ -169,20 +169,20 @@ function manageDynamicElements(animate){
     // entering elements; so, operations on the update selection after appending to
     // the enter selection will apply to both entering and updating nodes.
 
-    var t0=papers.transition().duration(fringePapersPositionTransitionDuration[animate]).ease(fringePapersTransitionEasing)
+    var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate]).ease(parameters.fringePapersTransitionEasing)
     global.animationRunning=true;
 
     t0.each(function(p) {
         if(!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)){
             // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
-            var scaling="matrix(" + compressionRatio[global.zoom] + ",0,0," + compressionRatio[global.zoom] +","
-                + (fringePaperX(p)-compressionRatio[global.zoom]*fringePaperX(p)) +","
-                + (fringePaperY(p)-compressionRatio[global.zoom]*fringePaperY(p)) +")";   
+            var scaling="matrix(" + parameters.compressionRatio[global.zoom] + ",0,0," + parameters.compressionRatio[global.zoom] +","
+                + (fringePaperX(p)-parameters.compressionRatio[global.zoom]*fringePaperX(p)) +","
+                + (fringePaperY(p)-parameters.compressionRatio[global.zoom]*fringePaperY(p)) +")";   
 
             d3.select(this).attr("transform",scaling)
 
             if(userData.newSelectedPapers.length>0 || P.selected().length>0)
-                d3.select(this).style("opacity",opacityOfNonSelectedPapers[global.zoom])
+                d3.select(this).style("opacity", parameters.opacityOfNonSelectedPapers[global.zoom])
             else
                 d3.select(this).style("opacity",1)
         }
@@ -198,7 +198,7 @@ function manageDynamicElements(animate){
     .attr("x", function(p) { return fringePaperXCard(p);} )
     .attr("y", function(p) { return fringePaperYCard(p);} )
     .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
-    .attr("height",2*paperMaxRadius)
+    .attr("height",2*parameters.paperMaxRadius)
 
     t0.select(".outerCitationsCircle")
     .attr("cx", function(p) { return fringePaperX(p);} )
@@ -208,7 +208,7 @@ function manageDynamicElements(animate){
     // The change of color should occur AFTER the papers have moved to their new positions
     t0.call(endAll, function () {
         // A new transition is generated after all elements of t0 have finished
-        var t1=papers.transition().duration(fringePapersColorTransitionDuration[animate]);
+        var t1=papers.transition().duration(parameters.fringePapersColorTransitionDuration[animate]);
 
         t1.select(".outerCitationsCircle")
         .style("fill", function(p) { return fringePaperOuterColor(p); })
@@ -239,7 +239,7 @@ function manageDynamicElements(animate){
     .attr("r", function(p) {return radius(p,false);} )
 
     t0.select(".title")
-    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
+    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
     .attr("y", function(p) {return fringePaperY(p);} )
     .style("opacity","1")
 
@@ -248,15 +248,15 @@ function manageDynamicElements(animate){
     * otherwise they will impede selection of other elements (as they may be drawn on top of these). */
 
     t0.select(".metadata")
-    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(p) {return fringePaperY(p)+metadataYoffset;} )
+    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
+    .attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset;} )
     .style("opacity", function(p) { return (p.selected && global.zoom>=1) ? 1: 0;})
     .style("display", function(p) { return (p.selected && global.zoom>=1) ? "": "none";})
 
     t0.selectAll(".abstractWrapper")
-    .attr("x", function(p) { return fringePaperX(p)+paperMaxRadius+titleLeftMargin;} )
-    .attr("y", function(p) {return fringePaperY(p)+metadataYoffset+abstractYoffset;} )
-    .attr("width",abstractLineWidth)
+    .attr("x", function(p) { return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;} )
+    .attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset+parameters.abstractYoffset;} )
+    .attr("width",parameters.abstractLineWidth)
     .attr("height", function(p) { return p.abstractHeight;})
 
     t0.selectAll(".abstract")
@@ -267,7 +267,7 @@ function manageDynamicElements(animate){
     t0.select(".outerNode")
     .attr("cx", function(p) { return fringePaperX(p);} )
     .attr("cy", function(p) { return fringePaperY(p);} )
-    .attr("r", function(p) {return maxRadius(p)+paperOuterBorderWidth;} )
+    .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
     .style("display", function(p) { return p.selected ? "" : "none"; })
 
     //--------------------EXIT---------------------//
@@ -383,12 +383,12 @@ function bindListeners(){
             if(global.zoom<2)
                 global.zoom++;
             else
-                global.scrollOffset-=amountOfVerticalScrolling;
+                global.scrollOffset-=parameters.amountOfVerticalScrolling;
             // if the user keeps scrolling down, this will be interpreted as a scrolling down
         }
         else{
             if(global.scrollOffset<0)
-                global.scrollOffset+=amountOfVerticalScrolling;
+                global.scrollOffset+=parameters.amountOfVerticalScrolling;
             else{
                 if(global.zoom>0)
                     global.zoom--;
@@ -407,13 +407,13 @@ function bindListeners(){
 function fringePaperHeight(p) {
     // If the paper is not selected, its height decreases with the zoom level
     if(!p.selected)
-        return 2*paperMaxRadius*compressionRatio[global.zoom];
+        return 2*parameters.paperMaxRadius*parameters.compressionRatio[global.zoom];
 
     // If the paper is selected, its height increases with the zoom level
-    var height=2*paperMaxRadius;
+    var height=2*parameters.paperMaxRadius;
 
     if(global.zoom>=1)
-        height += metadataYoffset-paperMaxRadius;
+        height += parameters.metadataYoffset-parameters.paperMaxRadius;
 
     // The height of the abstract must be computed for each paper individually
     if(global.zoom>=2)
@@ -421,22 +421,22 @@ function fringePaperHeight(p) {
 
     // add some whitespace at the bottom to distinguish one paper from the next
     if(global.zoom>0)
-        height += paperMarginBottom;
+        height += parameters.paperMarginBottom;
 
     return height;
 }
 
 // Compute X coordinate for a paper on the fringe, based on a circle
 function fringePaperX(p) {
-  var selectedOffset = p.selected ?  0 : paperXOffsetWhenSelected;
+  var selectedOffset = p.selected ?  0 : parameters.paperXOffsetWhenSelected;
   return circleX(fringePaperY(p)) + selectedOffset;
 }
 
 // Return the x coordinate corresponding to a y position on the circle
 function circleX(y) {
   var h = window.innerHeight;
-  var centerXoffset = -fringeRadius + global.fringeApparentWidth;
-  return centerXoffset + Math.sqrt(Math.pow(fringeRadius, 2) - Math.pow(h/2 - y, 2));
+  var centerXoffset = -parameters.fringeRadius + global.fringeApparentWidth;
+  return centerXoffset + Math.sqrt(Math.pow(parameters.fringeRadius, 2) - Math.pow(h/2 - y, 2));
 }
 
 // Compute Y coordinate for a paper on the fringe
@@ -449,36 +449,36 @@ function fringePaperY(p) {
     offset += fringePaperHeight(global.visibleFringe[i])
   }
 
-  return offset + paperMaxRadius;
+  return offset + parameters.paperMaxRadius;
 }
 
 // Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperXCard(p){
-    return fringePaperX(p)+paperMaxRadius+titleLeftMargin;
+    return fringePaperX(p)+parameters.paperMaxRadius+parameters.titleLeftMargin;
 }
 
 // Compute Y coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperYCard(p){
-    return fringePaperY(p)-paperMaxRadius;
+    return fringePaperY(p)-parameters.paperMaxRadius;
 }
 
 /* Compute how many papers can be displayed on the fringe at the minimum zoom level
 * When zooming in, some of these papers will get pushed outside the view, but it's fine (nice animation).
 * Takes into account some space at the bottom of the fringe to show an update button. */
 function maxNumberOfVisiblePapers(){
-    var availableHeight=window.innerHeight-fringeBottomMargin;
-    return Math.floor(availableHeight/(2*paperMaxRadius));
+    var availableHeight=window.innerHeight-parameters.fringeBottomMargin;
+    return Math.floor(availableHeight/(2*parameters.paperMaxRadius));
 }
 
 function updateFringeButtonY(){
-    return window.innerHeight-fringeBottomMargin;
+    return window.innerHeight-parameters.fringeBottomMargin;
 }
 
 // Compute the horizontal position of the updateFringe button
 function updateFringeButtonX(){
     var h=window.innerHeight;
-    var centerXoffset=-fringeRadius+global.fringeApparentWidth;
-    return centerXoffset+Math.sqrt(Math.pow(fringeRadius,2)-Math.pow(h/2-updateFringeButtonY(),2))+paperMaxRadius+100;
+    var centerXoffset=-parameters.fringeRadius+global.fringeApparentWidth;
+    return centerXoffset+Math.sqrt(Math.pow(parameters.fringeRadius,2)-Math.pow(h/2-updateFringeButtonY(),2))+parameters.paperMaxRadius+100;
 }
 
 // Compute a node radius for the appropriate citation count supplied, up to a certain max radius
@@ -487,10 +487,10 @@ function radius(p, outer){
 
     var externalLarger = isExternalRelativelyLargerThanInternal(p);
     var representingExternal= (externalLarger == outer);
-    var count=representingExternal? p.citation_count/externalCitationCountCutoff
-     : p.citations.length/internalCitationCountCutoff;
+    var count=representingExternal? p.citation_count/parameters.externalCitationCountCutoff
+     : p.citations.length/parameters.internalCitationCountCutoff;
 
-    return Math.min(paperMaxRadius, paperMaxRadius*count);
+    return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*count);
 }
 
 function maxRadius(p){
@@ -514,8 +514,8 @@ function fringePaperOuterColor(p) {
     //console.log(global.papers[doi].citations.length/internalCitationCountCutoff + " " +global.papers[doi].citation_count/externalCitationCountCutoff)
     if(!isExternalRelativelyLargerThanInternal(p))
         return base;
-    //console.log("outer "+shadeHexColor(base,shadingDifferenceInnerOuter))
-    return shadeHexColor(base,shadingDifferenceInnerOuter);
+    //console.log("outer "+shadeHexColor(base,shadingDifferenceInternalExternal))
+    return shadeHexColor(base,colors.shadingDifferenceInternalExternal);
 }
 
 function fringePaperInnerColor(p) {
@@ -524,12 +524,12 @@ function fringePaperInnerColor(p) {
         //console.log("internal "+base)       
         return base;
     }
-    return shadeHexColor(base,shadingDifferenceInnerOuter);
+    return shadeHexColor(base,colors.shadingDifferenceInternalExternal);
 }
 
 function isExternalRelativelyLargerThanInternal(p){
-    return p.citation_count/externalCitationCountCutoff
-    > p.citations.length/internalCitationCountCutoff;
+    return p.citation_count/parameters.externalCitationCountCutoff
+    > p.citations.length/parameters.internalCitationCountCutoff;
 }
 
 ///////////////     Define public static methods, and return    /////////////

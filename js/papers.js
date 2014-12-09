@@ -113,25 +113,6 @@ P = (function() {
   });
 
 
-  // DEBUG.  NOT ACTIVELY USED
-  /**
-   * Return the i-th line of the abstract (counting from 0 as any good
-   * programmer should count)
-   *
-   * Deprecated! use helpers.js
-   */
-  paper.prototype.getLineOfAbstract = function(i) {
-    return this.abstract.slice(i*charactersPerLine,(i+1)*charactersPerLine);
-  }
-
-  // DEBUG.  NOT ACTIVELY USED
-  /**
-   * Counts the number of lines of the abstract, depending on the line width
-   */
-  paper.prototype.getAbstractLineCount = function() {
-    return this.abstract.length / charactersPerLine;
-  }
-
   /**
    * Return Author1, Author2, Author3 – CHI '96
    */
