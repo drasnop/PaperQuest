@@ -14,7 +14,7 @@ var global={
   "updateAutomatically": false,
   // papers dataset, accessed by global.papers[doi]
   "papers": false,
-  // automatically computed by fringeView
+  // automatically computed by view
   "visibleFringe": [],
   // flag indicating that a long animation is currently running
   "animationRunning": false,
@@ -33,7 +33,7 @@ var global={
 global.switchEncoding = function(){
     global.butterfly= !global.butterfly;
     d3.select("#fringe-papers").selectAll(".paper").remove()
-    fringeView.initializeVis();
+    view.initializeVis();
 }
 
 var userData={ 
