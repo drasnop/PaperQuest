@@ -30,6 +30,11 @@ var global={
   "circular":true
 };
 
+global.switchEncoding = function(){
+    global.butterfly= !global.butterfly;
+    d3.select("#fringe-papers").selectAll(".paper").remove()
+    fringeView.initializeVis();
+}
 
 var userData={ 
     // contains the tags and all useful (non-static) information about the papers that have been visited
