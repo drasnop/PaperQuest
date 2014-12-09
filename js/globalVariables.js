@@ -21,9 +21,7 @@ var global={
   // flag indicating that another animation is waiting for the current one to complete
   "animationWaiting":false,
   // The y-value at which the to-read list and the core are currently separated
-  "toReadHeight": window.innerHeight / 2,
-  // The x-value at which the fringe is separated from the to-read and core views
-  "toReadWidth": toreadApparentWidth[defaultView]
+  "toReadHeight": window.innerHeight / 2
 };
 
 

@@ -1,5 +1,5 @@
  /*
-* Creates, draw and specify interaction for the Fringe global.view
+* Creates, draw and specify interaction for the Fringe
 */
 
 // To create a class with static methods (basically, a namespace)
@@ -45,8 +45,8 @@ function createStaticElements(){
     //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
 
   var arc = d3.svg.arc()
-    .innerRadius(toreadRadius[global.view] - 2)
-    .outerRadius(toreadRadius[global.view] + 2)
+    .innerRadius(parameters.fringeRadius - 2)
+    .outerRadius(parameters.fringeRadius + 2)
     .startAngle(0)
     .endAngle(3);
 
@@ -84,10 +84,6 @@ function createStaticElements(){
   leftViewClipPath = svg.append("clipPath")
     .attr("id", "left-views")
     .append("circle");
-
-  // The papers in the fringe region
-  svg.append("g")
-    .attr("id", "fringe-papers")
 }
 
 // draw the static elements at their appropriate positions
@@ -102,7 +98,7 @@ function drawStaticElements(){
 
     // toread
     d3.select("#toread")
-    .attr("cx", -toreadRadius[global.view] + global.toReadWidth)  // TODO: change to fringeApparentWidth
+    .attr("cx", -parameters.fringeRadius + global.fringeApparentWidth)
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius)
     .style("fill",colors.toread)
@@ -110,23 +106,18 @@ function drawStaticElements(){
     .style("stroke-width",2)
 
   leftViewClipPath
-    .attr("cx",-toreadRadius[global.view] + global.toReadWidth)
+    .attr("cx",-parameters.fringeRadius + global.fringeApparentWidth)
     .attr("cy","50%")
-    .attr("r",toreadRadius[global.view]);
-}
-
-
-// Manage papers on the fringe, with or without animating the transitions (TODO)
-function manageDynamicElements(animate){
+    .attr("r",parameters.fringeRadius);
 
   // core
   var core = d3.select("#core")
     .attr("x", 0)
     .attr("y", global.toReadHeight)
-    .attr("width", global.toReadWidth)
+    .attr("width", global.fringeApparentWidth)
     .attr("height", window.innerHeight - global.toReadHeight)
     .attr("clip-path", "url(#left-views)")
-    .style("fill",colors.core[global.view]);
+    .style("fill",colors.core);
 
   // coreSeparator
   var dragCore = d3.behavior.drag()
@@ -152,25 +143,25 @@ function manageDynamicElements(animate){
   // fringeSeparator
   var dragFringe = d3.behavior.drag()
     .on("drag", function(d, i) {
-      global.toReadWidth = d3.event.x;
-      d3.select(this).attr("transform", "translate(" + (-toreadRadius[global.view] + global.toReadWidth) + "," + (window.innerHeight / 2) + ")");
-      d3.select("#fringe-papers").attr("transform", "translate(" + (global.toReadWidth - toreadApparentWidth[global.view]) + ", 0)");
-      d3.select("#toread").attr("cx", -toreadRadius[global.view] + global.toReadWidth);
-      d3.select("#core").attr("width", global.toReadWidth);
-      leftViewClipPath.attr("cx", -toreadRadius[global.view] + global.toReadWidth);
+      global.fringeApparentWidth = d3.event.x;
+      updateVis(0);
     });
 
   d3.select("#fringe-separator")
-    .attr("transform", "translate(" + (-toreadRadius[global.view] + global.toReadWidth) + "," + (window.innerHeight / 2) + ")")
-    .style("fill", colors.toreadBorder[global.view])
+    .attr("transform", "translate(" + (-parameters.fringeRadius + global.fringeApparentWidth) + "," + (window.innerHeight / 2) + ")")
+    .style("fill", colors.toreadBorder)
     .call(dragFringe);
+}
 
+
+// Manage papers on the fringe, with or without animating the transitions (TODO)
+function manageDynamicElements(animate){
   
 
   //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
 
-    var papers = svg.select("#fringe-papers").selectAll(".paper")
+    var papers = svg.selectAll(".paper")
     .data(global.visibleFringe, function(p) { return global.visibleFringe.indexOf(p); })
         // using this key function is critical to ensure papers will change position when updating the fringe
 
