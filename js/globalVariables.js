@@ -18,9 +18,9 @@ var global={
   // flag indicating that a long animation is currently running
   "animationRunning": false,
   // flag indicating that another animation is waiting for the current one to complete
-  "animationWaiting": false
-  // flag indicating if a dragging event is happening
-  "dragging":false
+  "animationWaiting":false,
+  // The y-value at which the to-read list and the core are currently separated
+  "toReadHeight": window.innerHeight / 2
 };
 
 

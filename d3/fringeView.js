@@ -42,10 +42,9 @@ function createStaticElements(){
     .attr("id","toread")
     //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
 
-    // core
-    svg.append("circle")
+  // core
+  svg.append("rect")
     .attr("id","core")
-    .attr("class","shadowOnHover")  
 
     // controls
     d3.select("body").append("button")
@@ -88,29 +87,52 @@ function drawStaticElements(){
     .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
     
-  // coreDivisor
-  var drag = d3.behavior.drag()
-    .on("drag", function(d, i) {
-      d3.select(this).attr("y", d3.event.y);
-    });
-
-  d3.select("#core-divisor")
-    .attr("x", 0)
-    .attr("y", "50%")
-    .attr("width", global.fringeApparentWidth)
-    .attr("height", 5)
-//    .attr("draggable", false)  // no drag shadow
-    .style("fill", colors.coreDivisor)
-    .style("stroke", colors.coreDivisor)
-    .style("fill-opacity", 0.5)
-    .call(drag);
+  // clipping path for the left side views
+  svg.append("clipPath")
+    .attr("id", "left-views")
+    .append("circle")
+    .attr("cx",-toreadRadius[global.view]+toreadApparentWidth[global.view])
+    .attr("cy","50%")
+    .attr("r",toreadRadius[global.view]);
 }
 
 
 // Manage papers on the fringe, with or without animating the transitions (TODO)
 function manageDynamicElements(animate){
 
-    //------------------DATA JOIN-------------------//
+  // core
+  var core = d3.select("#core")
+    .attr("x", 0)
+    .attr("y", global.toReadHeight)
+    .attr("width", toreadApparentWidth[global.view])
+    .attr("height", window.innerHeight - global.toReadHeight)
+    .attr("clip-path", "url(#left-views")
+    .style("fill",colors.core[global.view]);
+
+  // coreDivisor
+  var drag = d3.behavior.drag()
+    .on("drag", function(d, i) {
+      global.toReadHeight = d3.event.y;
+      d3.select(this).attr("y", d3.event.y);
+      core.attr("y", global.toReadHeight);
+      core.attr("height", window.innerHeight - global.toReadHeight);
+    });
+
+  d3.select("#core-divisor")
+    .attr("x", 0)
+    .attr("y", global.toReadHeight)
+    .attr("width", global.fringeApparentWidth)
+    .attr("height", 5)
+    .attr("clip-path", "url(#left-views")
+//    .attr("draggable", false)  // no drag shadow
+    .style("fill", colors.coreDivisor)
+    .style("stroke", colors.coreDivisor)
+    .style("fill-opacity", 0.5)
+    .call(drag);
+
+  
+
+  //------------------DATA JOIN-------------------//
     // Join new data with old elements, if any
 
     var papers = svg.selectAll(".paper")
