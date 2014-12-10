@@ -95,7 +95,7 @@ function createStaticElements(){
     .attr("onclick","global.updateAutomatically=!global.updateAutomatically; view.updateFringe()")
     d3.select("#updateFringeAutomatically")
     .append("span")
-    .text("automatically")
+    .text(" automatically")
 
   svg.append("rect")
     .attr("id", "core-separator");
@@ -136,8 +136,8 @@ function drawStaticElements(animate){
     .style("left",updateFringeButtonX()+"px")
 
     t0(d3.select("#updateFringeAutomatically"))
-    .style("top",updateFringeButtonY()+3+"px")
-    .style("left",updateFringeButtonX()+130+"px")
+    .style("top",updateFringeButtonY()+8+"px")
+    .style("left",updateFringeButtonX()+150+"px")
 
     // toread
     t0(d3.select("#toread"))

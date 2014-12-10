@@ -59,6 +59,23 @@ svg{
 	cursor:text;
 }
 
+button {
+  padding: 7px 16px;
+  border-radius: 5px;
+  border:none;
+  -webkit-font-smoothing: subpixel-antialiased;
+  color: #fff;
+  background-color: #3498db;
+}
+
+button:hover{
+  background-color: #098AE1;
+}
+
+button:disabled:hover{
+  background-color: #3498db;
+}
+
 button:disabled{
 	opacity:.5;
 }

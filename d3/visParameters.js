@@ -39,7 +39,7 @@ var parameters= {
   // the current value of fringeApparentWidth varies, hence is define in global
 
   // to leave room for the "update" button
-  "fringeBottomMargin": 30,
+  "fringeBottomMargin": 40,
 
   // to-read list left margin, to leave room for the menu
   "toreadPaperMargin": 35,
