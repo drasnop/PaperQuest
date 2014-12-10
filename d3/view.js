@@ -386,14 +386,20 @@ function showMenu(p) {
   d3.select("#paper-menu")
     .style("left", (fringePaperX(p) - parameters.menuOffset) + "px")
     .style("top", fringePaperY(p) - parameters.paperMaxRadius + "px")
-    .style("display", "block");
+    .style("display", "block")
+    .transition()
+    .duration(250)
+    .style("opacity", 1)
 }
 
 function hideMenu() {
   // Clear interactive paper
   global.activePaper = null;
   d3.select("#paper-menu")
-    .style("display", "none");
+    .transition()
+    .duration(150)
+    .style("opacity", 0)
+    .each("end", function() { d3.select(this).style("display", "none"); });
   // TODO: This eventually won't be necessary, the buttons should be
   // mapped to the paper's state.
   // Clear all active buttons
@@ -401,7 +407,6 @@ function hideMenu() {
     d3.select(this).classed("active", false);
   });
 }
-
 
 ///////////////     Define public static methods, and return    /////////////
 
