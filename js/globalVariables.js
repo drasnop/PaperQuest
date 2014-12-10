@@ -33,7 +33,11 @@ var global={
   // whether the fringe should be rounded
   "circular":true,
   // The paper that's currently interactive (menu is showing)
-  "interactivePaper": null
+  "activePaper": null,
+
+  // Date filters, should be set when the papers dataset is loaded
+  "minYear": 0,
+  "maxYear": 0
 };
 
 global.switchEncoding = function(){
