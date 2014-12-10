@@ -1,7 +1,6 @@
 body {
 	min-width: 1300px;
-	overflow: hidden;
-  	font: 10px sans-serif;
+  font: 10px sans-serif;
 }
 
 .bar rect {

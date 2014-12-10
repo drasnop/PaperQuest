@@ -3,9 +3,9 @@
 */
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
-/*var svg = d3.select("body").append("svg")
+var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",window.innerHeight);*/
+            .attr("height",1.5*window.innerHeight);
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
@@ -15,10 +15,16 @@ d3.json("data/citeology.json", function(data){
 });
 
 
-/*// Dynamic resize
+// Dynamic resize
 window.onresize = function(){
+    svg.remove();
+    
+    svg=d3.select("body").append("svg")
+    .attr("width",window.innerWidth)
+    .attr("height",1.5*window.innerHeight)
+    
     initializeVis();
-}*/
+}
 
 function initializeVis(){
 
@@ -74,18 +80,22 @@ function initializeVis(){
     var width=window.innerWidth/2,
         height=window.innerHeight/2;
 
-    var histogramInternal=d3.select("body").append("svg");
+    var histogramInternal=svg.append("g");
     histogram(histogramInternal,width,height,internalCitationCounts(),20,20);
     
-    var histogramExternal=d3.select("body").append("svg");
+    var histogramExternal=svg.append("g")
+        .attr("transform", "translate("+width+",0)");
     histogram(histogramExternal,width,height,externalCitationCounts(),20,400);
 
-    var scatterplotexternalVsInternal=d3.select("body").append("svg");
+    var scatterplotexternalVsInternal=svg.append("g")
+        .attr("transform", "translate(0,"+height+")");
     scatterplot(scatterplotexternalVsInternal,width,height,externalVsInternal(),true,false);
 
-    var scatterplotTimeVsExternal=d3.select("body").append("svg");
+    var scatterplotTimeVsExternal=svg.append("g")
+        .attr("transform", "translate(0,"+2*height+")");
     scatterplot(scatterplotTimeVsExternal,width,height,timeVsExternal(),true,true);
 
-    var scatterplotTimeVsACC=d3.select("body").append("svg");
+    var scatterplotTimeVsACC=svg.append("g")
+        .attr("transform", "translate("+width+","+2*height+")");
     scatterplot(scatterplotTimeVsACC,width,height,timeVsACC(),false,true);
 }

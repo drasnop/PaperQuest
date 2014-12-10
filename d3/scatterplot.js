@@ -18,6 +18,7 @@ function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
 	var y = d3.scale.linear()
 	.domain([d3.min(data, function(d) { return d.y; }), 
 		d3.max(data, function(d) { return d.y; }) / (halfVerticalScale? 2 : 1) ])
+	.clamp(true)
 	.range([height, 0])
 
 	// Define the axes
