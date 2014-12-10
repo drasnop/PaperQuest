@@ -217,6 +217,8 @@ P = (function() {
 
   Object.defineProperty(paper.prototype, "h", {get: getGeometryHelper(corePaperHeight, toreadPaperHeight, fringePaperHeight)});
 
+  Object.defineProperty(paper.prototype, "visible", {get: getGeometryHelper(corePaperVisible, toreadPaperVisible, fringePaperVisible)});
+
 
 
 

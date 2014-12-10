@@ -118,6 +118,10 @@ function colorFromConnectivity(connectivity){
     return colors.monotone[bins(connectivity)];
 }
 
+function fringePaperVisible(p) {
+  return (p.y + p.h - parameters.paperMaxRadius) < updateFringeButtonY();
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // To-read list geometry helpers
@@ -139,6 +143,10 @@ function toreadPaperY(p) {
 
 function toreadPaperHeight(p) {
   return 2 * parameters.paperMaxRadius;// + parameters.paperMarginBottom;
+}
+
+function toreadPaperVisible(p) {
+  return p.y < (global.toReadHeight - parameters.toreadMarginBottom);
 }
 
 
@@ -163,4 +171,8 @@ function corePaperY(p) {
 
 function corePaperHeight(p) {
   return 2 * parameters.paperMaxRadius;// + parameters.paperMarginBottom;
+}
+
+function corePaperVisible(p) {
+  return p.y < (window.innerHeight - parameters.coreMarginBottom);
 }

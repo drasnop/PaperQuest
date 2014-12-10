@@ -147,7 +147,7 @@ global.animationRunning=true;
 // do not display papers that are at the bottom of the fringe (except in abstract view, for intuitive scrolling)
 // TODO: bring to view selected papers that would be otherwise hidden
 t0.style("visibility",function(p) {
-    return (p.y+p.h-parameters.paperMaxRadius<updateFringeButtonY()) || global.zoom>=2 ?
+    return p.visible || global.zoom>=2 ?
      "visible" : "hidden" ; })
 
 // TODO: refactoring, not sure what this does, doesn't seem to trigger

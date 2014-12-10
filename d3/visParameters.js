@@ -43,11 +43,13 @@ var parameters= {
 
   // to-read list left margin, to leave room for the menu
   "toreadPaperMargin": 35,
-  // to-read list top margin
+  // to-read list top and bottom margins
   "toreadMarginTop": 15,
+  "toreadMarginBottom": 20,
 
-  // core list top margin
+  // core list top and bottom margins
   "coreMarginTop": 15,
+  "coreMarginBottom": 20,
 
   // heuristic average of pixels used by each letter
   "pixelsPerLetter": 9,
