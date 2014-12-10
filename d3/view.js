@@ -158,6 +158,7 @@ function drawStaticElements(){
       d3.select(this).attr("y", d3.event.y);
       core.attr("y", global.toReadHeight);
       core.attr("height", window.innerHeight - global.toReadHeight);
+      updateVis(0);
     });
 
   d3.select("#core-separator")
