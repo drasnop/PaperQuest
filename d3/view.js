@@ -274,7 +274,7 @@ function bindListeners(){
       if (!global.activePaper.selected) {
         // New interesting paper, fringe should recompute.
         userData.addNewInteresting(global.activePaper);
-        // Enable or disable the updateFringe button.  newInterestingPapers might not have changed, all checks are necessary.
+        // Enable or disable the updateFringe button.
         updateUpdateFringeButton();
       }
       global.activePaper.selected = false;
@@ -297,6 +297,27 @@ function bindListeners(){
       userData.removeInteresting(global.activePaper);
       // Enable or disable the updateFringe button.
       updateUpdateFringeButton();
+      global.activePaper.selected = false;
+      removeHighlighting(global.activePaper);
+      hideMenu();
+      doAutomaticFringeUpdate();
+      updateVis(2);
+    });
+
+  // Move a paper to the core
+  d3.select("#menu-tocore")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      d3.select(this).classed("active", false);
+      if (global.activePaper.fringe && !global.activePaper.selected) {
+        // Add to the interesting papers and recompute the fringe
+        userData.addNewInteresting(global.activePaper);
+        // Enable or disable the updateFringe button.
+        updateUpdateFringeButton();
+      }
+      global.activePaper.moveTo("core");
       global.activePaper.selected = false;
       removeHighlighting(global.activePaper);
       hideMenu();
@@ -482,9 +503,9 @@ function buildMenu(p) {
 
   if (p.core) {
   } else if(p.toread) {
-    ["menu-tofringe"].forEach(showOption);
+    ["menu-tofringe", "menu-tocore"].forEach(showOption);
   } else if (p.fringe) {
-    ["menu-toread"].forEach(showOption);
+    ["menu-toread", "menu-tocore"].forEach(showOption);
   }
 }
 
