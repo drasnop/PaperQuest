@@ -32,7 +32,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 /////////////////////	Private	functions 	////////////////////////////
 
 function initializeRelevanceScore(p) {
-	p.score = adjustedCitationCount(p);
+	p.score = p.adjustedCitationCount;
 	p.upvoters = 0;
 }
 
@@ -71,10 +71,6 @@ function updatePaper(pSource, pTarget, inserting){
 		pTarget.score-=1;
 		pTarget.upvoters-=1;
 	}
-}
-	
-function adjustedCitationCount(p) {
-	return Math.log(1 + p.getTotalCitationCount() / (parameters.currentYear - p.year));
 }
 
 

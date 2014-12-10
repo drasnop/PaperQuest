@@ -13,12 +13,19 @@ body {
   fill: #fff;
 }
 
-.axis path, .axis line {
+path { 
+    stroke: red;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
 
 .dot {
-	fill: steelblue;
+  fill: steelblue;
 }

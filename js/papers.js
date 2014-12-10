@@ -128,11 +128,13 @@ P = (function() {
     return this.citations.length;
   }
 
-  // unused?
-  paper.prototype.getTotalCitationCount = function() {
+  paper.prototype.getMaximumCitationCount = function() {
     return Math.max(this.citation_count, this.getInternalCitationCount());
   }
 
+  paper.prototype.adjustedCitationCount = function() {
+    return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
+}
 
 
 
