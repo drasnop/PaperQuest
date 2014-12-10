@@ -74,14 +74,14 @@ var colors={
   // color brewer 6, first excluded
   // "monotone":["#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
   // Same scale, with bigger steps between colors
-  "monotone":[shadeHexColor("#c7e9b4",0),shadeHexColor("#7fcdbb",-3),shadeHexColor("#41b6c4",-7),shadeHexColor("#2c7fb8",-11),shadeHexColor("#253494",-15)],
+  "monotone":[shadeHexColor("#c7e9b4",0),shadeHexColor("#7fcdbb",0),shadeHexColor("#41b6c4",-7),shadeHexColor("#2c7fb8",-7),shadeHexColor("#253494",-5)],
   
   // less conclusive scales
   //"monotone":["#ffffcc","#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
   //"monotone":["#edf8b1","#7fcdbb","#1d91c0","#253494","#081d58"],
   
   // how much lighter are the external citations
-  "shadingDifferenceInternalExternal":10,
+  "shadingDifferenceInternalExternal":8,
   // thése two colors are pretty, but probably shouldn't be used for tags (too similar)
   "turquoise":"#01A4A4",      
   "red":"#E54028",        
