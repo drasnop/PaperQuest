@@ -176,7 +176,11 @@ function drawStaticElements(){
   // fringeSeparator
   var dragFringe = d3.behavior.drag()
     .on("drag", function(d, i) {
-      global.fringeApparentWidth = d3.event.x;
+      var x = d3.event.x;
+      // Clamp new apparent width;
+      x = (x < parameters.fringeApparentWidthMin) ? parameters.fringeApparentWidthMin : x;
+      x = (x > (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding)) ? (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding) : x;
+      global.fringeApparentWidth = x;
       updateVis(0);
     });
 

@@ -33,8 +33,9 @@ var parameters= {
   "fringeRadius": 2000,
   // The apparent width is the horizontal space that we want the region to occupy on the screen
   // An appropriate offset for the x-position of the center will be computed as -radius+apparentWidth
-  "fringeApparentWidthMin": 420,
+  "fringeApparentWidthMin": 200,
   "fringeApparentWidthMax": 1200,
+  "fringeRightPadding": 350,
   // the current value of fringeApparentWidth varies, hence is define in global
 
   // to leave room for the "update" button
