@@ -4,8 +4,19 @@ view.manageDynamicElements=function(animate){
 //------------------DATA JOIN-------------------//
 // Join new data with old elements, if any
 
+var _visiblePapersCache = null;
+function visiblePapers() {
+  if (!_visiblePapersCache) {
+    _visiblePapersCache = global.visibleFringe.concat(P.toread()).concat(P.core());
+    window.setTimeout(function() {
+      _visiblePapersCache = null;
+    }, 100);   // clear the cache after .1 seconds.  Dirty hack, should fix eventually.
+  }
+  return _visiblePapersCache;
+}
+
 var papers = svg.select("#fringe-papers").selectAll(".paper")
-.data(global.visibleFringe, function(p) { return global.visibleFringe.indexOf(p); })
+.data(visiblePapers(), function(p) { return visiblePapers().indexOf(p); })
     // using this key function is critical to ensure papers will change position when updating the fringe
 
 
@@ -29,7 +40,7 @@ var zoom0 = enteringPapers.append("g")
     .attr("class","outerNode")
     .style("fill","white")
 
-    if(global.butterfly){        
+    if(global.butterfly){
         glyph.append("circle")
         .attr("class", "internalCitationsCircle")
         .style("fill", function(p) { return fringePaperInternalColor(p); })
@@ -51,13 +62,13 @@ var zoom0 = enteringPapers.append("g")
         .attr("class", "internalCitationsCircle")
         .attr("d", halfdisk(false))
         .style("fill", function(p) { return fringePaperInternalColor(p); })
-        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
+        .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
 
         glyph.append("path")
         .attr("class", "externalCitationsCircle")
         .attr("d", halfdisk(true))
         .style("fill", function(p) { return fringePaperExternalColor(p); })
-        .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })  
+        .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
     }
 
     glyph.append("svg:title")
@@ -108,55 +119,55 @@ global.animationRunning=true;
 
 // do not display papers that are at the bottom of the fringe
 // TODO: bring to view selected papers that would be otherwise hidden
-t0.style("display",function(p) { return fringePaperY(p)+fringePaperHeight(p)-parameters.paperMaxRadius<updateFringeButtonY()? "" : "none" ; })
+t0.style("display",function(p) { return p.y+fringePaperHeight(p)-parameters.paperMaxRadius<updateFringeButtonY()? "" : "none" ; })
 
 // TODO: refactoring, not sure what this does, doesn't seem to trigger
 // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
 t0.select(".card")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
-.attr("y", function(p) { return fringePaperY(p)-parameters.paperMaxRadius;} )
+.attr("y", function(p) { return p.y-parameters.paperMaxRadius;} )
 .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
 .attr("height",2*parameters.paperMaxRadius)
 
 if(global.butterfly){
     t0.select(".externalCitationsCircle")
-    .attr("cx", function(p) { return fringePaperX(p)-radius(p,true);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("cx", function(p) { return p.x-radius(p,true);} )
+    .attr("cy", function(p) { return p.y;} )
     .attr("r", function(p) {return radius(p,true);} )
 
     t0.select(".internalCitationsCircle")
-    .attr("cx", function(p) { return fringePaperX(p)+radius(p,false);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("cx", function(p) { return p.x+radius(p,false);} )
+    .attr("cy", function(p) { return p.y;} )
     .attr("r", function(p) {return radius(p,false);} )
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
-    .attr("cx", function(p) { return fringePaperX(p)-radius(p,true) ;} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("cx", function(p) { return p.x-radius(p,true) ;} )
+    .attr("cy", function(p) { return p.y;} )
     .attr("r", function(p) {return radius(p,true)+parameters.paperOuterBorderWidth;} )
     .style("display", function(p) { return p.selected ? "" : "none"; })
     //.moveToBackOf("#fringe-papers")  I'm not sure how to do this...
 }
 else{
     t0.select(".externalCitationsCircle")
-    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })
-    
+    .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
+
     t0.select(".internalCitationsCircle")
-    .attr("transform", function(p) { return "translate("+fringePaperX(p)+","+fringePaperY(p)+")"; })     
+    .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
 
     // the outerNodes (white borders to highlight selected papers) are shown only for the selected papers
     t0.select(".outerNode")
-    .attr("cx", function(p) { return fringePaperX(p);} )
-    .attr("cy", function(p) { return fringePaperY(p);} )
+    .attr("cx", function(p) { return p.x;} )
+    .attr("cy", function(p) { return p.y;} )
     .attr("r", function(p) {return maxRadius(p)+parameters.paperOuterBorderWidth;} )
-    .style("display", function(p) { return p.selected ? "" : "none"; })   
-    //.moveToBackOf("#fringe-papers")    
+    .style("display", function(p) { return p.selected ? "" : "none"; })
+    //.moveToBackOf("#fringe-papers")
 }
 
 t0.select(".glyph")
-.style("opacity", function(p) { 
-    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi))
-     && (userData.newSelectedPapers.length>0 || P.selected().length>0)  && global.zoom>0)
+.style("opacity", function(p) {
+    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi))
+     && (userData.newInterestingPapers.length>0 || P.selected().length>0)  && global.zoom>0)
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
 
@@ -190,18 +201,18 @@ t0.call(endAll, function () {
 
 t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
-.attr("y", function(p) {return fringePaperY(p);} )
-.style("opacity", function(p) { 
-    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
+.attr("y", function(p) {return p.y;} )
+.style("opacity", function(p) {
+    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
-.attr("transform", function(p) { 
+.attr("transform", function(p) {
     // for horizontal and vertical scaling: matrix(sx, 0, 0, sy, x-sx*x, y-sy*y)
     var scaling="matrix(" + parameters.compressionRatio[global.zoom] + ",0,0," + parameters.compressionRatio[global.zoom] +","
-                + (fringePaperX(p)-parameters.compressionRatio[global.zoom]*fringePaperX(p)) +","
-                + (fringePaperY(p)-parameters.compressionRatio[global.zoom]*fringePaperY(p)) +")";   
+                + (p.x-parameters.compressionRatio[global.zoom]*p.x) +","
+                + (p.y-parameters.compressionRatio[global.zoom]*p.y) +")";
 
-    if((!p.selected && !userData.newSelectedPapers.hasOwnProperty(p.doi)) && (userData.newSelectedPapers.length>0 || P.selected().length>0))
+    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
         return scaling;
     return null; })
 
@@ -211,13 +222,13 @@ t0.select(".title")
 
 t0.select(".metadata")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
-.attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset;} )
+.attr("y", function(p) {return p.y+parameters.metadataYoffset;} )
 .style("opacity", function(p) { return (p.selected && global.zoom>=1) ? 1: 0;})
 .style("display", function(p) { return (p.selected && global.zoom>=1) ? "": "none";})
 
 t0.selectAll(".abstractWrapper")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
-.attr("y", function(p) {return fringePaperY(p)+parameters.metadataYoffset+parameters.abstractYoffset;} )
+.attr("y", function(p) {return p.y+parameters.metadataYoffset+parameters.abstractYoffset;} )
 .attr("width",parameters.abstractLineWidth)
 .attr("height", function(p) { return p.abstractHeight;})
 .style("display", function(p) { return (p.selected && global.zoom>=2) ? "": "none";})
@@ -233,7 +244,7 @@ t0.selectAll(".abstract")
 // Remove old elements as needed.
 
 papers.exit()
-    // Trying to shrink the exiting papers. Works, but the coordinate space is not relative to current position => big translation     
+    // Trying to shrink the exiting papers. Works, but the coordinate space is not relative to current position => big translation
 /*        .transition().duration(fringePapersPositionTransitionDuration[animate])
 .attr("transform","matrix(1,0,0,.5,0,0)")*/
 .remove();

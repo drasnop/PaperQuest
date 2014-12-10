@@ -42,25 +42,25 @@ var userData={
     // contains the tags and all useful (non-static) information about the papers that have been visited
     "papers":{},
     // temporary list of the papers that have just been selected; used when updating the fringe
-    "newSelectedPapers":[],
-    "newDeselectedPapers":[]
+    "newInterestingPapers":[],
+    "newUninterestingPapers":[]
 }; 
 
 
-userData.addNewSelected = function(p) {
-  var index = userData.newDeselectedPapers.indexOf(p);
+userData.addNewInteresting = function(p) {
+  var index = userData.newUninterestingPapers.indexOf(p);
   if(index >- 1)
-    userData.newDeselectedPapers.splice(index,1);
+    userData.newUninterestingPapers.splice(index,1);
   else
-    userData.newSelectedPapers.push(p);
+    userData.newInterestingPapers.push(p);
 }
 
-userData.removeSelected = function(p) {
-  var index = userData.newSelectedPapers.indexOf(p);
+userData.removeInteresting = function(p) {
+  var index = userData.newInterestingPapers.indexOf(p);
   if(index >- 1)
-    userData.newSelectedPapers.splice(index,1);
+    userData.newInterestingPapers.splice(index,1);
   else
-    userData.newDeselectedPapers.push(p);
+    userData.newUninterestingPapers.push(p);
 }
 
 

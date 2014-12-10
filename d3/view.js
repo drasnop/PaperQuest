@@ -16,10 +16,10 @@ function initializeVis(){
 
 // Update the vis, with different animation speeds. If animate=0, no animation.
 function updateVis(animate){
-    computeVisibleFringe();
-    drawStaticElements();
-    manageDynamicElements(animate);
-    bindListeners();
+  computeVisibleFringe();
+  drawStaticElements();
+  manageDynamicElements(animate);
+  bindListeners();
 }
 
 // Update fringe and animate the change
@@ -100,8 +100,14 @@ function createStaticElements(){
     .attr("id", "left-views")
     .append("circle");
 
-    svg.append("g")
-    .attr("id","fringe-papers")
+  svg.append("g")
+    .attr("id", "core-papers");
+
+  svg.append("g")
+    .attr("id", "toread-papers");
+
+  svg.append("g")
+    .attr("id","fringe-papers");
 }
 
 // draw the static elements at their appropriate positions
@@ -192,7 +198,9 @@ function bindListeners(){
         d3.select(this).attr("filter","none")
     })*/
 
-  // Menu listeners
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Listeners for the papers contextual menu
   d3.select("#paper-menu")
     .on("mouseenter", function() {
       if (menuTimeout) {
@@ -219,11 +227,9 @@ function bindListeners(){
       // Remove highlighting from the node.  We use
       // document.getElementById because the id (the DOI) has dots and
       // d3 chokes.
-      var selection = d3.select(document.getElementById(global.activePaper.doi)).select(".zoom0");
-      selection.select(".internalCitationsCircle").attr("filter","none")
-      selection.select(".externalCitationsCircle").attr("filter","none")
-      selection.select(".title").classed("highlighted", false);
-      selection.select(".card").classed("highlighted", false);
+      if (global.activePaper) {
+        removeHighlighting(global.activePaper);
+      }
     });
 
   d3.selectAll("#paper-menu .click")
@@ -244,6 +250,47 @@ function bindListeners(){
       } else {
         selection.classed("active", true);
       }
+    });
+
+  // Move a paper to the to-read list
+  d3.select("#menu-toread")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      d3.select(this).classed("active", false);
+      global.activePaper.moveTo("toread");
+      if (!global.activePaper.selected) {
+        // New interesting paper, fringe should recompute.
+        userData.addNewInteresting(global.activePaper);
+        // Enable or disable the updateFringe button.  newInterestingPapers might not have changed, all checks are necessary.
+        updateUpdateFringeButton();
+      }
+      global.activePaper.selected = false;
+      
+      removeHighlighting(global.activePaper);
+      hideMenu();
+      doAutomaticFringeUpdate();
+      updateVis(2);
+    });
+
+  // Move a paper to the fringe
+  d3.select("#menu-tofringe")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      d3.select(this).classed("active", false);
+      global.activePaper.moveTo("fringe");
+      // Return the active paper to the fringe as an unselected paper, should recompute the fringe.
+      userData.removeInteresting(global.activePaper);
+      // Enable or disable the updateFringe button.
+      updateUpdateFringeButton();
+      global.activePaper.selected = false;
+      removeHighlighting(global.activePaper);
+      hideMenu();
+      doAutomaticFringeUpdate();
+      updateVis(2);
     });
 
   // Show/hide paper menus
@@ -269,8 +316,13 @@ function bindListeners(){
       }, 1000);
     });
 
-    // highlight nodes and titles
-    d3.selectAll(".zoom0")
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Listeners for papers in the fringe
+
+  // highlight nodes and titles
+  d3.selectAll(".zoom0")
     .on("mouseover",function() {
       var selection = d3.select(this);
       selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
@@ -304,19 +356,21 @@ function bindListeners(){
     .on("mousedown",function() {
       var paper=d3.select(this);
       paper.each(function(p) {
+        // Clicking on papers when not in the fringe does nothing.
+        if (!p.fringe) {
+          return;
+        }
+
         p.selected = !p.selected;
 
         // Add or remove the paper to the list that will update the fringe
         if(p.selected)
-          userData.addNewSelected(p);
+          userData.addNewInteresting(p);
         else
-          userData.removeSelected(p);
+          userData.removeInteresting(p);
 
         // Enable or disable the updateFringe button, if new papers have been (de)selected
-        if((userData.newSelectedPapers.length>0 || userData.newDeselectedPapers.length>0) && !global.updateAutomatically)
-          d3.select("#updateFringe").attr("disabled",null);
-        else
-          d3.select("#updateFringe").attr("disabled","disabled");
+        updateUpdateFringeButton();
 
         // Update the vis to move the selected papers left or right
         // (using different animation speeds depending on the zoom level, just because it's pretty)
@@ -340,15 +394,12 @@ function bindListeners(){
 
     // After (de)selecting a paper, update the fringe if updateAutomatically is true
     .on("mouseup",function(){
-
-        if(!global.updateAutomatically)
-            return;
-
-        // We have to make sure that the animation for "selected" is finished   
-        if(!global.animationRunning)
-            updateFringe();
-        else    
-            global.animationWaiting=true; // otherwise we wait for it to end
+      var paper=d3.select(this);
+      paper.each(function(p) {
+        if (p.fringe) {   // Only do automatic updating when click fringe papers.
+          doAutomaticFringeUpdate();
+        }
+      });
     })
 
     // detect zoom in and out
@@ -379,16 +430,19 @@ function bindListeners(){
         // Update the view (quickly), to take into account the new heights of the selected papers
         view.updateVis(2);
     })
+
 }
 
 
 function showMenu(p) {
+  buildMenu(p);
+  
   d3.select("#paper-menu")
-    .style("left", (fringePaperX(p) - parameters.menuOffset) + "px")
-    .style("top", fringePaperY(p) - parameters.paperMaxRadius + "px")
+    .style("left", (p.x - parameters.menuOffset) + "px")
+    .style("top", (p.y - parameters.paperMaxRadius) + "px")
     .style("display", "block")
     .transition()
-    .duration(250)
+    .duration(200)
     .style("opacity", 1)
 }
 
@@ -407,6 +461,51 @@ function hideMenu() {
     d3.select(this).classed("active", false);
   });
 }
+
+function buildMenu(p) {
+  var menu = d3.select("#paper-menu");
+  function hideOption(id) { menu.select("#" + id).style("display", "none"); }
+  function showOption(id) { menu.select("#" + id).style("display", "block"); }
+
+  ["menu-remove", "menu-star", "menu-tocore", "menu-tofringe", "menu-toread", "menu-links", "menu-expand"].forEach(hideOption);
+
+  if (p.core) {
+  } else if(p.toread) {
+    ["menu-tofringe"].forEach(showOption);
+  } else if (p.fringe) {
+    ["menu-toread"].forEach(showOption);
+  }
+}
+
+function removeHighlighting(p) {
+  // Only remove highlighting of non-selected papers.
+  if (!p.selected) {
+    var selection = d3.select(document.getElementById(p.doi)).select(".zoom0");
+    selection.select(".internalCitationsCircle").attr("filter","none")
+    selection.select(".externalCitationsCircle").attr("filter","none")
+    selection.select(".title").classed("highlighted", false);
+    selection.select(".card").classed("highlighted", false);
+  }
+}
+
+function updateUpdateFringeButton() {
+  if((userData.newInterestingPapers.length>0 || userData.newUninterestingPapers.length>0) && !global.updateAutomatically)
+    d3.select("#updateFringe").attr("disabled",null);
+  else
+    d3.select("#updateFringe").attr("disabled","disabled");
+}
+
+function doAutomaticFringeUpdate() {
+  if(!global.updateAutomatically)
+    return;
+
+  // We have to make sure that the animation for "selected" is finished   
+  if(!global.animationRunning)
+    updateFringe();
+  else    
+    global.animationWaiting = true; // otherwise we wait for it to end
+}
+
 
 ///////////////     Define public static methods, and return    /////////////
 

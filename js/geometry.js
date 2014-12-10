@@ -27,7 +27,7 @@ function fringePaperHeight(p) {
 function fringePaperX(p) {
   var regularOffsetFromFringe = parameters.paperMaxRadius + 2*parameters.titleLeftMargin + global.butterfly*parameters.paperMaxRadius;
   var selectedOffset = p.selected ? (global.butterfly? regularOffsetFromFringe-radius(p,true): regularOffsetFromFringe) : 0;
-  return circleX(fringePaperY(p)) + regularOffsetFromFringe - selectedOffset;
+  return circleX(p.y) + regularOffsetFromFringe - selectedOffset;
 }
 
 // Return the x coordinate corresponding to a y position on the circle
@@ -47,7 +47,7 @@ function fringePaperY(p) {
   // compute the sum of the height of the papers that are above the current one in the fringe
   var offset = global.scrollOffset;
   for(var i=0; i<index; i++){
-    offset += fringePaperHeight(global.visibleFringe[i])
+    offset += global.visibleFringe[i].h;
   }
 
   return offset + parameters.paperMaxRadius;
@@ -56,7 +56,7 @@ function fringePaperY(p) {
 // Compute X coordinate for the "card" (the rectangle label) of a paper on the fringe
 function fringePaperLabelX(p){
     var butterflyOffset = global.butterfly ? parameters.paperMaxRadius : 0;
-    return fringePaperX(p)+butterflyOffset+parameters.paperMaxRadius+parameters.titleLeftMargin;
+    return p.x+butterflyOffset+parameters.paperMaxRadius+parameters.titleLeftMargin;
 }
 
 /* Compute how many papers can be displayed on the fringe at the zoom level 1 (when they are smallest)
@@ -119,4 +119,52 @@ function colorFromUpvoters(n){
     if(n>=colors.monotone.length)
         return colors.monotone[colors.monotone.length-1];
     return colors.monotone[n-1];
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// To-read list geometry helpers
+
+function toreadPaperX(p) {
+  return parameters.toreadPaperMargin + 2*parameters.paperMaxRadius;
+}
+
+function toreadPaperY(p) {
+  var baseline = parameters.toreadMarginTop + parameters.paperMaxRadius;
+  var index = P.toread().indexOf(p)
+  var offset = 0;
+
+  for (var i=0; i < index; i++) {
+    offset += P.toread()[i].h
+  }
+  return baseline + offset;
+}
+
+function toreadPaperHeight(p) {
+  return 2 * parameters.paperMaxRadius;// + parameters.paperMarginBottom;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Core list geometry helpers
+
+function corePaperX(p) {
+  return parameters.toreadPaperMargin + 2*parameters.paperMaxRadius;
+}
+
+function corePaperY(p) {
+  var baseline = global.toReadHeight + parameters.paperMaxRadius + parameters.coreMarginTop;
+  var index = P.core().indexOf(p)
+  var offset = 0;
+
+  for (var i=0; i < index; i++) {
+    offset += P.core()[i].h
+  }
+  return baseline + offset;
+}
+
+function corePaperHeight(p) {
+  return 2 * parameters.paperMaxRadius;// + parameters.paperMarginBottom;
 }
