@@ -84,7 +84,7 @@ function connectionWeight(paper){
 }
 
 function computeMaxConnectivityScore(){
-	global.maxConnectivityScore=d3.max(P.all(), function(p) { return p.connectivity; })
+	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.connectivity; })
 	console.log("maxConnectivityScore: "+global.maxConnectivityScore)
 }
 

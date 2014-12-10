@@ -114,6 +114,7 @@ function colorFromConnectivity(connectivity){
     var bins=d3.scale.linear()
     .domain([1, global.maxConnectivityScore])
     .rangeRound([0, colors.monotone.length-1])
+    .clamp(true)
     return colors.monotone[bins(connectivity)];
 }
 
