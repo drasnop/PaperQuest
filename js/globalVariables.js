@@ -14,6 +14,8 @@ var global={
   "updateAutomatically": false,
   // papers dataset, accessed by global.papers[doi]
   "papers": false,
+  // medians of the maximal normalized citation counts for each year
+  "medians":[],
   // automatically computed by view
   "visibleFringe": [],
   // flag indicating that a long animation is currently running
@@ -36,6 +38,29 @@ global.switchEncoding = function(){
     global.butterfly= !global.butterfly;
     d3.select("#fringe-papers").selectAll(".paper").remove()
     view.initializeVis();
+}
+
+// Compute the median maximal normalized citation count for each year
+global.computeMedianMaximalNormalizedCitationCountsPerYear=function(){
+
+  var data=[];
+  for(var doi in global.papers){
+    var p=global.papers[doi];
+    var MNCC=Math.max(Math.min(1,p.citation_count/parameters.externalCitationCountCutoff),
+            Math.min(1,p.citations.length/parameters.internalCitationCountCutoff))
+    data.push({
+      "x":global.papers[doi].year,
+      "y": MNCC
+    })
+  }
+  
+  var temp=computeMedians(data);
+
+  // Format the resulting array in a more useful form
+  global.medians=[];
+  for(var i in temp){
+    global.medians[temp[i].x]=temp[i].y;
+  }
 }
 
 var userData={ 

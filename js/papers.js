@@ -129,9 +129,45 @@ P = (function() {
     return this.citations.length;
   }
 
-  // unused?
-  paper.prototype.getTotalCitationCount = function() {
+  paper.prototype.getNormalizedInternalCitationCount = function(){
+    return Math.min(1,this.citations.length/parameters.internalCitationCountCutoff);
+  }
+
+  paper.prototype.getNormalizedExternalCitationCount = function(){
+    return Math.min(1,this.citation_count/parameters.externalCitationCountCutoff);
+  }
+
+  paper.prototype.getMaximumNormalizedCitationCount = function() {
+    return Math.max(this.getNormalizedInternalCitationCount(), this.getNormalizedExternalCitationCount());
+  }
+
+  paper.prototype.adjustedCitationCount = function() {
+    var median=global.medians[this.year];
+    console.log(median)
+    var t=interpolateWithMedian(Math.max(this.getNormalizedInternalCitationCount(),
+      this.getNormalizedExternalCitationCount()) , median );
+    console.log(t)
+    return t;
+  }
+
+  // Old citation count computation - kept for comparison in stats page
+
+  paper.prototype.getMaximumCitationCount = function() {
     return Math.max(this.citation_count, this.getInternalCitationCount());
+  }
+
+  paper.prototype.oldAdjustedCitationCount = function() {
+    return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
+  }
+
+
+
+  // Bi-linear interpolation of values in [0,1], to move the median to .5
+  function interpolateWithMedian(y,median){
+    if(y<=median)
+      return .5/median*y;
+    else
+      return .5+.5/(1-median)*(y-median);
   }
 
   /**
@@ -165,7 +201,6 @@ P = (function() {
       }
     }
   }
-
 
   Object.defineProperty(paper.prototype, "x", {get: getGeometryHelper(corePaperX, toreadPaperX, fringePaperX)});
 

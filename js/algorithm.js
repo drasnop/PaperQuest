@@ -7,7 +7,7 @@ var algorithm = (function(){
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
 	P.all(initializeRelevanceScore);
-  P.interesting(updateRelevanceScoresWhenInserting);
+  	P.interesting(updateRelevanceScoresWhenInserting);
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -32,7 +32,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 /////////////////////	Private	functions 	////////////////////////////
 
 function initializeRelevanceScore(p) {
-	p.score = adjustedCitationCount(p);
+	p.score = parameters.ACCweight*p.adjustedCitationCount();
 	p.upvoters = 0;
 }
 
@@ -76,10 +76,6 @@ function updatePaper(pSource, pTarget, inserting){
 		pTarget.score-=1;
 		pTarget.upvoters-=1;
 	}
-}
-	
-function adjustedCitationCount(p) {
-	return Math.log(1 + p.getTotalCitationCount() / (parameters.currentYear - p.year));
 }
 
 
