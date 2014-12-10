@@ -1,6 +1,7 @@
 body {
 	min-width: 1300px;
 	overflow: hidden;
+  font-family: Tahoma, Helvetica;
 }
 
 #sidebar{
@@ -54,8 +55,9 @@ svg{
 }
 
 .abstract{
-	/*font-family: Roboto;*/
-	color:#444;
+	font-family: Roboto Slab, Tahoma, Helvetica;
+  font-size: 95%;
+	color:#555;
 	cursor:text;
 }
 
@@ -65,15 +67,15 @@ button {
   border:none;
   -webkit-font-smoothing: subpixel-antialiased;
   color: #fff;
-  background-color: #3498db;
+  background-color: #2c7fb8;
 }
 
 button:hover{
-  background-color: #098AE1;
+  background-color: #2fa4b2;
 }
 
 button:disabled:hover{
-  background-color: #3498db;
+  background-color: #2c7fb8;
 }
 
 button:disabled{
@@ -134,4 +136,63 @@ button:disabled{
   position: absolute;
   top: 0px;
   left: 0px;
+}
+
+#top-menu ul {
+  text-align: left;
+  display: inline;
+  margin: 0;
+  padding: 15px 4px 17px 0;
+  list-style: none;
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+#top-menu ul li {
+  font: bold 12px/18px sans-serif;
+  display: inline-block;
+  margin-right: -4px;
+  position: relative;
+  padding: 15px 20px;
+  background: #fff;
+  cursor: pointer;
+  -webkit-transition: all 0.2s;
+  -moz-transition: all 0.2s;
+  -ms-transition: all 0.2s;
+  -o-transition: all 0.2s;
+  transition: all 0.2s;
+}
+#top-menu ul li:hover {
+  background: #555;
+  color: #fff;
+}
+#top-menu ul li ul {
+  padding: 0;
+  position: absolute;
+  top: 48px;
+  left: 0;
+  width: 150px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transiton: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -ms-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  -transition: opacity 0.2s;
+}
+#top-menu ul li ul li { 
+  background: #555; 
+  display: block; 
+  color: #fff;
+  text-shadow: 0 -1px 0 #000;
+}
+#top-menu ul li ul li:hover { background: #666; }
+#top-menu ul li:hover ul {
+  display: block;
+  opacity: 1;
+  visibility: visible;
 }
