@@ -6,8 +6,9 @@ var algorithm = (function(){
 
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
+	computeMedianCitationCountsPerYear();
 	P.all(initializeRelevanceScore);
-  P.interesting(updateRelevanceScoresWhenInserting);
+  	P.interesting(updateRelevanceScoresWhenInserting);
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -71,6 +72,30 @@ function updatePaper(pSource, pTarget, inserting){
 		pTarget.score-=1;
 		pTarget.upvoters-=1;
 	}
+}
+
+// Compute the median maximal normalized citation count for each year
+function computeMedianCitationCountsPerYear(){
+
+/*	// Remove the papers for which we may not have found the google citation count
+	var nonZeroPapers=Object.keys(global.papers).filter(function(doi){
+	    return global.papers[doi].citation_count>0;
+	})
+	But since we cannot tell appart these...
+*/
+
+	var data=[];
+	for(var doi in global.papers){
+		var p=global.papers[doi];
+		var MNCC=Math.max(Math.min(1,p.citation_count/parameters.externalCitationCountCutoff),
+						Math.min(1,p.citations.length/parameters.internalCitationCountCutoff))
+		data.push({
+			"x":global.papers[doi].year,
+			"y": MNCC
+		})
+	}
+	
+	global.medians=computeMedians(data); 
 }
 
 

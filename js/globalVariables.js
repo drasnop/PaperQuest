@@ -14,6 +14,8 @@ var global={
   "updateAutomatically": false,
   // papers dataset, accessed by global.papers[doi]
   "papers": false,
+  // medians of the maximal normalized citation counts for each year
+  "medians":[],
   // automatically computed by view
   "visibleFringe": [],
   // flag indicating that a long animation is currently running

@@ -71,36 +71,3 @@ function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
         .attr("class", "y axis")
         .call(yAxis);
 }
-
-
-function computeMedians(data){
-	// sort by x
-	data.sort(function(a, b) { return a.x - b.x;});
-
-	// split by x
-	var slices=[];
-	var i=0;
-	var currentX=data[0].x;
-	var nexti=data.map(function(e) { return e.x; }).lastIndexOf(currentX)+1;
-
-	while(nexti<data.length){
-		slices.push( data.slice(i, nexti));
-		
-		i=nexti;
-		currentX=data[nexti].x;
-		nexti=data.map(function(e) { return e.x; }).lastIndexOf(currentX)+1;
-	}
-	slices.push( data.slice(i));
-
-	// compute the median y of each slice
-	var medians=[];
-	for(var i in slices){
-		s=slices[i];
-		medians.push({
-			"x":s[0].x,
-			"y":d3.median(s, function(d) { return d.y; })
-		});
-	}
-
-	return medians;		
-}

@@ -305,12 +305,12 @@ function bindListeners(){
           updateVis(4);
           break;
         case 1:
-        case 2:
           updateVis(3);
           break;
-        case 3:
+        case 2:
           updateVis(2);
           break;
+
         }
       });
 

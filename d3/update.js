@@ -106,9 +106,11 @@ enteringPapers.append("foreignObject")
 var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate]).ease(parameters.fringePapersTransitionEasing)
 global.animationRunning=true;
 
-// do not display papers that are at the bottom of the fringe
+// do not display papers that are at the bottom of the fringe (except in abstract view, for intuitive scrolling)
 // TODO: bring to view selected papers that would be otherwise hidden
-t0.style("display",function(p) { return fringePaperY(p)+fringePaperHeight(p)-parameters.paperMaxRadius<updateFringeButtonY()? "" : "none" ; })
+t0.style("visibility",function(p) { 
+    return (fringePaperY(p)+fringePaperHeight(p)-parameters.paperMaxRadius<updateFringeButtonY()) || global.zoom>=2 ?
+     "visible" : "hidden" ; })
 
 // TODO: refactoring, not sure what this does, doesn't seem to trigger
 // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this

@@ -132,9 +132,17 @@ P = (function() {
     return Math.max(this.citation_count, this.getInternalCitationCount());
   }
 
+  paper.prototype.getNormalizedInternalCitationCount = function(){
+    return Math.min(1,this.citations.length/parameters.internalCitationCountCutoff);
+  }
+
+  paper.prototype.getNormalizedExternalCitationCount = function(){
+    return Math.min(1,this.citation_count/parameters.externalCitationCountCutoff);
+  }
+
   paper.prototype.adjustedCitationCount = function() {
     return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
-}
+  }
 
 
 

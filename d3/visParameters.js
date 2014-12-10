@@ -56,8 +56,8 @@ var parameters= {
 
   // Current year must always be one year after the latest year in the dataset (2010 for citeology)
   "currentYear": 2011,
-  "externalCitationCountCutoff": 200,
-  "internalCitationCountCutoff": 25,
+  "externalCitationCountCutoff": 400,
+  "internalCitationCountCutoff": 20,
 
 
   /*     misc parameters      */
@@ -74,7 +74,7 @@ var colors={
   // color brewer 6, first excluded
   // "monotone":["#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
   // Same scale, with bigger steps between colors
-  "monotone":[shadeHexColor("#c7e9b4",0),shadeHexColor("#7fcdbb",0),shadeHexColor("#41b6c4",-7),shadeHexColor("#2c7fb8",-7),shadeHexColor("#253494",-5)],
+  "monotone":[shadeHexColor("#c7e9b4",0),shadeHexColor("#7fcdbb",0),shadeHexColor("#41b6c4",-7),shadeHexColor("#2c7fb8",-7),shadeHexColor("#253494",-3)],
   
   // less conclusive scales
   //"monotone":["#ffffcc","#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
@@ -82,7 +82,7 @@ var colors={
   
   // how much lighter are the external citations
   "shadingDifferenceInternalExternal":8,
-  // thése two colors are pretty, but probably shouldn't be used for tags (too similar)
+  // these two colors are pretty, but probably shouldn't be used for tags (too similar)
   "turquoise":"#01A4A4",      
   "red":"#E54028",        
   // background color of each region based on the current view

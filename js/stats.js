@@ -5,7 +5,7 @@
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",1.5*window.innerHeight);
+            .attr("height",2*window.innerHeight);
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
@@ -21,61 +21,91 @@ window.onresize = function(){
     
     svg=d3.select("body").append("svg")
     .attr("width",window.innerWidth)
-    .attr("height",1.5*window.innerHeight)
+    .attr("height",2*window.innerHeight)
     
     initializeVis();
 }
 
 function initializeVis(){
 
+    var papers=Object.keys(global.papers).filter(function(doi){
+        return global.papers[doi].citation_count>0;
+    })
+
+    //var papers=Object.keys(global.papers);
+
     function internalCitationCounts() {
       var internalCitationCounts = [];
-      for(var doi in global.papers){
+      papers.forEach(function(doi){
         internalCitationCounts.push(P(doi).getInternalCitationCount())
-      }
+      })
       return internalCitationCounts;
     }
 
     function externalCitationCounts() {
       var externalCitationCounts = [];
-      for(var doi in global.papers){
+      papers.forEach(function(doi){
         externalCitationCounts.push(P(doi).citation_count)
-      }
+      })
       return externalCitationCounts;
     }
 
     function externalVsInternal(){
         var externalVsInternal = [];
-        for(var doi in global.papers){
+        papers.forEach(function(doi){
             externalVsInternal.push({
                 "y":P(doi).getInternalCitationCount(),
                 "x":P(doi).citation_count
             });
-        }
+        })
         return externalVsInternal;
     }
 
     function timeVsExternal(){
         var timeVsExternal = [];
-        for(var doi in global.papers){
+        papers.forEach(function(doi){
             timeVsExternal.push({
                 "x":P(doi).year,
                 "y":P(doi).citation_count
             });
-        }
+        })
         return timeVsExternal;
     }
 
-    function timeVsACC(){
-        var timeVsACC = [];
-        for(var doi in global.papers){
-            timeVsACC.push({
+    function timeVsInternal(){
+        var timeVsInternal = [];
+        papers.forEach(function(doi){
+            timeVsInternal.push({
+                "x":P(doi).year,
+                "y":P(doi).getInternalCitationCount()
+            });
+        })
+        return timeVsInternal;
+    }
+
+    function timeVsOldACC(){
+        var timeVsOldACC = [];
+        papers.forEach(function(doi){
+            timeVsOldACC.push({
                 "x":P(doi).year,
                 "y":P(doi).adjustedCitationCount()
             });
-        }
-        return timeVsACC;
+        })
+        return timeVsOldACC;
     }
+
+    function externalVsInternal_normalized(){
+        var externalVsInternal = [];
+        papers.forEach(function(doi){
+            externalVsInternal.push({
+                "x":P(doi).year,
+                "y":Math.max(P(doi).getNormalizedInternalCitationCount(), P(doi).getNormalizedExternalCitationCount())
+            });
+        })
+        return externalVsInternal;
+    }
+
+
 
     var width=window.innerWidth/2,
         height=window.innerHeight/2;
@@ -87,15 +117,26 @@ function initializeVis(){
         .attr("transform", "translate("+width+",0)");
     histogram(histogramExternal,width,height,externalCitationCounts(),20,400);
 
+
     var scatterplotexternalVsInternal=svg.append("g")
         .attr("transform", "translate(0,"+height+")");
     scatterplot(scatterplotexternalVsInternal,width,height,externalVsInternal(),true,false);
 
+
+    var scatterplotTimeVsInternal=svg.append("g")
+        .attr("transform", "translate("+0+","+2*height+")");
+    scatterplot(scatterplotTimeVsInternal,width,height,timeVsInternal(),true,true);
+
     var scatterplotTimeVsExternal=svg.append("g")
-        .attr("transform", "translate(0,"+2*height+")");
+        .attr("transform", "translate("+width+","+2*height+")");
     scatterplot(scatterplotTimeVsExternal,width,height,timeVsExternal(),true,true);
 
-    var scatterplotTimeVsACC=svg.append("g")
-        .attr("transform", "translate("+width+","+2*height+")");
-    scatterplot(scatterplotTimeVsACC,width,height,timeVsACC(),false,true);
+
+    var scatterplotTimeVsOldACC=svg.append("g")
+        .attr("transform", "translate("+0+","+3*height+")");
+    scatterplot(scatterplotTimeVsOldACC,width,height,timeVsOldACC(),false,true);
+
+    var scatterplotexternalVsInternal_normalized=svg.append("g")
+        .attr("transform", "translate("+width+","+3*height+")");
+    scatterplot(scatterplotexternalVsInternal_normalized,width,height,externalVsInternal_normalized(),false,true);
 }
