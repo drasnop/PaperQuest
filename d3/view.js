@@ -10,8 +10,9 @@ var menuTimeout = null;
 var fringeSliderToggle = true;
 
 // Except for the (static) background elements, everything is computed on-the-fly
-function initializeView(){
-  createStaticElements();
+function initializeView(createStatic){
+  if(createStatic)
+    createStaticElements();
   updateView(0);   //don't animate at creation
 }
 

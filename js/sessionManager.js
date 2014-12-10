@@ -65,6 +65,17 @@ var sessionManager = function(){
         console.log("localStorage('userData') has been deleted");
         // reload the page - a bit brutal, but does what we want
         window.location.reload();
+
+        // more clever, but doesn't work
+/*        svg.html("");
+        userData={ 
+            // contains the tags and all useful (non-static) information about the papers that have been visited
+            "papers":{},
+            // temporary list of the papers that have just been selected; used when updating the fringe
+            "newInterestingPapers":[],
+            "newUninterestingPapers":[]
+        }; 
+        initializeVisualization(true);*/
     }
 
     ////////        Create public static methods    /////////////////

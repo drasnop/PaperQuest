@@ -8,16 +8,19 @@ var svg = d3.select("body").append("svg")
             .attr("height",window.innerHeight);
 
 
-// Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
-d3.json("data/citeology.json", function(data){
-    global.papers=data.papers;
-    global.computeMedianMaximalNormalizedCitationCountsPerYear();
-    sessionManager.loadPreviousSession();
+// Initialize visualization, with creating the background elements by default
+function initializeVisualization(createStaticElements){
+	d3.json("data/citeology.json", function(data){
+	    global.papers=data.papers;
+	    global.computeMedianMaximalNormalizedCitationCountsPerYear();
+	    sessionManager.loadPreviousSession();
 
-    algorithm.generateFringe();
-    view.initializeView();
-});
+	    algorithm.generateFringe();
+	    view.initializeView(createStaticElements);
+	});	
+}
 
+initializeVisualization(true);
 
 // Dynamic resize
 window.onresize = function(){
