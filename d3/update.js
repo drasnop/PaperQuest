@@ -195,7 +195,7 @@ else{
 
 t0.select(".glyph")
 .style("opacity", function(p) {
-    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi))
+    if(((p.fringe && !p.selected) && !userData.newInterestingPapers.hasOwnProperty(p.doi))
      && (userData.newInterestingPapers.length>0 || P.selected().length>0)  && global.zoom>0)
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
@@ -232,7 +232,7 @@ t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return p.y;} )
 .style("opacity", function(p) {
-    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
+    if(((p.fringe && !p.selected) && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
 .attr("transform", function(p) {
@@ -241,7 +241,7 @@ t0.select(".title")
                 + (p.x-parameters.compressionRatio[global.zoom]*p.x) +","
                 + (p.y-parameters.compressionRatio[global.zoom]*p.y) +")";
 
-    if((!p.selected && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
+    if(((p.fringe && !p.selected) && !userData.newInterestingPapers.hasOwnProperty(p.doi)) && (userData.newInterestingPapers.length>0 || P.selected().length>0))
         return scaling;
     return null; })
 

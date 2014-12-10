@@ -465,7 +465,6 @@ function bindListeners(){
                     global.zoom--;
             }
         }
-        console.log("zoom: "+global.zoom)
 
         // Update the view (quickly), to take into account the new heights of the selected papers
         view.updateView(2);
