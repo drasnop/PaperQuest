@@ -19,6 +19,16 @@ var papers = svg.select("#fringe-papers").selectAll(".paper")
 .data(visiblePapers(), function(p) { return visiblePapers().indexOf(p); })
     // using this key function is critical to ensure papers will change position when updating the fringe
 
+papers.selectAll(".title")
+  .text(function(p) {
+  if (p.fringe) {
+    return p.title;
+  } else {
+    var maxPixels = global.fringeApparentWidth - 4*parameters.paperMaxRadius - parameters.toreadPaperMargin - parameters.titleLeftMargin - parameters.toreadTitlePadding;
+    return shorten(p.title, Math.round(maxPixels / parameters.pixelsPerLetter));
+  }
+});
+
 
 //--------------------ENTER---------------------//
 // Create new elements as needed
@@ -85,7 +95,14 @@ zoom0.append("text")
 .attr("class", "title")
 .classed("highlighted", function(p) { return p.selected; })
 .attr("dy",".35em")     // align ligne middle
-.text(function(p) { return p.title; })
+.text(function(p) {
+  if (p.fringe) {
+    return p.title;
+  } else {
+    var maxPixels = global.fringeApparentWidth - 4*parameters.paperMaxRadius - parameters.toreadPaperMargin - parameters.titleLeftMargin - parameters.toreadTitlePadding;
+    return shorten(p.title, Math.round(maxPixels / parameters.pixelsPerLetter));
+  }
+})
 .style("opacity","0")   // otherwise it looks ugly when they come in - maybe not useful anymore...
 
 enteringPapers.append("a")

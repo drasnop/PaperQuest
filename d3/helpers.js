@@ -160,3 +160,31 @@ function computeMedians(data){
 
     return medians;     
 }
+
+
+/**
+ * Shortens a string to a given width, preserving word boundaries.
+ *
+ * Based on http://stackoverflow.com/a/24168721
+ */
+function shorten(text, maxLength) {
+  if ( text.length <= maxLength ) {
+    return text;
+  }
+
+  // Compute suffix to use (eventually add an ellipsis)
+  var suffix = "";
+  if ( text.length > maxLength) {
+    suffix = " ...";
+  }
+
+  // Compute the index at which we have to cut the text
+  var maxTextLength = maxLength - suffix.length;
+  var cutIndex = text.lastIndexOf(" ", maxTextLength+1);
+  if (cutIndex <= 0) {
+    return "";
+  }
+
+  return text.substr(0, cutIndex) + suffix;
+  return newText + suffix;
+}

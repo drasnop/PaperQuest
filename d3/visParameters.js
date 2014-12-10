@@ -48,6 +48,11 @@ var parameters= {
   // core list top margin
   "coreMarginTop": 15,
 
+  // heuristic average of pixels used by each letter
+  "pixelsPerLetter": 9,
+  // extra padding (empty pixels) to the right of titles
+  "toreadTitlePadding": 50,
+
 
   /*     dynamic parameters       */
 
