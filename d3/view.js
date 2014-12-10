@@ -7,6 +7,7 @@ var view = (function () {
 
 var leftViewClipPath;
 var menuTimeout = null;
+var fringeSliderToggle = true;
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
@@ -72,10 +73,15 @@ function createStaticElements(){
 
   // core
   svg.append("rect")
-    .attr("id","core")
+    .attr("id","core");
 
     // controls
-    d3.select("body").append("button")
+  d3.select("body").append("span")
+    .attr("id", "fringe-slider-toggle")
+    .attr("onclick", "view.toggleFringeSlider()")
+    .classed("icon-tab", true)
+
+  d3.select("body").append("button")
     .attr("id","updateFringe")
     .attr("class","visControl")
     .text("Update fringe")
@@ -512,6 +518,17 @@ function doAutomaticFringeUpdate() {
 }
 
 
+function toggleFringeSlider() {
+  fringeSliderToggle = !fringeSliderToggle;
+  if (fringeSliderToggle) {
+    global.fringeApparentWidth = (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding);
+  } else {
+    global.fringeApparentWidth = parameters.fringeApparentWidthMin;
+  }
+  updateVis(0);
+}
+
+
 ///////////////     Define public static methods, and return    /////////////
 
 var view = {};
@@ -519,6 +536,7 @@ var view = {};
 view.initializeVis=initializeVis;
 view.updateVis=updateVis;
 view.updateFringe=updateFringe;
+view.toggleFringeSlider = toggleFringeSlider;
 
 return view;
 
