@@ -16,6 +16,8 @@ var global={
   "papers": false,
   // medians of the maximal normalized citation counts for each year
   "medians":[],
+  // current maximal connectivity score, computed every time the fringe is updated
+  "maxConnectivityScore":1,
   // automatically computed by view
   "visibleFringe": [],
   // flag indicating that a long animation is currently running
@@ -92,7 +94,7 @@ userData.removeSelected = function(p) {
 // debug
 userData.computeTotalScore=function() {
   return P.fringe().reduce(function(a, b) {
-    return a + b.score;
+    return a + b.getRelevanceScore();
   }, 0);
 }
 

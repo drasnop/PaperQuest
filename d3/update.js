@@ -188,7 +188,7 @@ t0.call(endAll, function () {
 // Basically the second animation cancels the first one, although the staging works fine when duration>0...
 /*   t0.transition().duration(fringePapersColorTransitionDuration[animate])
 .select(".externalCitationsCircle")
-.style("fill", function(d) { return colorFromUpvoters(userData.papers[d].upvoters); })*/
+.style("fill", function(d) { return colorFromConnectivity(userData.papers[d].connectivity); })*/
 
 t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )

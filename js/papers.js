@@ -142,21 +142,22 @@ P = (function() {
 
   paper.prototype.adjustedCitationCount = function() {
     var median=global.medians[this.year];
-    console.log(median)
     var t=interpolateWithMedian(Math.max(this.getNormalizedInternalCitationCount(),
       this.getNormalizedExternalCitationCount()) , median );
-    console.log(t)
     return t;
   }
 
-  // Bi-linear interpolation of values in [0,1], to move the median to .5
-  function interpolateWithMedian(y,median){
-    if(y<=median)
-      return .5/median*y;
-    else
-      return .5+.5/(1-median)*(y-median);
+  // Normalize from 0 to 1 the connectivity scores
+  // (note that all connectivity scores are larger than 1 for papers on the fringe)
+  paper.prototype.getNormalizedConnectivityScore = function() {
+    return (this.connectivity-1)/(global.maxConnectivityScore-1);
   }
 
+  // combines the two components of the score (each starting at 0)
+  paper.prototype.getRelevanceScore = function(){
+    return parameters.ACCweight*this.adjustedCitationCount() 
+    + parameters.connectivityWeight*this.getNormalizedConnectivityScore();
+  }
 
   // Old citation count computation - kept for comparison in stats page
 
@@ -166,6 +167,17 @@ P = (function() {
 
   paper.prototype.oldAdjustedCitationCount = function() {
     return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
+  }
+
+
+  ////////////////    helper functions    ////////////////////////////////////////
+
+  // Bi-linear interpolation of values in [0,1], to move the median to .5
+  function interpolateWithMedian(y,median){
+    if(y<=median)
+      return .5/median*y;
+    else
+      return .5+.5/(1-median)*(y-median);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +263,7 @@ P = (function() {
    * callback is provided, it's invoked for each paper.
    */
   lookup.sortedFringe = getSubset(function(doi) { return userData.papers[doi].fringe; },
-                                  function(a, b) { return b.score - a.score; });  // decreasing order!
+                                  function(a, b) { return b.getRelevanceScore() - a.getRelevanceScore(); });  // decreasing order!
 
   /**
    * Returns an array of all the papers currently selected in the

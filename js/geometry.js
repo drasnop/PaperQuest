@@ -102,21 +102,18 @@ function randomColor(){
 }
 
 function fringePaperInternalColor(p) {
-    return colorFromUpvoters(p.upvoters);
+    return colorFromConnectivity(p.connectivity);
 }
 
 function fringePaperExternalColor(p) {
-    return shadeHexColor(colorFromUpvoters(p.upvoters),colors.shadingDifferenceInternalExternal);
+    return shadeHexColor(colorFromConnectivity(p.connectivity),colors.shadingDifferenceInternalExternal);
 }
 
-/*function colorFromUpvoters(n){
-    if(n>=colors.tags.length)
-        return colors.tags[colors.tags.length-1];
-    return colors.tags[n-1];
-}*/
+// Maps the connectivity score to 5 color bins (connectivty is always >=1 in the fringe)
+function colorFromConnectivity(connectivity){
+    var bins=d3.scale.linear()
+    .domain([1, global.maxConnectivityScore])
+    .rangeRound([0, colors.monotone.length-1])
 
-function colorFromUpvoters(n){
-    if(n>=colors.monotone.length)
-        return colors.monotone[colors.monotone.length-1];
-    return colors.monotone[n-1];
+    return colors.monotone[bins(connectivity)];
 }

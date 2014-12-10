@@ -61,10 +61,14 @@ var parameters= {
 
 
   /*     algorithm parameters       */
-  // If this weight is close to 1, the fringe is mostly sorted by color (= number of upvoters)
-  // If this weight is >> number of upvoters, the fringe is mostly sorted by ACC
-  // It indicates how many colors (differences of upvoters) a much-cited paper can jump
-  "ACCweight": 3,
+  // If this weight is >> 1, the fringe is mostly sorted by ACC
+  "ACCweight": 1,
+  // If this weight is >> 1, the fringe is mostly sorted by color (= connectivity)
+  "connectivityWeight": 1,
+  // Relative weight of the different types of paper
+  "coreWeight": 5,
+  "toReadWeight":3,
+  "selectedWeight":1,
 
 
   /*     misc parameters      */

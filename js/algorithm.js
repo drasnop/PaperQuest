@@ -8,6 +8,7 @@ var algorithm = (function(){
 function generateFringe(){
 	P.all(initializeRelevanceScore);
   	P.interesting(updateRelevanceScoresWhenInserting);
+  	computeMaxConnectivityScore();
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -16,6 +17,7 @@ function updateFringe(){
 	userData.newDeselectedPapers.forEach(updateRelevanceScoresWhenRemoving);
 	userData.newSelectedPapers=[];
 	userData.newDeselectedPapers=[];
+	computeMaxConnectivityScore();
 }
 
 
@@ -32,8 +34,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 /////////////////////	Private	functions 	////////////////////////////
 
 function initializeRelevanceScore(p) {
-	p.score = parameters.ACCweight*p.adjustedCitationCount();
-	p.upvoters = 0;
+	p.connectivity = 0;
 }
 
 // Update the score for all papers (not only the ones on the Fringe)
@@ -54,7 +55,7 @@ function updateRelevanceScores(pSource, inserting){
       updatePaper(pSource, pTarget, inserting);
 
       // remove the paper if it's no longer linked by interesting papers
-      if (pTarget.upvoters <= 0)
+      if (pTarget.connectivity <= 0)
         delete userData.papers[pTarget.doi];
     });
 }
@@ -63,16 +64,24 @@ function updateRelevanceScores(pSource, inserting){
 ///////////////		helper functions	/////////////////////////////
 
 function updatePaper(pSource, pTarget, inserting){
-	if(inserting){
-		pTarget.score+=1;
-		pTarget.upvoters+=1;
-	}
-	else{
-		pTarget.score-=1;
-		pTarget.upvoters-=1;
-	}
+	if(inserting)
+		pTarget.connectivity+=connectionWeight(pSource);
+	else
+		pTarget.connectivity-=connectionWeight(pSource);
 }
 
+function connectionWeight(paper){
+	if(paper.core)
+		return parameters.coreWeight;
+	if(paper.toRead)
+		return parameters.toReadWeight;
+	return parameters.selectedWeight;
+}
+
+function computeMaxConnectivityScore(){
+	global.maxConnectivityScore=d3.max(P.all(), function(p) { return p.connectivity; })
+	console.log("maxConnectivityScore: "+global.maxConnectivityScore)
+}
 
 ///////////////     Define public static methods, and return    /////////////
 	
