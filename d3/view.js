@@ -8,6 +8,7 @@ var view = (function () {
 var leftViewClipPath;
 var menuTimeout = null;
 var fringeSliderToggle = true;
+var filters = [dateFilter];   // All the filters that should be applied to the dataset
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeVis(){
@@ -41,7 +42,7 @@ function updateFringe() {
 
 // Given the current windows dimensions, which papers can be displayed on the Fringe?
 function computeVisibleFringe(){
-  global.visibleFringe = P.sortedFringe().slice(0,maxNumberOfVisiblePapers());
+  global.visibleFringe = P.sortedFringe().filter(allFilters).slice(0,maxNumberOfVisiblePapers());
 }
 
 function manageDynamicElements(animate){
@@ -277,7 +278,7 @@ function bindListeners(){
     .on("mouseup", function() {
       d3.select(this).classed("active", false);
       global.activePaper.moveTo("toread");
-      if (!global.activePaper.selected) {
+      if (!global.activePaper.selected) {   // "selected" papers in the fringe are already interesting, so no need to update anything
         // New interesting paper, fringe should recompute.
         userData.addNewInteresting(global.activePaper);
         // Enable or disable the updateFringe button.
@@ -555,6 +556,23 @@ function toggleFringeSlider() {
   updateVis(1);
 }
 
+/**
+ * Checks that a paper passes all the filters in the filters array
+ * defined in the namespace
+ */
+function allFilters(p) {
+  var result = true;
+  filters.forEach(function(f) {
+    result = result && f(p);
+  });
+
+  return result;
+}
+
+function dateFilter(p) {
+  return (p.year >= global.minYear && p.year <= global.maxYear);
+}
+
 
 ///////////////     Define public static methods, and return    /////////////
 
@@ -564,7 +582,7 @@ view.initializeVis=initializeVis;
 view.updateVis=updateVis;
 view.updateFringe=updateFringe;
 view.toggleFringeSlider = toggleFringeSlider;
-
+view.allFilters = allFilters;
 return view;
 
 })();

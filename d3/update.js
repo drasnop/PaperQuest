@@ -5,9 +5,19 @@ view.manageDynamicElements=function(animate){
 // Join new data with old elements, if any
 
 var _visiblePapersCache = null;
+
 function visiblePapers() {
   if (!_visiblePapersCache) {
-    _visiblePapersCache = global.visibleFringe.concat(P.toread()).concat(P.core());
+    // First filter and reorder individual lists
+    var fringe = global.visibleFringe;  // Filtering already happening in "computeVisibleFringe"
+    var toread = P.toread().filter(view.allFilters);
+    var core = P.core().filter(view.allFilters);
+
+    // Mix them into a single list to feed to d3.
+    _visiblePapersCache = fringe.concat(toread).concat(core);
+
+    // Expire the cache.  Important, otherwise user wouldn't see any
+    // additions or deletions of papers to the set.
     window.setTimeout(function() {
       _visiblePapersCache = null;
     }, 100);   // clear the cache after .1 seconds.  Dirty hack, should fix eventually.
