@@ -32,7 +32,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 /////////////////////	Private	functions 	////////////////////////////
 
 function initializeRelevanceScore(p) {
-	p.score = p.adjustedCitationCount;
+	p.score = p.adjustedCitationCount();
 	p.upvoters = 0;
 }
 
