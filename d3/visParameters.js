@@ -11,17 +11,17 @@ var parameters= {
   "paperOuterBorderWidth": 4,
   // between on paper and the next (again, to create visual grouping)
   "paperMarginBottom": 10,
-  // margin between node and title              
+  // margin between node and title
   "titleLeftMargin": 5,
   // how far to the right are paper that come in and out of the fringe (not used yet)
-  "papersEnteringDistance": 60,   
-  // so far used only for wrapping the text of the abstract     
+  "papersEnteringDistance": 60,
+  // so far used only for wrapping the text of the abstract
   "abstractLineWidth": 800,
 
   // vertical offset of the different components of the paper (1.8*parameters.paperMaxRadius)
   "metadataYoffset": 26,
   // in addition to metadaYoffset, the abstract has an offset of:
-  "abstractYoffset": 7,   
+  "abstractYoffset": 7,
 
   // Indicates how much the non-selected papers are shrunk when "zoom"=0,1,2
   "compressionRatio": [1,.8,0],
@@ -37,8 +37,16 @@ var parameters= {
   "fringeApparentWidthMax": 1200,
   // the current value of fringeApparentWidth varies, hence is define in global
 
-  // to leave room for the "update" button     
-  "fringeBottomMargin": 30, 
+  // to leave room for the "update" button
+  "fringeBottomMargin": 30,
+
+  // to-read list left margin, to leave room for the menu
+  "toreadPaperMargin": 35,
+  // to-read list top margin
+  "toreadMarginTop": 15,
+
+  // core list top margin
+  "coreMarginTop": 15,
 
 
   /*     dynamic parameters       */
@@ -86,16 +94,16 @@ var colors={
   // "monotone":["#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
   // Same scale, with bigger steps between colors
   "monotone":[shadeHexColor("#c7e9b4",0),shadeHexColor("#7fcdbb",0),shadeHexColor("#41b6c4",-7),shadeHexColor("#2c7fb8",-7),shadeHexColor("#253494",-3)],
-  
+
   // less conclusive scales
   //"monotone":["#ffffcc","#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"],
   //"monotone":["#edf8b1","#7fcdbb","#1d91c0","#253494","#081d58"],
-  
+
   // how much lighter are the external citations
   "shadingDifferenceInternalExternal":8,
   // these two colors are pretty, but probably shouldn't be used for tags (too similar)
-  "turquoise":"#01A4A4",      
-  "red":"#E54028",        
+  "turquoise":"#01A4A4",
+  "red":"#E54028",
   // background color of each region based on the current view
   "core":"rgb(255, 191, 175)",
   "coreDivisor":"rgb(223, 111, 95)",

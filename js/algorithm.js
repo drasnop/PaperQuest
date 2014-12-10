@@ -13,10 +13,10 @@ function generateFringe(){
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
 function updateFringe(){
-	userData.newSelectedPapers.forEach(updateRelevanceScoresWhenInserting);
-	userData.newDeselectedPapers.forEach(updateRelevanceScoresWhenRemoving);
-	userData.newSelectedPapers=[];
-	userData.newDeselectedPapers=[];
+	userData.newInterestingPapers.forEach(updateRelevanceScoresWhenInserting);
+	userData.newUninterestingPapers.forEach(updateRelevanceScoresWhenRemoving);
+	userData.newInterestingPapers=[];
+	userData.newUninterestingPapers=[];
 	computeMaxConnectivityScore();
 }
 
@@ -48,7 +48,12 @@ function updateRelevanceScores(pSource, inserting){
       // if paper has never been seen before, initialize it and add it to the fringe
       if (pTarget.isNew) {
         pTarget.isNew = false;
-        pTarget.fringe = true;
+        // Added this check because we're hard-coding initial seed
+        // papers to the core.  Eventually this check should be
+        // removed.
+        if (!pTarget.core) {
+          pTarget.fringe = true;
+        }
         initializeRelevanceScore(pTarget);
       }
       // update relevance score of this paper

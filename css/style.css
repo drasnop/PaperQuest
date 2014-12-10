@@ -83,6 +83,7 @@ button:disabled{
   padding: 0px;
   margin: 0px;
   display: none;
+  opacity: 0;
   border-color: #a0a0a0;
   box-shadow: 0 0 10px #a0a0a0;
 }
@@ -111,4 +112,3 @@ button:disabled{
   box-shadow:inset 0px 0px 0px 1px #909090;
   cursor: pointer;
 }
-

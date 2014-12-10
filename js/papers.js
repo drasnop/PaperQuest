@@ -5,8 +5,9 @@ P = (function() {
   var defaultInitialValues =  {
     fringe:   false,            // Paper is in the fringe or not
     core:     false,            // Paper is in the core or not
-    score:    0,                //
-    upvoters: 0,                //
+    toread:   false,            // Paper is in the to-read list or not
+    score:    0,                // Relevance score
+    upvoters: 0,                // Number of links to other papers of interest to the user
     selected: false,            // Paper has been selected from the fringe by the user or not
     isNew:    true
   };
@@ -147,6 +148,14 @@ P = (function() {
     return t;
   }
 
+  // Bi-linear interpolation of values in [0,1], to move the median to .5
+  function interpolateWithMedian(y,median){
+    if(y<=median)
+      return .5/median*y;
+    else
+      return .5+.5/(1-median)*(y-median);
+  }
+
   // Normalize from 0 to 1 the connectivity scores
   // (note that all connectivity scores are larger than 1 for papers on the fringe)
   paper.prototype.getNormalizedConnectivityScore = function() {
@@ -169,17 +178,48 @@ P = (function() {
     return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
   }
 
-
-  ////////////////    helper functions    ////////////////////////////////////////
-
-  // Bi-linear interpolation of values in [0,1], to move the median to .5
-  function interpolateWithMedian(y,median){
-    if(y<=median)
-      return .5/median*y;
-    else
-      return .5+.5/(1-median)*(y-median);
+  /**
+   * Sets the state of the paper so that it belongs to the specified
+   * region, which can be one of "core", "fringe" or "toread".  This
+   * method ensures only one region-flag is true at a time.
+   */
+  paper.prototype.moveTo = function(where) {
+    var that = this;
+    // Set everything to false, then only "where" to true
+    ["fringe", "core", "toread"].forEach(function(d) { that[d] = false; });
+    this[where] = true;
   }
 
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Paper geometry helper functions
+  ////////////////////////////////////////////////////////////////////////////////
+
+  function getGeometryHelper(coreFun, toreadFun, fringeFun) {
+    // Calls the right function, depending on where the paper is
+    // located right now.
+    return function() {
+      if (this.fringe) {
+        return fringeFun(this);
+      } else if (this.toread) {
+        return toreadFun(this);
+      } else if (this.core) {
+        return coreFun(this);
+      }
+    }
+  }
+
+  Object.defineProperty(paper.prototype, "x", {get: getGeometryHelper(corePaperX, toreadPaperX, fringePaperX)});
+
+  Object.defineProperty(paper.prototype, "y", {get: getGeometryHelper(corePaperY, toreadPaperY, fringePaperY)});
+
+  Object.defineProperty(paper.prototype, "h", {get: getGeometryHelper(corePaperHeight, toreadPaperHeight, fringePaperHeight)});
+
+
+
+
   ////////////////////////////////////////////////////////////////////////////////
   // API for interacting with the dataset
   ////////////////////////////////////////////////////////////////////////////////
@@ -252,6 +292,19 @@ P = (function() {
   lookup.core = getSubset(function(doi) { return userData.papers[doi].core; });
 
   /**
+   * Returns an array of all the papers in the to-read list.  If a
+   * callback is provided, it's invoked for each paper.
+   */
+  lookup.toread = getSubset(function(doi) { return userData.papers[doi].toread; });
+
+  /**
+   * Returns an array of all the papers currently in the to-read list,
+   * sorted in decreasing order by their relevance score.  If a
+   * callback is provided, it's invoked for each paper.
+   */
+  lookup.sortedToread = getSubset(function(doi) { return userData.papers[doi].toread; },
+                                  function(a, b) { return b.score - a.score; });  // decreasing order!
+  /**
    * Returns an array of all the papers currently in the fringe.  If
    * a callback is provided, it's invoked for each paper.
    */
@@ -287,5 +340,6 @@ P = (function() {
   });
 
 
+
   return lookup;
 })();

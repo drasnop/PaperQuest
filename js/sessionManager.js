@@ -49,7 +49,7 @@ var sessionManager = function(){
             console.log("seed paper: " + seedPapers[i]);
             p = P(seedPapers[i]);
             if (typeof p !== "undefined") {  // ignore seed papers that are not internal
-                p.core = true;
+                p.moveTo("core");
             }
         }
     }
