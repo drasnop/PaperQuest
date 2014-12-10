@@ -167,8 +167,8 @@ function drawStaticElements(animate){
     .on("drag", function(d, i) {
       global.toReadHeight = d3.event.y;
       d3.select(this).attr("y", d3.event.y);
-      core.attr("y", global.toReadHeight);
-      core.attr("height", window.innerHeight - global.toReadHeight);
+      d3.select("#core").attr("y", global.toReadHeight);
+      d3.select("#core").attr("height", window.innerHeight - global.toReadHeight);
       updateVis(0);
     });
 
