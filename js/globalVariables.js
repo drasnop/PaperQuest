@@ -40,6 +40,29 @@ global.switchEncoding = function(){
     view.initializeVis();
 }
 
+// Compute the median maximal normalized citation count for each year
+global.computeMedianMaximalNormalizedCitationCountsPerYear=function(){
+
+  var data=[];
+  for(var doi in global.papers){
+    var p=global.papers[doi];
+    var MNCC=Math.max(Math.min(1,p.citation_count/parameters.externalCitationCountCutoff),
+            Math.min(1,p.citations.length/parameters.internalCitationCountCutoff))
+    data.push({
+      "x":global.papers[doi].year,
+      "y": MNCC
+    })
+  }
+  
+  var temp=computeMedians(data);
+
+  // Format the resulting array in a more useful form
+  global.medians=[];
+  for(var i in temp){
+    global.medians[temp[i].x]=temp[i].y;
+  }
+}
+
 var userData={ 
     // contains the tags and all useful (non-static) information about the papers that have been visited
     "papers":{},

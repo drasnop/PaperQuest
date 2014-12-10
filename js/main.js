@@ -11,6 +11,7 @@ var svg = d3.select("body").append("svg")
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
 d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
+    global.computeMedianMaximalNormalizedCitationCountsPerYear();
     sessionManager.loadPreviousSession();
 
     algorithm.generateFringe();

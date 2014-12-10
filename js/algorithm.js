@@ -6,7 +6,6 @@ var algorithm = (function(){
 
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
-	computeMedianCitationCountsPerYear();
 	P.all(initializeRelevanceScore);
   	P.interesting(updateRelevanceScoresWhenInserting);
 }
@@ -72,23 +71,6 @@ function updatePaper(pSource, pTarget, inserting){
 		pTarget.score-=1;
 		pTarget.upvoters-=1;
 	}
-}
-
-// Compute the median maximal normalized citation count for each year
-function computeMedianCitationCountsPerYear(){
-
-	var data=[];
-	for(var doi in global.papers){
-		var p=global.papers[doi];
-		var MNCC=Math.max(Math.min(1,p.citation_count/parameters.externalCitationCountCutoff),
-						Math.min(1,p.citations.length/parameters.internalCitationCountCutoff))
-		data.push({
-			"x":global.papers[doi].year,
-			"y": MNCC
-		})
-	}
-	
-	global.medians=computeMedians(data); 
 }
 
 

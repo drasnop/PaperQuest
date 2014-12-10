@@ -5,12 +5,13 @@
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",2*window.innerHeight);
+            .attr("height",2.5*window.innerHeight);
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
 d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
+    global.computeMedianMaximalNormalizedCitationCountsPerYear();
     initializeVis();
 });
 
@@ -21,7 +22,7 @@ window.onresize = function(){
     
     svg=d3.select("body").append("svg")
     .attr("width",window.innerWidth)
-    .attr("height",2*window.innerHeight)
+    .attr("height",2.5*window.innerHeight)
     
     initializeVis();
 }
@@ -89,10 +90,21 @@ function initializeVis(){
         papers.forEach(function(doi){
             timeVsOldACC.push({
                 "x":P(doi).year,
-                "y":P(doi).adjustedCitationCount()
+                "y":P(doi).oldAdjustedCitationCount()
             });
         })
         return timeVsOldACC;
+    }
+
+    function timeVsMNCC(){
+        var timeVsMNCC = [];
+        papers.forEach(function(doi){
+            timeVsMNCC.push({
+                "x":P(doi).year,
+                "y":P(doi).getMaximumNormalizedCitationCount()
+            });
+        })
+        return timeVsMNCC;
     }
 
     function timeVsACC(){
@@ -100,7 +112,7 @@ function initializeVis(){
         papers.forEach(function(doi){
             timeVsACC.push({
                 "x":P(doi).year,
-                "y":P(doi).getMaximumNormalizedCitationCount()
+                "y":P(doi).adjustedCitationCount()
             });
         })
         return timeVsACC;
@@ -137,7 +149,12 @@ function initializeVis(){
         .attr("transform", "translate("+0+","+3*height+")");
     scatterplot(scatterplotTimeVsOldACC,width,height,timeVsOldACC(),false,true);
 
-    var scatterplotTimeVsACC=svg.append("g")
+    var scatterplotTimeVsMNCC=svg.append("g")
         .attr("transform", "translate("+width+","+3*height+")");
+    scatterplot(scatterplotTimeVsMNCC,width,height,timeVsMNCC(),false,true);
+
+
+    var scatterplotTimeVsACC=svg.append("g")
+        .attr("transform", "translate("+width+","+4*height+")");
     scatterplot(scatterplotTimeVsACC,width,height,timeVsACC(),false,true);
 }

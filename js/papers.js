@@ -141,7 +141,20 @@ P = (function() {
   }
 
   paper.prototype.adjustedCitationCount = function() {
-    return Math.max(this.getNormalizedInternalCitationCount(), this.getNormalizedExternalCitationCount());
+    var median=global.medians[this.year];
+    console.log(median)
+    var t=interpolateWithMedian(Math.max(this.getNormalizedInternalCitationCount(),
+      this.getNormalizedExternalCitationCount()) , median );
+    console.log(t)
+    return t;
+  }
+
+  // Bi-linear interpolation of values in [0,1], to move the median to .5
+  function interpolateWithMedian(y,median){
+    if(y<=median)
+      return .5/median*y;
+    else
+      return .5+.5/(1-median)*(y-median);
   }
 
 
