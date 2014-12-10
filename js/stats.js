@@ -28,11 +28,12 @@ window.onresize = function(){
 
 function initializeVis(){
 
-    var papers=Object.keys(global.papers).filter(function(doi){
-        return global.papers[doi].citation_count>0;
-    })
+    var papers=Object.keys(global.papers);
 
-    //var papers=Object.keys(global.papers);
+/*  // Remove the papers for which we didn't get the Google citation count
+    var papersForExternalCitations=Object.keys(global.papers).filter(function(doi){
+        return !(global.papers[doi].citation_count==0 && global.papers[doi].citations.length>0);
+    })*/
 
     function internalCitationCounts() {
       var internalCitationCounts = [];
@@ -94,15 +95,15 @@ function initializeVis(){
         return timeVsOldACC;
     }
 
-    function externalVsInternal_normalized(){
-        var externalVsInternal = [];
+    function timeVsACC(){
+        var timeVsACC = [];
         papers.forEach(function(doi){
-            externalVsInternal.push({
+            timeVsACC.push({
                 "x":P(doi).year,
-                "y":Math.max(P(doi).getNormalizedInternalCitationCount(), P(doi).getNormalizedExternalCitationCount())
+                "y":P(doi).getMaximumNormalizedCitationCount()
             });
         })
-        return externalVsInternal;
+        return timeVsACC;
     }
 
 
@@ -136,7 +137,7 @@ function initializeVis(){
         .attr("transform", "translate("+0+","+3*height+")");
     scatterplot(scatterplotTimeVsOldACC,width,height,timeVsOldACC(),false,true);
 
-    var scatterplotexternalVsInternal_normalized=svg.append("g")
+    var scatterplotTimeVsACC=svg.append("g")
         .attr("transform", "translate("+width+","+3*height+")");
-    scatterplot(scatterplotexternalVsInternal_normalized,width,height,externalVsInternal_normalized(),false,true);
+    scatterplot(scatterplotTimeVsACC,width,height,timeVsACC(),false,true);
 }

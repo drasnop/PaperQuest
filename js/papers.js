@@ -128,10 +128,6 @@ P = (function() {
     return this.citations.length;
   }
 
-  paper.prototype.getMaximumCitationCount = function() {
-    return Math.max(this.citation_count, this.getInternalCitationCount());
-  }
-
   paper.prototype.getNormalizedInternalCitationCount = function(){
     return Math.min(1,this.citations.length/parameters.internalCitationCountCutoff);
   }
@@ -140,11 +136,24 @@ P = (function() {
     return Math.min(1,this.citation_count/parameters.externalCitationCountCutoff);
   }
 
+  paper.prototype.getMaximumNormalizedCitationCount = function() {
+    return Math.max(this.getNormalizedInternalCitationCount(), this.getNormalizedExternalCitationCount());
+  }
+
   paper.prototype.adjustedCitationCount = function() {
-    return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
+    return Math.max(this.getNormalizedInternalCitationCount(), this.getNormalizedExternalCitationCount());
   }
 
 
+  // Old citation count computation - kept for comparison in stats page
+
+  paper.prototype.getMaximumCitationCount = function() {
+    return Math.max(this.citation_count, this.getInternalCitationCount());
+  }
+
+  paper.prototype.oldAdjustedCitationCount = function() {
+    return Math.log(1 + this.getMaximumCitationCount() / (parameters.currentYear - this.year));
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // API for interacting with the dataset

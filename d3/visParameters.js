@@ -60,6 +60,13 @@ var parameters= {
   "internalCitationCountCutoff": 20,
 
 
+  /*     algorithm parameters       */
+  // If this weight is close to 1, the fringe is mostly sorted by color (= number of upvoters)
+  // If this weight is >> number of upvoters, the fringe is mostly sorted by ACC
+  // It indicates how many colors (differences of upvoters) a much-cited paper can jump
+  "ACCweight": 3,
+
+
   /*     misc parameters      */
 
   // The space between a node's glyph and the menu to the left

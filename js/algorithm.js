@@ -33,7 +33,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 /////////////////////	Private	functions 	////////////////////////////
 
 function initializeRelevanceScore(p) {
-	p.score = p.adjustedCitationCount();
+	p.score = parameters.ACCweight*p.adjustedCitationCount();
 	p.upvoters = 0;
 }
 
@@ -76,13 +76,6 @@ function updatePaper(pSource, pTarget, inserting){
 
 // Compute the median maximal normalized citation count for each year
 function computeMedianCitationCountsPerYear(){
-
-/*	// Remove the papers for which we may not have found the google citation count
-	var nonZeroPapers=Object.keys(global.papers).filter(function(doi){
-	    return global.papers[doi].citation_count>0;
-	})
-	But since we cannot tell appart these...
-*/
 
 	var data=[];
 	for(var doi in global.papers){
