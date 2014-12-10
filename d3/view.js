@@ -18,7 +18,7 @@ function initializeVis(){
 // Update the vis, with different animation speeds. If animate=0, no animation.
 function updateVis(animate){
   computeVisibleFringe();
-  drawStaticElements();
+  drawStaticElements(animate);
   manageDynamicElements(animate);
   bindListeners();
 }
@@ -58,7 +58,6 @@ function createStaticElements(){
   // toread
   svg.append("circle")
     .attr("id","toread")
-    //.attr("class","shadowOnHover")    // for some reason the circle changes size when adding the shadow...
 
   var arc = d3.svg.arc()
     .innerRadius(parameters.fringeRadius - 2)
@@ -75,7 +74,7 @@ function createStaticElements(){
   svg.append("rect")
     .attr("id","core");
 
-    // controls
+  // controls
   d3.select("body").append("span")
     .attr("id", "fringe-slider-toggle")
     .attr("onclick", "view.toggleFringeSlider()")
@@ -117,7 +116,13 @@ function createStaticElements(){
 }
 
 // draw the static elements at their appropriate positions
-function drawStaticElements(){
+function drawStaticElements(animate){
+
+    // Create one transition and apply to all the elements
+    t0=function(elem){
+      return elem.transition().duration(parameters.fringePapersPositionTransitionDuration[animate])
+        .ease(parameters.fringePapersTransitionEasing)
+    }
 
 /*    d3.select("#bottomPane")
     .style("fill","white")
@@ -126,16 +131,16 @@ function drawStaticElements(){
     .attr("width", window.innerWidth)
     .attr("height", parameters.fringeBottomMargin)*/
 
-    d3.select("#updateFringe")
+    t0(d3.select("#updateFringe"))
     .style("top",updateFringeButtonY()+"px")
     .style("left",updateFringeButtonX()+"px")
 
-    d3.select("#updateFringeAutomatically")
+    t0(d3.select("#updateFringeAutomatically"))
     .style("top",updateFringeButtonY()+3+"px")
     .style("left",updateFringeButtonX()+130+"px")
 
     // toread
-    d3.select("#toread")
+    t0(d3.select("#toread"))
     .attr("cx", -parameters.fringeRadius + global.fringeApparentWidth)
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius)
@@ -143,13 +148,13 @@ function drawStaticElements(){
     .style("stroke",colors.toreadBorder)
     .style("stroke-width",2)
 
-  leftViewClipPath
+  t0(leftViewClipPath)
     .attr("cx",-parameters.fringeRadius + global.fringeApparentWidth)
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius);
 
   // core
-  var core = d3.select("#core")
+  var core = t0(d3.select("#core"))
     .attr("x", 0)
     .attr("y", global.toReadHeight)
     .attr("width", global.fringeApparentWidth)
@@ -157,7 +162,7 @@ function drawStaticElements(){
     .attr("clip-path", "url(#left-views)")
     .style("fill",colors.core);
 
-  // coreSeparator
+  // coreSeparator (no transition)
   var dragCore = d3.behavior.drag()
     .on("drag", function(d, i) {
       global.toReadHeight = d3.event.y;
@@ -173,13 +178,16 @@ function drawStaticElements(){
     .attr("width", window.innerWidth)
     .attr("height", 5)
     .attr("clip-path", "url(#left-views)")
-//    .attr("draggable", false)  // no drag shadow
     .style("fill", colors.coreDivisor)
     .style("stroke", colors.coreDivisor)
     .style("fill-opacity", 0.5)
     .call(dragCore);
 
   // fringeSeparator
+  t0(d3.select("#fringe-separator"))
+    .attr("transform", "translate(" + (-parameters.fringeRadius + global.fringeApparentWidth) + "," + (window.innerHeight / 2) + ")")
+    .style("fill", colors.toreadBorder)
+
   var dragFringe = d3.behavior.drag()
     .on("drag", function(d, i) {
       var x = d3.event.x;
@@ -190,9 +198,7 @@ function drawStaticElements(){
       updateVis(0);
     });
 
-  d3.select("#fringe-separator")
-    .attr("transform", "translate(" + (-parameters.fringeRadius + global.fringeApparentWidth) + "," + (window.innerHeight / 2) + ")")
-    .style("fill", colors.toreadBorder)
+    d3.select("#fringe-separator")
     .call(dragFringe);
 }
 
@@ -546,7 +552,7 @@ function toggleFringeSlider() {
   } else {
     global.fringeApparentWidth = parameters.fringeApparentWidthMin;
   }
-  updateVis(0);
+  updateVis(1);
 }
 
 
