@@ -142,19 +142,21 @@ button:disabled{
   text-align: left;
   display: inline;
   margin: 0;
-  padding: 15px 4px 17px 0;
+  padding: 0;
+  width: 100%;
   list-style: none;
   -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
 }
 #top-menu ul li {
-  font: bold 12px/18px sans-serif;
   display: inline-block;
   margin-right: -4px;
   position: relative;
-  padding: 15px 20px;
-  background: #fff;
+  padding: 15px;
+  width:100%;
+  background: #2c7fb8;
+  color: #fff;
   cursor: pointer;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -162,16 +164,12 @@ button:disabled{
   -o-transition: all 0.2s;
   transition: all 0.2s;
 }
-#top-menu ul li:hover {
-  background: #555;
-  color: #fff;
-}
+
 #top-menu ul li ul {
   padding: 0;
   position: absolute;
   top: 48px;
   left: 0;
-  width: 150px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -185,12 +183,19 @@ button:disabled{
   -transition: opacity 0.2s;
 }
 #top-menu ul li ul li { 
-  background: #555; 
-  display: block; 
-  color: #fff;
-  text-shadow: 0 -1px 0 #000;
+  display: block;
+  background-color: #418CBF; 
 }
-#top-menu ul li ul li:hover { background: #666; }
+
+#top-menu ul li ul li a{
+  color: white;
+  text-decoration:none;
+}
+
+#top-menu ul li ul li:hover {
+ background: #2fa4b2;
+}
+
 #top-menu ul li:hover ul {
   display: block;
   opacity: 1;

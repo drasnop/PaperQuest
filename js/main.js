@@ -15,7 +15,7 @@ d3.json("data/citeology.json", function(data){
     sessionManager.loadPreviousSession();
 
     algorithm.generateFringe();
-    view.initializeVis();
+    view.initializeView();
 });
 
 
@@ -23,5 +23,5 @@ d3.json("data/citeology.json", function(data){
 window.onresize = function(){
     svg.attr("width", window.innerWidth)
        .attr("height", window.innerHeight);
-    view.updateVis(0);    // don't animate on resize
+    view.updateView(0);    // don't animate on resize
 }

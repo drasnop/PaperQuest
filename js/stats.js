@@ -12,7 +12,7 @@ var svg = d3.select("body").append("svg")
 d3.json("data/citeology.json", function(data){
     global.papers=data.papers;
     global.computeMedianMaximalNormalizedCitationCountsPerYear();
-    initializeVis();
+    initializeView();
 });
 
 
@@ -24,10 +24,10 @@ window.onresize = function(){
     .attr("width",window.innerWidth)
     .attr("height",2.5*window.innerHeight)
     
-    initializeVis();
+    initializeView();
 }
 
-function initializeVis(){
+function initializeView(){
 
     var papers=Object.keys(global.papers);
 

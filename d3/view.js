@@ -10,13 +10,13 @@ var menuTimeout = null;
 var fringeSliderToggle = true;
 
 // Except for the (static) background elements, everything is computed on-the-fly
-function initializeVis(){
+function initializeView(){
   createStaticElements();
-  updateVis(0);   //don't animate at creation
+  updateView(0);   //don't animate at creation
 }
 
 // Update the vis, with different animation speeds. If animate=0, no animation.
-function updateVis(animate){
+function updateView(animate){
   computeVisibleFringe();
   drawStaticElements(animate);
   manageDynamicElements(animate);
@@ -32,7 +32,7 @@ function updateFringe() {
   hideMenu();
 
   algorithm.updateFringe();
-  updateVis(1);
+  updateView(1);
   // the updateFringe button becomes useless until new papers are (de)selected
   d3.select("#updateFringe").attr("disabled","disabled");
 }
@@ -169,7 +169,7 @@ function drawStaticElements(animate){
       d3.select(this).attr("y", d3.event.y);
       d3.select("#core").attr("y", global.toReadHeight);
       d3.select("#core").attr("height", window.innerHeight - global.toReadHeight);
-      updateVis(0);
+      updateView(0);
     });
 
   d3.select("#core-separator")
@@ -195,7 +195,7 @@ function drawStaticElements(animate){
       x = (x < parameters.fringeApparentWidthMin) ? parameters.fringeApparentWidthMin : x;
       x = (x > (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding)) ? (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding) : x;
       global.fringeApparentWidth = x;
-      updateVis(0);
+      updateView(0);
     });
 
     d3.select("#fringe-separator")
@@ -288,7 +288,7 @@ function bindListeners(){
       removeHighlighting(global.activePaper);
       hideMenu();
       doAutomaticFringeUpdate();
-      updateVis(2);
+      updateView(2);
     });
 
   // Move a paper to the fringe
@@ -307,7 +307,7 @@ function bindListeners(){
       removeHighlighting(global.activePaper);
       hideMenu();
       doAutomaticFringeUpdate();
-      updateVis(2);
+      updateView(2);
     });
 
   // Move a paper to the core
@@ -328,7 +328,7 @@ function bindListeners(){
       removeHighlighting(global.activePaper);
       hideMenu();
       doAutomaticFringeUpdate();
-      updateVis(2);
+      updateView(2);
     });
 
   // Show/hide paper menus
@@ -414,13 +414,13 @@ function bindListeners(){
         // (using different animation speeds depending on the zoom level, just because it's pretty)
         switch(global.zoom){
         case 0:
-          updateVis(4);
+          updateView(4);
           break;
         case 1:
-          updateVis(3);
+          updateView(3);
           break;
         case 2:
-          updateVis(2);
+          updateView(2);
           break;
 
         }
@@ -466,7 +466,7 @@ function bindListeners(){
         console.log("zoom: "+global.zoom)
 
         // Update the view (quickly), to take into account the new heights of the selected papers
-        view.updateVis(2);
+        view.updateView(2);
     })
 
 }
@@ -552,7 +552,7 @@ function toggleFringeSlider() {
   } else {
     global.fringeApparentWidth = parameters.fringeApparentWidthMin;
   }
-  updateVis(1);
+  updateView(1);
 }
 
 
@@ -560,8 +560,8 @@ function toggleFringeSlider() {
 
 var view = {};
 
-view.initializeVis=initializeVis;
-view.updateVis=updateVis;
+view.initializeView=initializeView;
+view.updateView=updateView;
 view.updateFringe=updateFringe;
 view.toggleFringeSlider = toggleFringeSlider;
 

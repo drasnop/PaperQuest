@@ -63,6 +63,8 @@ var sessionManager = function(){
     function resetSession(){
         localStorage.setObject("userData", null);
         console.log("localStorage('userData') has been deleted");
+        // reload the page - a bit brutal, but does what we want
+        window.location.reload();
     }
 
     ////////        Create public static methods    /////////////////

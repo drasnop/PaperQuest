@@ -5,7 +5,7 @@ var defaultView = 2;
 
 var global={
   // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
-  "fringeApparentWidth": 420,
+  "fringeApparentWidth": parameters.fringeApparentWidthMin,
   // Current zoom level: 0=titles only, 1=metadata (authors/conf/date), 2=first line of abstract, 3=full abstract
   "zoom": 0,
   // Vertical offset used to scroll the fringe
@@ -33,13 +33,13 @@ var global={
   // whether the fringe should be rounded
   "circular":true,
   // The paper that's currently interactive (menu is showing)
-  "activePaper": null
+  "interactivePaper": null
 };
 
 global.switchEncoding = function(){
     global.butterfly= !global.butterfly;
     d3.select("#fringe-papers").selectAll(".paper").remove()
-    view.initializeVis();
+    view.initializeView();
 }
 
 // Compute the median maximal normalized citation count for each year
