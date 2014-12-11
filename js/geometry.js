@@ -128,7 +128,7 @@ function fringePaperVisible(p) {
 // To-read list geometry helpers
 
 function toreadPaperX(p) {
-  return parameters.toreadPaperMargin + 2*parameters.paperMaxRadius;
+  return corePaperX(p);
 }
 
 function toreadPaperY(p) {
@@ -143,7 +143,7 @@ function toreadPaperY(p) {
 }
 
 function toreadPaperHeight(p) {
-  return 2 * parameters.paperMaxRadius;// + parameters.paperMarginBottom;
+  return corePaperHeight(p);
 }
 
 function toreadPaperVisible(p) {
@@ -156,7 +156,7 @@ function toreadPaperVisible(p) {
 // Core list geometry helpers
 
 function corePaperX(p) {
-  return parameters.toreadPaperMargin + 2*parameters.paperMaxRadius;
+  return parameters.toreadPaperMargin + parameters.paperMaxRadius + (global.butterfly? parameters.paperMaxRadius : 0) ;
 }
 
 function corePaperY(p) {

@@ -474,7 +474,7 @@ function showMenu(p) {
   buildMenu(p);
   
   d3.select("#paper-menu")
-    .style("left", (p.x - parameters.menuOffset) + "px")
+    .style("left", (p.x - parameters.menuOffset + (global.butterfly? 0: parameters.paperMaxRadius)) + "px")
     .style("top", (p.y - parameters.paperMaxRadius) + "px")
     .style("display", "block")
     .transition()
