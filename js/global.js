@@ -1,8 +1,6 @@
 /*
 * Global variables
 */
-var defaultView = 2;
-
 var global= (function () {
 
   var global={
@@ -14,6 +12,9 @@ var global= (function () {
     "scrollOffset": 0,
     // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
     "updateAutomatically": false,
+
+    // papers dataset, accessed by global.papers[doi]
+    "papers": false,
 
     // medians of the maximal normalized citation counts for each year
     "medians":[],
@@ -48,6 +49,8 @@ var global= (function () {
     "circular":true,
     // The paper that's currently interactive (menu is showing)
     "activePaper": null,
+    // The paper that's currently showing links, if any
+    "connectedPaper": null,
 
     // Date filters, should be set when the papers dataset is loaded
     "minYear": 0,

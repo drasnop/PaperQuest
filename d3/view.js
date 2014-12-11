@@ -334,6 +334,22 @@ function bindListeners(){
       updateView(2);
     });
 
+  // Show a paper's links
+  d3.select("#menu-links")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      // Record which paper we should show links for now.  Only one
+      // paper at a time can show links.
+      if (global.connectedPaper && (global.connectedPaper == global.activePaper)) {
+        d3.select(this).classed("active", false);
+        global.connectedPaper = null;
+      } else {
+        global.connectedPaper = global.activePaper;
+      }
+    });
+
   // Show/hide paper menus
   d3.selectAll("g.paper")
     .on("mouseover", function() {
@@ -510,11 +526,14 @@ function buildMenu(p) {
   ["menu-remove", "menu-star", "menu-tocore", "menu-tofringe", "menu-toread", "menu-links", "menu-expand"].forEach(hideOption);
 
   if (p.core) {
+    ["menu-links"].forEach(showOption);
   } else if(p.toread) {
-    ["menu-tofringe", "menu-tocore"].forEach(showOption);
+    ["menu-tofringe", "menu-tocore", "menu-links"].forEach(showOption);
   } else if (p.fringe) {
-    ["menu-toread", "menu-tocore"].forEach(showOption);
+    ["menu-toread", "menu-tocore", "menu-links"].forEach(showOption);
   }
+
+  d3.select("#menu-links").classed("active", (global.connectedPaper == p));
 }
 
 function removeHighlighting(p) {

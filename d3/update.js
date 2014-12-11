@@ -29,6 +29,15 @@ var papers = svg.select("#fringe-papers").selectAll(".paper")
 .data(visiblePapers(), function(p) { return visiblePapers().indexOf(p); })
     // using this key function is critical to ensure papers will change position when updating the fringe
 
+// Render links first, so that they're in the back.
+if (global.connectedPaper) {
+  d3.selectAll(".link").enter()
+    .append("path")
+    .attr("d", "");
+  // TODO: show links for the connected paper.
+}
+
+
 papers.selectAll(".title")
   .text(function(p) {
   if (p.fringe) {
