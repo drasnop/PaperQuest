@@ -6,9 +6,9 @@ var algorithm = (function(){
 
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
-	P.all(initializeRelevanceScore);
+	P.all(initializeConnectivityScore);
   	P.interesting(updateRelevanceScoresWhenInserting);
-  	computeMaxConnectivityScore();
+  	computeMinMaxConnectivityScore();
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -17,7 +17,7 @@ function updateFringe(){
 	userData.newUninterestingPapers.forEach(updateRelevanceScoresWhenRemoving);
 	userData.newInterestingPapers=[];
 	userData.newUninterestingPapers=[];
-	computeMaxConnectivityScore();
+	computeMinMaxConnectivityScore();
 }
 
 
@@ -33,7 +33,7 @@ function updateRelevanceScoresWhenRemoving(pSource){
 
 /////////////////////	Private	functions 	////////////////////////////
 
-function initializeRelevanceScore(p) {
+function initializeConnectivityScore(p) {
 	p.connectivity = 0;
 }
 
@@ -54,7 +54,7 @@ function updateRelevanceScores(pSource, inserting){
         if (!pTarget.core) {
           pTarget.fringe = true;
         }
-        initializeRelevanceScore(pTarget);
+        initializeConnectivityScore(pTarget);
       }
       // update relevance score of this paper
       updatePaper(pSource, pTarget, inserting);
@@ -83,9 +83,10 @@ function connectionWeight(paper){
 	return parameters.selectedWeight;
 }
 
-function computeMaxConnectivityScore(){
-	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.connectivity; })
-	console.log("maxConnectivityScore: "+global.maxConnectivityScore)
+function computeMinMaxConnectivityScore(){
+	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getConnectivityScore(); })
+	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.getConnectivityScore(); })
+	console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
 }
 
 ///////////////     Define public static methods, and return    /////////////
@@ -95,6 +96,7 @@ function computeMaxConnectivityScore(){
 	algorithm.updateFringe=updateFringe;
 	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
 	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;
+	algorithm.connectionWeight=connectionWeight;
 	return algorithm;
 
 })();

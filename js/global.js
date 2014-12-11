@@ -14,9 +14,11 @@ var global= (function () {
     "scrollOffset": 0,
     // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
     "updateAutomatically": false,
-    // papers dataset, accessed by function paperspapers": false,
+
     // medians of the maximal normalized citation counts for each year
     "medians":[],
+    // current mminimal connectivity score, computed every time the fringe is updated
+    "minConnectivityScore":0,
     // current maximal connectivity score, computed every time the fringe is updated
     "maxConnectivityScore":1,
     // All the papers that are potentially visible (automatically computed by view)

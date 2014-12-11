@@ -156,10 +156,15 @@ P = (function() {
       return .5+.5/(1-median)*(y-median);
   }
 
+
+  paper.prototype.getConnectivityScore = function(){
+    return this.connectivity + algorithm.connectionWeight(this);
+  }
+
   // Normalize from 0 to 1 the connectivity scores
-  // (note that all connectivity scores are larger than 1 for papers on the fringe)
+  // Note that the normalized connectivity can be larger than 1 in core and to read
   paper.prototype.getNormalizedConnectivityScore = function() {
-    return (this.connectivity-1)/(global.maxConnectivityScore-1);
+    return (this.getConnectivityScore()-global.minConnectivityScore)/global.maxConnectivityScore;
   }
 
   // combines the two components of the score (each starting at 0)
@@ -167,6 +172,7 @@ P = (function() {
     return parameters.ACCweight*this.adjustedCitationCount() 
     + parameters.connectivityWeight*this.getNormalizedConnectivityScore();
   }
+
 
   // Old citation count computation - kept for comparison in stats page
 

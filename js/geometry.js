@@ -102,20 +102,24 @@ function randomColor(){
 }
 
 function fringePaperInternalColor(p) {
-    return colorFromConnectivity(p.connectivity);
+    console.log(p.getNormalizedConnectivityScore())
+    return colorFromConnectivity(p.getNormalizedConnectivityScore());
 }
 
 function fringePaperExternalColor(p) {
-    return shadeHexColor(colorFromConnectivity(p.connectivity),colors.shadingDifferenceInternalExternal);
+    //return colorFromConnectivity(p.getNormalizedConnectivityScore());
+    
+    return shadeHexColor(colorFromConnectivity(p.getNormalizedConnectivityScore(),colors.shadingDifferenceInternalExternal));
 }
 
-// Maps the connectivity score to 5 color bins (connectivty is always >=1 in the fringe)
-function colorFromConnectivity(connectivity){
+// Maps the connectivity score to 5 color bins
+// The normalized connectivity can be larger than 1 in core and to read, hence the clamping
+function colorFromConnectivity(normalizedConnectivity){
     var bins=d3.scale.linear()
-    .domain([1, global.maxConnectivityScore])
+    .domain([0, 1])
     .rangeRound([0, colors.monotone.length-1])
     .clamp(true)
-    return colors.monotone[bins(connectivity)];
+    return colors.monotone[bins(normalizedConnectivity)];
 }
 
 function fringePaperVisible(p) {
