@@ -1,10 +1,6 @@
 // Manage the small views in the sidebar, which show only a subset of the data
 view.manageSideViews=function(){
 
-var width = Math.max(window.innerWidth/10,180),
-    height=150;
-
-
 //------------------DATA JOIN-------------------//
 // Join new data with old elements, if any
 var authors = d3.select("#authors-list").selectAll(".author")
@@ -15,7 +11,7 @@ var authors = d3.select("#authors-list").selectAll(".author")
 var enteringAuthors = authors.enter()
 .append("li")
 .attr("class","author")
-.style("display",function(a,i) { console.log((i*20+164)+" "+(window.innerHeight-height-20)); 
+.style("display",function(a,i) { 
     return (i*20+164) < window.innerHeight-height-20? "":"none";  })
 // this is super ugly...
 
@@ -33,23 +29,25 @@ authors.exit().remove();
 
 //////////////////		histogram 		///////////////////////////////
 
+
+
 var values=global.publicationYears(),
-	svg=d3.select("svg#publication-years"),
-	bins=5,
-	minX=d3.min(values),
-	maxX=d3.max(values);
+	svgHistogram=d3.select("svg#publication-years"),
+    width = Math.max(window.innerWidth/10,180),
+    height=150;
 
 var margin = {top: 10, right: 10, bottom: 30, left: 10},
     innerWidth = width - margin.left - margin.right,
     innerHeight = height - margin.top - margin.bottom;
 
+// fixed boundaries to allow comparisons across different sets of papers
 var x = d3.scale.linear()
-    .domain([minX, maxX])
+    .domain([global.oldestPublicationYear, global.latestPublicationYear])
     .range([0, innerWidth])
 
 // Generate a histogram using twenty uniformly-spaced bins.
 var data = d3.layout.histogram()
-    .bins(x.ticks(bins))
+    .bins(x.ticks(parameters.nBinsYears))
     (values);
 
 var y = d3.scale.linear()
@@ -58,10 +56,10 @@ var y = d3.scale.linear()
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .ticks(bins)
+    .ticks(parameters.nBinsYears)
     .orient("bottom");
 
-var histogram = svg.attr("width", innerWidth + margin.left + margin.right)
+var histogram = svgHistogram.attr("width", innerWidth + margin.left + margin.right)
     .attr("height", innerHeight + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

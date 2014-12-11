@@ -16,8 +16,7 @@ function initializeVisualization(createStaticElements){
 		global.papers = data.papers;
 		
 		// Initialize some global parameters
-		global.minYear = d3.min(Object.keys(global.papers), function(doi) { return global.papers[doi].year; });
-		global.maxYear = d3.max(Object.keys(global.papers), function(doi) { return global.papers[doi].year; });
+		global.computeOldestLatestPublicationYears();
 		global.computeMedianMaximalNormalizedCitationCountsPerYear();
 		
 		// Restore data from previous session

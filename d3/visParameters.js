@@ -57,6 +57,10 @@ var parameters= {
   "toreadTitlePadding": 50,
 
 
+  /*     sideview Parameters      */
+
+  "nBinsYears":6,
+
   /*     dynamic parameters       */
 
   // Defines 3 types of animation: none, slow, fast, very fast
@@ -74,7 +78,7 @@ var parameters= {
   /*     data parameters       */
 
   // Current year must always be one year after the latest year in the dataset (2010 for citeology)
-  "currentYear": 2011,
+  "currentYear": 2011,  // legacy - only used for displaying the graph of the old citation count
   "externalCitationCountCutoff": 400,
   "internalCitationCountCutoff": 20,
 

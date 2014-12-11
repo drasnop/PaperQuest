@@ -29,6 +29,9 @@ var global= (function () {
     "frequentAuthors": [],
     // publication year of each of the papers of interest
     "publicationYears": [],
+    // lower and upper bound of the side histogram
+    "oldestPublicationYear": 0,
+    "latestPublicationYear": 0,
     // indicates which data to show in the sidebar (these booleans are toggled by checkboxes)
     // beware: if changing these default values, you must change the checkbox "checked" property in the html too 
     "showCoreInfo": false,
@@ -149,6 +152,17 @@ var global= (function () {
       
       return b.firstOrLastAuthor-a.firstOrLastAuthor;
     });
+  }
+
+  global.computeOldestLatestPublicationYears=function(){
+    global.oldestPublicationYear=d3.min(Object.keys(global.papers), function(doi) { return global.papers[doi].year; });
+    global.latestPublicationYear=d3.max(Object.keys(global.papers), function(doi) { return global.papers[doi].year; });
+
+    // Sets the date filters to the entire dataset
+    global.minYear=global.oldestPublicationYear;
+    global.maxYear=global.latestPublicationYear;
+
+    console.log("The dataset contains papers from "+global.oldestPublicationYear+" to "+global.latestPublicationYear+".")
   }
 
   global.publicationYears = function(){
