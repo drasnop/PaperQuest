@@ -60,8 +60,10 @@ function updateRelevanceScores(pSource, inserting){
       updatePaper(pSource, pTarget, inserting);
 
       // remove the paper if it's no longer linked by interesting papers
-      if (pTarget.connectivity <= 0)
+      if (pTarget.connectivity <= 0) {
+        pTarget.isNew = true;
         delete userData.papers[pTarget.doi];
+      }
     });
 
     // update the connectivity of the source paper itself (to prevent it moving down)

@@ -12,6 +12,8 @@ P = (function() {
     isNew:    true
   };
 
+  var _paperCache = {};
+
 
   /// TODO: NOT CURRENTLY USED, REMOVE IF NOT NEEDED
   function getStumpProperty(paramName) {
@@ -72,21 +74,28 @@ P = (function() {
     this.inflate = function() {
       delete that.isStump;  // Remove stump flag.
 
-      // Cached filtered lists of references and citations.
       // Internal publications are wrapped as paper objects.
-      links.internalReferences = that.references.filter(function(ref) { return ref in global.papers; }).map(lookup);
-      links.externalReferences = that.references.filter(function(ref) { return !(ref in global.papers); });  // Can't really map lookup
-      links.internalCitations  = that.citations.filter(function(cit) { return cit in global.papers; }).map(lookup);
-      links.externalCitations  = that.citations.filter(function(cit) { return !(cit in global.papers); });   // Can't really map lookup
+      links.internalReferences = function() {
+        return that.references.filter(function(ref) { return ref in global.papers; }).map(lookup);
+      };
+      links.externalReferences = function() {
+        return that.references.filter(function(ref) { return !(ref in global.papers); });  // Can't really map lookup
+      };
+      links.internalCitations  = function() {
+        return that.citations.filter(function(cit) { return cit in global.papers; }).map(lookup);
+      };
+      links.externalCitations  = function() {
+        return that.citations.filter(function(cit) { return !(cit in global.papers); });   // Can't really map lookup
+      };
 
       // Inflate previously stumped collections.
       stumpedCollections.forEach(function(methodName) {
         that[methodName] = function(callback) {
           if (typeof callback === "function") {
-            links[methodName].forEach(callback);
+            links[methodName]().forEach(callback);
           }
 
-          return links[methodName];
+          return links[methodName]();
         };
       });
 
@@ -233,22 +242,21 @@ P = (function() {
    * papers in the dataset.
    */
   function lookup(doi) {
-    // Note: userData.papers is being used as a cache here to
-    // avoid building new paper objects each time a doi is looked
-    // up.  This is not userData.paper's original purpose, which
-    // is to store the list of papers currently of interest to the
-    // user (the currently explored subnetwork).  Eventually a
-    // separate cache should be considered.
     var p = userData.papers[doi];
-    if (p) {                           // Already built, get it from cache
-      return p;
-    } else if (doi in global.papers) { // First time used, cache it
-      p = new paper(doi);
+    if (typeof p === "undefined") {
+      p = _paperCache[doi];  // Not in userData, lookup in the cache
+      if (typeof p === "undefined") {
+        if (doi in global.papers) {  // First time used, cache it
+          p = new paper(doi);
+          _paperCache[doi] = p;
+        } else {
+          return undefined;   // Not an internal doi
+        }
+      }
+      // Add it to the explored space
       userData.papers[doi] = p;
-      return p;
-    } else {                           // Not an internal doi
-      return undefined;
     }
+    return p;
   }
 
   /**

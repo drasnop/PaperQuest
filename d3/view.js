@@ -19,6 +19,7 @@ function initializeView(createStatic){
 // Update the vis, with different animation speeds. If animate=0, no animation.
 function updateView(animate){
   global.computeVisibleFringe();
+  console.log(global.visibleFringe);
   global.computeFrequentAuthors();
 
   drawStaticElements(animate);
