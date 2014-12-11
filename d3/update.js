@@ -10,8 +10,8 @@ function visiblePapers() {
   if (!_visiblePapersCache) {
     // First filter and reorder individual lists
     var fringe = global.visibleFringe;  // Filtering already happening in "computeVisibleFringe"
-    var toread = P.toread().filter(view.allFilters);
-    var core = P.core().filter(view.allFilters);
+    var toread = P.toread().filter(global.allFilters);
+    var core = P.core().filter(global.allFilters);
 
     // Mix them into a single list to feed to d3.
     _visiblePapersCache = fringe.concat(toread).concat(core);

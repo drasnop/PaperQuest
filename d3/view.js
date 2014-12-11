@@ -8,7 +8,6 @@ var view = (function () {
 var leftViewClipPath;
 var menuTimeout = null;
 var fringeSliderToggle = true;
-var filters = [dateFilter];   // All the filters that should be applied to the dataset
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeView(createStatic){
@@ -19,7 +18,9 @@ function initializeView(createStatic){
 
 // Update the vis, with different animation speeds. If animate=0, no animation.
 function updateView(animate){
-  computeVisibleFringe();
+  global.computeVisibleFringe();
+  global.computeFrequentAuthors();
+
   drawStaticElements(animate);
   manageDynamicElements(animate);
   bindListeners();
@@ -40,11 +41,6 @@ function updateFringe() {
 }
 
 //////////////////  Drawing functions   ///////////////////////
-
-// Given the current windows dimensions, which papers can be displayed on the Fringe?
-function computeVisibleFringe(){
-  global.visibleFringe = P.sortedFringe().filter(allFilters).slice(0,maxNumberOfVisiblePapers());
-}
 
 function manageDynamicElements(animate){
     return view.manageDynamicElements(animate);
@@ -556,23 +552,6 @@ function toggleFringeSlider() {
   updateView(1);
 }
 
-/**
- * Checks that a paper passes all the filters in the filters array
- * defined in the namespace
- */
-function allFilters(p) {
-  var result = true;
-  filters.forEach(function(f) {
-    result = result && f(p);
-  });
-
-  return result;
-}
-
-function dateFilter(p) {
-  return (p.year >= global.minYear && p.year <= global.maxYear);
-}
-
 
 ///////////////     Define public static methods, and return    /////////////
 
@@ -582,7 +561,6 @@ view.initializeView=initializeView;
 view.updateView=updateView;
 view.updateFringe=updateFringe;
 view.toggleFringeSlider = toggleFringeSlider;
-view.allFilters = allFilters;
 return view;
 
 })();
