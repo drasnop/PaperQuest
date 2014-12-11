@@ -65,6 +65,14 @@ function createStaticElements(){
   svg.append("circle")
     .attr("id","toread")
 
+  // core
+  svg.append("rect")
+    .attr("id","core");
+
+  svg.append("rect")
+    .attr("id", "core-separator");
+
+  // fringe-separator
   var arc = d3.svg.arc()
     .innerRadius(parameters.fringeRadius - 2)
     .outerRadius(parameters.fringeRadius + 2)
@@ -75,13 +83,6 @@ function createStaticElements(){
     .attr("id", "fringe-separator")
     .append("path")
     .attr("d", arc);
-
-  // core
-  svg.append("rect")
-    .attr("id","core");
-
-  svg.append("rect")
-    .attr("id", "core-separator");
 
   // controls
   d3.select("body").append("span")
@@ -163,11 +164,11 @@ function drawStaticElements(animate){
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius)
     .style("fill",colors.toread)
-    .style("stroke",colors.toreadBorder)
-    .style("stroke-width",2)
+    //.style("stroke",colors.toreadBorder)
+    //.style("stroke-width",2)
 
   t0(leftViewClipPath)
-    .attr("cx",-parameters.fringeRadius + global.fringeApparentWidth)
+    .attr("cx",-parameters.fringeRadius + global.fringeApparentWidth-1)
     .attr("cy","50%")
     .attr("r",parameters.fringeRadius);
 
@@ -197,14 +198,15 @@ function drawStaticElements(animate){
     .attr("height", 5)
     .attr("clip-path", "url(#left-views)")
     .style("fill", colors.coreDivisor)
-    .style("stroke", colors.coreDivisor)
+    //.style("stroke", colors.coreDivisor)
     .style("fill-opacity", 0.5)
     .call(dragCore);
 
   // fringeSeparator
   t0(d3.select("#fringe-separator"))
     .attr("transform", "translate(" + (-parameters.fringeRadius + global.fringeApparentWidth) + "," + (window.innerHeight / 2) + ")")
-    .style("fill", colors.toreadBorder)
+    .style("fill", "gray")
+    .style("opacity", "0")
 
   var dragFringe = d3.behavior.drag()
     .on("drag", function(d, i) {

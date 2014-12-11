@@ -8,6 +8,18 @@ svg#main-view{
 	background-color: white;	/* #fafafa */
 }
 
+#toread,
+#core,
+#fringe-separator{
+  shape-rendering: geometricPrecision;
+}
+
+#toread{
+  stroke: #444;
+  stroke-opacity: .1;
+  stroke-width: 2;
+}
+
 .visControl{
 	position:absolute;
 }
