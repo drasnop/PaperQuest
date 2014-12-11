@@ -124,6 +124,14 @@ function createStaticElements(){
 
   svg.append("g")
     .attr("id","fringe-papers");
+
+  // sideview - histogram
+  d3.select("svg#publication-years")
+      .append("g")
+        .attr("id","histogram")
+      .append("g")
+        .attr("class", "axis")
+        .attr("id","x-axis")
 }
 
 // draw the static elements at their appropriate positions
