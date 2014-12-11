@@ -139,8 +139,8 @@ function drawStaticElements(animate){
     .style("left",updateFringeButtonX()+"px")
 
     t0(d3.select("#updateFringeAutomatically"))
-    .style("top",updateFringeButtonY()+8+"px")
-    .style("left",updateFringeButtonX()+150+"px")
+    .style("top",updateFringeButtonY()+0+"px")
+    .style("left",updateFringeButtonX()+140+"px")
 
     // toread
     t0(d3.select("#toread"))

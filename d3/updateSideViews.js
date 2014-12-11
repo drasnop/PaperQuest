@@ -24,4 +24,70 @@ authors
 // Remove old elements as needed.
 authors.exit().remove();
 
+
+//////////////////		histogram 		///////////////////////////////
+
+var values=global.publicationYears(),
+	svg=d3.select("svg#publication-years"),
+	width = Math.max(window.innerWidth/10,180),
+	height=150,
+	bins=5,
+	minX=d3.min(values),
+	maxX=d3.max(values);
+	console.log(minX+ " "+maxX)
+
+var margin = {top: 10, right: 10, bottom: 30, left: 10},
+    innerWidth = width - margin.left - margin.right,
+    innerHeight = height - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .domain([minX, maxX])
+    .range([0, innerWidth])
+
+    console.log(x(0)+" "+x(1983)+" "+x(2010))
+
+// Generate a histogram using twenty uniformly-spaced bins.
+var data = d3.layout.histogram()
+    .bins(x.ticks(bins))
+    (values);
+
+console.log(data)
+
+var y = d3.scale.linear()
+    .domain([0, d3.max(data, function(d) { return d.y; })])
+    .range([innerHeight, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .ticks(bins)
+    .orient("bottom");
+
+var histogram = svg.attr("width", innerWidth + margin.left + margin.right)
+    .attr("height", innerHeight + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var bar = histogram.selectAll(".bar")
+    .data(data)
+  .enter().append("g")
+    .attr("class", "bar")
+    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+bar.append("rect")
+    .attr("x", 1)
+    .attr("width", x(data[1].x)-x(data[0].x))
+    .attr("height", function(d) { return innerHeight - y(d.y); });
+
+bar.append("text")
+    .attr("dy", ".75em")
+    .attr("y", 6)
+    .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
+    .attr("text-anchor", "middle")
+    .text(function(d) { return d.y>0? d.y : ""; });
+
+histogram.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + innerHeight + ")")
+    .call(xAxis);
+
 }

@@ -124,11 +124,11 @@ function initializeView(){
         height=window.innerHeight/2;
 
     var histogramInternal=svg.append("g");
-    histogram(histogramInternal,width,height,internalCitationCounts(),20,20);
+    histogram(histogramInternal,width,height,internalCitationCounts(),20,0,20);
     
     var histogramExternal=svg.append("g")
         .attr("transform", "translate("+width+",0)");
-    histogram(histogramExternal,width,height,externalCitationCounts(),20,400);
+    histogram(histogramExternal,width,height,externalCitationCounts(),20,0,400);
 
 
     var scatterplotexternalVsInternal=svg.append("g")

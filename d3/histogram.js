@@ -2,7 +2,7 @@
 *	Builds an histogram and appends it to the "svg" element
 */
 
-function histogram(svg, width, height, values, bins, maxX){
+function histogram(svg, width, height, values, bins, minX, maxX){
 	// A formatter for counts.
 	var formatCount = d3.format(",.0f");
 
@@ -12,7 +12,7 @@ function histogram(svg, width, height, values, bins, maxX){
 
 
 	var x = d3.scale.linear()
-	    .domain([0, maxX])
+	    .domain([minX, maxX])
 	    .range([0, width]);
 
 	// Generate a histogram using twenty uniformly-spaced bins.
@@ -20,9 +20,10 @@ function histogram(svg, width, height, values, bins, maxX){
 	    .bins(x.ticks(bins))
 	    (values);
 
+	console.log(data)
+
 	var y = d3.scale.linear()
 	    .domain([0, d3.max(data, function(d) { return d.y; })])
-	    //.domain([0, 5000])
 	    .range([height, 0]);
 
 	var xAxis = d3.svg.axis()

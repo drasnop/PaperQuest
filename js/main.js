@@ -4,6 +4,7 @@
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
+			.attr("id","main-view")
             .attr("width",window.innerWidth)
             .attr("height",window.innerHeight);
 

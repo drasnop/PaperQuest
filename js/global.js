@@ -22,11 +22,13 @@ var global= (function () {
     "minConnectivityScore":0,
     // current maximal connectivity score, computed every time the fringe is updated
     "maxConnectivityScore":1,
+    
     // All the papers that are potentially visible (automatically computed by view)
-
     "visibleFringe": [],
     // number of times each author appears among the papers of interest (the most frequent authors will be shown)
     "frequentAuthors": [],
+    // publication year of each of the papers of interest
+    "publicationYears": [],
     // indicates which data to show in the sidebar (these booleans are toggled by checkboxes)
     // beware: if changing these default values, you must change the checkbox "checked" property in the html too 
     "showCoreInfo": false,
@@ -147,6 +149,10 @@ var global= (function () {
       
       return b.firstOrLastAuthor-a.firstOrLastAuthor;
     });
+  }
+
+  global.publicationYears = function(){
+    return papersShownInSidebar().map(function(p) { return p.year; })
   }
 
   // Checks that a paper passes all the filters in the filters array defined in the namespace

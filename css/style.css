@@ -4,18 +4,7 @@ body {
   font-family: Tahoma, Helvetica;
 }
 
-#sidebar{
-	position:fixed;
-	top: 0;
-	right: 0;
-	height:100%;
-	width:10%;
-  min-width: 170px;
-	background-color: #eee;
-}
-
-svg{
-	text-align: left;
+svg#main-view{
 	background-color: white;	/* #fafafa */
 }
 
@@ -83,7 +72,13 @@ button:disabled{
 	opacity:.7;
 }
 
+#updateFringeAutomatically{
+  padding: 7px 16px;
+  border-radius: 5px;
+}
+
 #updateFringeAutomatically:hover{
+  color: white;
   background-color: #2fa4b2;
 }
 
@@ -146,9 +141,24 @@ button:disabled{
 
 /*/////////////////  Side bar   ///////////////////////*/
 
+#sidebar{
+  position:fixed;
+  top: 0;
+  right: 0;
+  height:100%;
+  width:10%;
+  min-width: 180px;
+  background-color: #eee;
+}
+
 /* top right menu */
 
+#top-menu{
+  z-index:10;
+}
+
 #top-menu ul {
+  z-index: 10;
   text-align: left;
   display: inline;
   margin: 0;
@@ -160,6 +170,7 @@ button:disabled{
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
 }
 #top-menu ul li {
+  z-index: 10;
   display: inline-block;
   margin-right: -4px;
   position: relative;
@@ -194,7 +205,8 @@ button:disabled{
 }
 #top-menu ul li ul li { 
   display: block;
-  background-color: #418CBF; 
+  background-color: #418CBF;
+  font-size: 95%; 
 }
 
 #top-menu ul li ul li a{
@@ -225,6 +237,11 @@ button:disabled{
   padding-left: 15px;
   padding-bottom: 2px;
   cursor:pointer;
+  color: #444;
+}
+
+#sideviews ul li:not(:first-child){
+  font-size: 95%;
 }
 
 #sideviews ul li:first-child{
@@ -244,4 +261,43 @@ button:disabled{
 
 #authors-list{
   padding: 7px 0;
+}
+
+/*   histogram of publication years   */
+
+#publication-years-wrapper{
+  position:fixed;
+  bottom:0;
+  right:0;
+  z-index: 5;
+
+  width:10%;              /* same as sidebar */
+  min-width: 180px;       /* same as sidebar */
+  background-color: #eee; /* same as sidebar */
+
+  font-size: 90%;
+}
+
+#publication-years-wrapper .bar rect {
+  fill: #2c7fb8;
+  shape-rendering: crispEdges;
+}
+
+#publication-years-wrapper .bar rect:hover {
+  fill: #2fa4b2;
+}
+
+#publication-years-wrapper .bar text {
+  fill: #fff;
+}
+
+#publication-years-wrapper .axis path,
+#publication-years-wrapper .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+#publication-years-wrapper .tick{
+  font-size: 70%;
 }
