@@ -58,6 +58,9 @@ function createStaticElements(){
   svg.append("rect")
   .attr("id","bottomPane")*/
 
+  // Note: ordering here matters.  Things rendered first will be in
+  // the back of those rendered later.
+
   // toread
   svg.append("circle")
     .attr("id","toread")
@@ -77,11 +80,17 @@ function createStaticElements(){
   svg.append("rect")
     .attr("id","core");
 
+  svg.append("rect")
+    .attr("id", "core-separator");
+
   // controls
   d3.select("body").append("span")
     .attr("id", "fringe-slider-toggle")
     .attr("onclick", "view.toggleFringeSlider()")
     .classed("icon-tab", true)
+
+  // links first, so they're always on the back of papers and some controls
+  svg.append("g").attr("id", "links");
 
   d3.select("body").append("button")
     .attr("id","updateFringe")
@@ -90,18 +99,16 @@ function createStaticElements(){
     .attr("onclick","view.updateFringe()")
     .attr("disabled","disabled");   // there's nothing to update when the fringe has just been created
 
-    d3.select("body").append("label")
+  d3.select("body").append("label")
     .attr("id","updateFringeAutomatically")
     .attr("class","visControl")
     .append("input")
     .attr("type","checkbox")
     .attr("onclick","global.updateAutomatically=!global.updateAutomatically; view.updateFringe()")
-    d3.select("#updateFringeAutomatically")
+
+  d3.select("#updateFringeAutomatically")
     .append("span")
     .text(" automatically")
-
-  svg.append("rect")
-    .attr("id", "core-separator");
 
   // clipping path for the left side views
   leftViewClipPath = svg.append("clipPath")
@@ -342,11 +349,28 @@ function bindListeners(){
     .on("mouseup", function() {
       // Record which paper we should show links for now.  Only one
       // paper at a time can show links.
-      if (global.connectedPaper && (global.connectedPaper == global.activePaper)) {
-        d3.select(this).classed("active", false);
-        global.connectedPaper = null;
+      if (global.connectedPaper) {
+        if (global.connectedPaper == global.activePaper) {
+          d3.select(this).classed("active", false);
+          global.connectedPaper = null;
+        } else {
+          global.connectedPaper = global.activePaper;
+        }
+        // Clear the links
+        var links = svg.selectAll(".link");
+        var numLinks = links[0].length;
+        links.transition()
+          .duration(parameters.linkTransitionDuration)
+          .style("opacity", 0)
+          .each("end", function(d, i) {
+            this.parentNode.removeChild(this);
+            if (i == numLinks-1) {  // Trigger update on when all have been removed
+              updateView(0);
+            }
+          });
       } else {
         global.connectedPaper = global.activePaper;
+        updateView(0);
       }
     });
 

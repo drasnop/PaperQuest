@@ -138,6 +138,11 @@ button:disabled{
   left: 0px;
 }
 
+.link {
+  opacity: 0;
+  stroke-width: 1px;
+}
+
 
 /*/////////////////  Side bar   ///////////////////////*/
 

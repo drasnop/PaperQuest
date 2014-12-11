@@ -67,6 +67,9 @@ var parameters= {
   // How much does one scroll changes the position of the papers
   "amountOfVerticalScrolling": 100,
 
+  // Duration for link in and out animations
+  "linkTransitionDuration": 200,
+
 
   /*     data parameters       */
 
@@ -90,7 +93,9 @@ var parameters= {
   /*     misc parameters      */
 
   // The space between a node's glyph and the menu to the left
-  "menuOffset": 60
+  "menuOffset": 60,
+  // The factor affecting how curved the links are
+  "linkCurvature": 0.2
 }
 
 
@@ -116,5 +121,9 @@ var colors={
   "core":"rgb(255, 191, 175)",
   "coreDivisor":"rgb(223, 111, 95)",
   "toread":"rgb(242, 222, 195)",
-  "toreadBorder":"rgb(202, 170, 126)"
+  "toreadBorder":"rgb(202, 170, 126)",
+
+  // colors for the links
+  "referenceLink": "rgb(120, 120, 120)",
+  "citationLink": "rgb(120, 120, 120)"
 }
