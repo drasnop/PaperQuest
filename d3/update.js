@@ -58,7 +58,10 @@ var papers = svg.select("#fringe-papers").selectAll(".paper")
 if (global.connectedPaper) {
   var links;
   links = svg.select("#links").selectAll(".reference")
-    .data(global.connectedPaper.internalReferences().filter(function(p) { return p.visible; }))
+    .data(global.connectedPaper.internalReferences().filter(function(p) { return p.visible; }));
+  links.transition()
+    .duration(parameters.fringePapersPositionTransitionDuration[animate])
+    .ease(parameters.fringePapersTransitionEasing)
     .attr("d", function(p) { return drawLink(global.connectedPaper, p); });
   links.enter()
     .append("path")
@@ -76,7 +79,10 @@ if (global.connectedPaper) {
     .style("opacity", 0)
 
   links = svg.select("#links").selectAll(".citation")
-    .data(global.connectedPaper.internalCitations().filter(function(p) { return p.visible; }))
+    .data(global.connectedPaper.internalCitations().filter(function(p) { return p.visible; }));
+  links.transition()
+    .duration(parameters.fringePapersPositionTransitionDuration[animate])
+    .ease(parameters.fringePapersTransitionEasing)
     .attr("d", function(p) { return drawLink(p, global.connectedPaper); });
   links.enter()
     .append("path")
