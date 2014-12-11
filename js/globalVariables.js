@@ -18,8 +18,16 @@ var global={
   "medians":[],
   // current maximal connectivity score, computed every time the fringe is updated
   "maxConnectivityScore":1,
-  // automatically computed by view
+  // All the papers that are potentially visible (automatically computed by view)
   "visibleFringe": [],
+  // number of times each author appears among the papers of interest (the most frequent authors will be shown)
+  "frequentAuthors": [],
+  // indicates which data to show in the sidebar (these booleans are toggled by checkboxes)
+  // beware: if changing these default values, you must change the checkbox "checked" property in the html too 
+  "showCoreInfo": false,
+  "showToReadInfo": false,
+  "showVisibleFringeInfo": true,
+
   // flag indicating that a long animation is currently running
   "animationRunning": false,
   // flag indicating that another animation is waiting for the current one to complete
@@ -68,6 +76,14 @@ global.computeMedianMaximalNormalizedCitationCountsPerYear=function(){
     global.medians[temp[i].x]=temp[i].y;
   }
 }
+
+
+//
+global.computeFrequentAuthors = function(){
+
+}
+
+
 
 var userData={ 
     // contains the tags and all useful (non-static) information about the papers that have been visited

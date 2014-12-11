@@ -42,14 +42,39 @@
                 <ul>
                     <li onclick=sessionManager.saveSession()> Save session </li>
                     <li onclick=sessionManager.resetSession()> Reset session </li>
+                    <li onclick=global.switchEncoding() style="margin-bottom: 1px"> Switch Encoding </li>
                     <li> Load other dataset </li>
                     <li><a href="/stats.html" target="_blank"> Dataset statistics... </a></li>
                 </ul>
             </li>
         </ul>
     </div>
-    <div id="authors-list">
+    <div id="data-selector">
+        <ul>
+            <li>Show information on:</li>
+            <li>
+                <label>
+                    <input type="checkbox" onclik="global.showCoreInfo= !global.showCoreInfo"> 
+                    <span> Core</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox" onclick="global.showToReadInfo= !global.showToReadInfo">
+                    <span> To read</span>
+                </label>
+            </li>
+            <li>
+                <label>
+                    <input type="checkbox" onclick="global.showVisibleFringeInfo= !global.showVisibleFringeInfo" checked> 
+                    <span> Fringe</span>
+                </label>
+            </li>
+        </ul>
     </div>
+    <svg id="authors-list">
+
+    </svg>
     <div id="publication-years">
     </div>
 </div>

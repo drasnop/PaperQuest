@@ -10,6 +10,7 @@ body {
 	right: 0;
 	height:100%;
 	width:10%;
+  min-width: 170px;
 	background-color: #eee;
 }
 
@@ -138,6 +139,11 @@ button:disabled{
   left: 0px;
 }
 
+
+/*/////////////////  Side bar   ///////////////////////*/
+
+/* top right menu */
+
 #top-menu ul {
   text-align: left;
   display: inline;
@@ -200,4 +206,22 @@ button:disabled{
   display: block;
   opacity: 1;
   visibility: visible;
+}
+
+
+/* data-selector (3 checkboxes) */
+
+#data-selector ul{
+  list-style: none;
+  margin:0;
+  padding:15px 0;
+}
+
+#data-selector ul li{
+  padding-left: 15px;
+  padding-bottom: 2px;
+}
+
+#data-selector ul li:not(:first-child):hover{
+  background-color: white;
 }
