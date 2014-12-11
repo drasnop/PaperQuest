@@ -56,6 +56,8 @@ var global= (function () {
     "activePaper": null,
     // The paper that's currently showing links, if any
     "connectedPaper": null,
+    // One paper in the fringe can be expanded (without having to select it first)
+    "expandedPaper":null,
 
     // Date filters, should be set when the papers dataset is loaded
     "minYear": 0,

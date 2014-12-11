@@ -40,7 +40,8 @@ function initializeConnectivityScore(p) {
 // Update the score for all connected papers when inserting/removing a paper
 // TODO: refactor
 function updateRelevanceScores(pSource, inserting){
-	console.log( (inserting?"inserting ":"removing ") + pSource.doi)
+	console.log( (inserting?"inserting ":"removing ") + pSource.doi + " into "
+	 + (pSource.selected? "selected": (pSource.toread? "toread": (pSource.core? "core":"fringe"))) )
 
   // update both (internal) references and citations of this paper
   pSource.internalReferences().concat(pSource.internalCitations())
@@ -56,6 +57,7 @@ function updateRelevanceScores(pSource, inserting){
         }
         initializeConnectivityScore(pTarget);
       }
+
       // update relevance score of this paper
       updatePaper(pSource, pTarget, inserting);
 
@@ -65,9 +67,6 @@ function updateRelevanceScores(pSource, inserting){
         delete userData.papers[pTarget.doi];
       }
     });
-
-    // update the connectivity of the source paper itself (to prevent it moving down)
-    updatePaper(pSource, pSource, inserting);
 }
 
 
@@ -89,8 +88,8 @@ function connectionWeight(paper){
 }
 
 function computeMinMaxConnectivityScore(){
-	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.connectivity; })
-	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.connectivity; })
+	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getTotalconnectivity(); })
+	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.getTotalconnectivity(); })
 	//console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
 }
 

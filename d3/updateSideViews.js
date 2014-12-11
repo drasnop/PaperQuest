@@ -49,7 +49,8 @@ var x = d3.scale.linear()
 
 // Generate a histogram using uniformly-spaced bins.
 var data = d3.layout.histogram()
-    .bins(x.ticks(parameters.nBinsYears))
+    //.bins(x.ticks(parameters.nBinsYears))
+    .bins(x.ticks(global.latestPublicationYear-global.oldestPublicationYear))
     (values);
 
 var y = d3.scale.linear()
@@ -90,15 +91,20 @@ enteringBars.append("rect")
     .attr("x", 1)
     .attr("width", x(data[1].x)-x(data[0].x))
     .attr("y", function(d) { return innerHeight - y(d.y); })
-    .attr("height", 0);
+    .attr("height", 0)
 
+    .append("svg:title")
+    .text(function(d) { return d.y+" papers in "+d.x; })
+
+/*
+* Since the bars are very narrow, we don't show a number inside them
 enteringBars.append("text")
     .attr("dy", ".75em")
     .attr("text-anchor", "middle")
     .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
     .attr("y",innerHeight)
     .text(function(d) { return d.y>0? d.y : ""; });
-
+*/
 
 //------------------ENTER+UPDATE----------------//
 var t0=bars.transition().duration(parameters.fringePapersPositionTransitionDuration[animate])
@@ -111,10 +117,10 @@ t0.select("rect")
     .attr("height", function(d) { return innerHeight - y(d.y); })
     .attr("width", x(data[1].x)-x(data[0].x))
 
-t0.select("text")
+/*t0.select("text")
     .attr("y", 6)
     .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
-    .text(function(d) { return d.y>0? d.y : ""; })
+    .text(function(d) { return d.y>0? d.y : ""; })*/
 
 
 //--------------------EXIT---------------------//

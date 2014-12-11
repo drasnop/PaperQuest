@@ -300,35 +300,15 @@ function bindListeners(){
       d3.select(this).classed("active", true);
     })
     .on("mouseup", function() {
-      d3.select(this).classed("active", false);
       global.activePaper.moveTo("toread");
-      if (!global.activePaper.selected) {   // "selected" papers in the fringe are already interesting, so no need to update anything
-        // New interesting paper, fringe should recompute.
-        userData.addNewInteresting(global.activePaper);
-        // Enable or disable the updateFringe button.
-        updateUpdateFringeButton();
-      }
-      global.activePaper.selected = false;
-      
-      removeHighlighting(global.activePaper);
-      hideMenu();
-      doAutomaticFringeUpdate();
-      updateView(2);
-    });
 
-  // Move a paper to the fringe
-  d3.select("#menu-tofringe")
-    .on("mousedown", function() {
-      d3.select(this).classed("active", true);
-    })
-    .on("mouseup", function() {
-      d3.select(this).classed("active", false);
-      global.activePaper.moveTo("fringe");
-      // Return the active paper to the fringe as an unselected paper, should recompute the fringe.
-      userData.removeInteresting(global.activePaper);
+      // New (or updated) interesting paper, fringe should recompute.
+      userData.addNewInteresting(global.activePaper);
       // Enable or disable the updateFringe button.
       updateUpdateFringeButton();
-      global.activePaper.selected = false;
+
+      d3.select(this).classed("active", false);
+      global.activePaper.selected = false;    
       removeHighlighting(global.activePaper);
       hideMenu();
       doAutomaticFringeUpdate();
@@ -341,20 +321,42 @@ function bindListeners(){
       d3.select(this).classed("active", true);
     })
     .on("mouseup", function() {
-      d3.select(this).classed("active", false);
-      if (global.activePaper.fringe && !global.activePaper.selected) {
-        // Add to the interesting papers and recompute the fringe
-        userData.addNewInteresting(global.activePaper);
-        // Enable or disable the updateFringe button.
-        updateUpdateFringeButton();
-      }
       global.activePaper.moveTo("core");
+      
+      // New (or updated) interesting paper, fringe should recompute.
+      userData.addNewInteresting(global.activePaper);
+      // Enable or disable the updateFringe button.
+      updateUpdateFringeButton();
+
+      d3.select(this).classed("active", false);
       global.activePaper.selected = false;
       removeHighlighting(global.activePaper);
       hideMenu();
       doAutomaticFringeUpdate();
       updateView(2);
     });
+
+  // Move a paper to the fringe
+  d3.select("#menu-tofringe")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() {
+      global.activePaper.moveTo("fringe");
+      
+      // Return the active paper to the fringe as an unselected paper, should recompute the fringe.
+      userData.removeInteresting(global.activePaper);
+      // Enable or disable the updateFringe button.
+      updateUpdateFringeButton();
+
+      d3.select(this).classed("active", false);
+      global.activePaper.selected = false;
+      removeHighlighting(global.activePaper);
+      hideMenu();
+      doAutomaticFringeUpdate();
+      updateView(2);
+    });
+
 
   // Show a paper's links
   d3.select("#menu-links")
@@ -451,36 +453,44 @@ function bindListeners(){
     // clicking papers on the fringe translates them to the left
     .on("mousedown",function() {
       var paper=d3.select(this);
+      var ctrl=d3.event.ctrlKey;
+
       paper.each(function(p) {
-        // Clicking on papers when not in the fringe does nothing.
-        if (!p.fringe) {
-          return;
+        if(!ctrl){
+          // Clicking on papers when not in the fringe does not select it.
+          if (!p.fringe)
+            return;
+
+          p.selected = !p.selected;
+
+          // Add or remove the paper to the list that will update the fringe
+          if(p.selected)
+            userData.addNewInteresting(p);
+          else
+            userData.removeInteresting(p);
+
+          // Enable or disable the updateFringe button, if new papers have been (de)selected
+          updateUpdateFringeButton();
+
+          // Update the vis to move the selected papers left or right
+          // (using different animation speeds depending on the zoom level, just because it's pretty)
+          switch(global.zoom){
+          case 0:
+            updateView(4);
+            break;
+          case 1:
+            updateView(3);
+            break;
+          case 2:
+            updateView(2);
+            break;
+          }
         }
-
-        p.selected = !p.selected;
-
-        // Add or remove the paper to the list that will update the fringe
-        if(p.selected)
-          userData.addNewInteresting(p);
-        else
-          userData.removeInteresting(p);
-
-        // Enable or disable the updateFringe button, if new papers have been (de)selected
-        updateUpdateFringeButton();
-
-        // Update the vis to move the selected papers left or right
-        // (using different animation speeds depending on the zoom level, just because it's pretty)
-        switch(global.zoom){
-        case 0:
-          updateView(4);
-          break;
-        case 1:
-          updateView(3);
-          break;
-        case 2:
-          updateView(2);
-          break;
-
+        else{
+          if(global.expandedPaper == p)
+            global.expandedPaper=null;
+          else
+            global.expandedPaper=p;
         }
       });
 

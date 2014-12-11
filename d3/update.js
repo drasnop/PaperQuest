@@ -275,7 +275,7 @@ t0.select(".glyph")
 d3.selectAll(".glyph title")
 .text(function(p){ return p.citation_count + " (" + Math.round(p.getNormalizedExternalCitationCount()*100) + "%) external citations, " +
     p.citations.length + " (" + Math.round(p.getNormalizedInternalCitationCount()*100) + "%) internal citations; " +
-    p.connectivity + " (" + Math.round(p.getNormalizedConnectivityScore()*100) + "%) connectivity.";
+    p.getTotalconnectivity() + " (" + Math.round(p.getNormalizedConnectivityScore()*100) + "%) connectivity.";
 })
 
 // The change of color should occur AFTER the papers have moved to their new positions
