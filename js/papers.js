@@ -157,18 +157,16 @@ P = (function() {
   }
 
 
-  paper.prototype.getConnectivityScore = function(){
-    return this.connectivity + algorithm.connectionWeight(this);
-  }
-
   // Normalize from 0 to 1 the connectivity scores
   // Note that the normalized connectivity can be larger than 1 in core and to read
   paper.prototype.getNormalizedConnectivityScore = function() {
-    return (this.getConnectivityScore()-global.minConnectivityScore)/global.maxConnectivityScore;
+    //console.log((this.connectivity-global.minConnectivityScore)/(global.maxConnectivityScore-global.minConnectivityScore))
+    return (this.connectivity-global.minConnectivityScore)/(global.maxConnectivityScore-global.minConnectivityScore);
   }
 
   // combines the two components of the score (each starting at 0)
   paper.prototype.getRelevanceScore = function(){
+    console.log(this.getNormalizedConnectivityScore())
     return parameters.ACCweight*this.adjustedCitationCount() 
     + parameters.connectivityWeight*this.getNormalizedConnectivityScore();
   }

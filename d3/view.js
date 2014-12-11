@@ -380,6 +380,7 @@ function bindListeners(){
           // this is ugly as hell, but I don't know how to access d cleanly...
           var res;
           d3.select(this).each(function(p) {
+            console.log(p.getNormalizedConnectivityScore());
             res=!p.selected;
           })
             return res;

@@ -83,6 +83,10 @@ button:disabled{
 	opacity:.7;
 }
 
+#updateFringeAutomatically:hover{
+  background-color: #2fa4b2;
+}
+
 #core-separator {
 	shape-rendering:crispEdges;
 }

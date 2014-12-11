@@ -91,10 +91,8 @@ var zoom0 = enteringPapers.append("g")
         .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
     }
 
+    // the content of this tooltip is set dynamically, in the update section (below: "glyph title")
     glyph.append("svg:title")
-    .text(function(p){ return p.citation_count + " external, " + p.citations.length + " internal; "
-        + p.citation_count/parameters.externalCitationCountCutoff+ " adjusted external, "
-        + p.citations.length/parameters.internalCitationCountCutoff+ " adjusted internal";})
 
 
 zoom0.append("rect")
@@ -200,6 +198,11 @@ t0.select(".glyph")
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
 
+d3.selectAll(".glyph title")
+.text(function(p){ console.log(p.getNormalizedConnectivityScore() + " " +global.minConnectivityScore); return p.citation_count + " (" + Math.round(p.getNormalizedExternalCitationCount()*100) + "%) external citations, " +
+    p.citations.length + " (" + Math.round(p.getNormalizedInternalCitationCount()*100) + "%) internal citations; " +
+    p.connectivity + " (" + Math.round(p.getNormalizedConnectivityScore()*100) + "%) connectivity.";
+})
 
 // The change of color should occur AFTER the papers have moved to their new positions
 t0.call(endAll, function () {

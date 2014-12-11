@@ -37,7 +37,7 @@ function initializeConnectivityScore(p) {
 	p.connectivity = 0;
 }
 
-// Update the score for all papers (not only the ones on the Fringe)
+// Update the score for all connected papers when inserting/removing a paper
 // TODO: refactor
 function updateRelevanceScores(pSource, inserting){
 	console.log( (inserting?"inserting ":"removing ") + pSource.doi)
@@ -63,6 +63,9 @@ function updateRelevanceScores(pSource, inserting){
       if (pTarget.connectivity <= 0)
         delete userData.papers[pTarget.doi];
     });
+
+    // update the connectivity of the source paper itself (to prevent it moving down)
+    updatePaper(pSource, pSource, inserting);
 }
 
 
@@ -84,9 +87,9 @@ function connectionWeight(paper){
 }
 
 function computeMinMaxConnectivityScore(){
-	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getConnectivityScore(); })
-	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.getConnectivityScore(); })
-	console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
+	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.connectivity; })
+	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.connectivity; })
+	//console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
 }
 
 ///////////////     Define public static methods, and return    /////////////
@@ -96,7 +99,6 @@ function computeMinMaxConnectivityScore(){
 	algorithm.updateFringe=updateFringe;
 	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
 	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;
-	algorithm.connectionWeight=connectionWeight;
 	return algorithm;
 
 })();

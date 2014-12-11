@@ -102,14 +102,11 @@ function randomColor(){
 }
 
 function fringePaperInternalColor(p) {
-    console.log(p.getNormalizedConnectivityScore())
     return colorFromConnectivity(p.getNormalizedConnectivityScore());
 }
 
 function fringePaperExternalColor(p) {
-    //return colorFromConnectivity(p.getNormalizedConnectivityScore());
-    
-    return shadeHexColor(colorFromConnectivity(p.getNormalizedConnectivityScore(),colors.shadingDifferenceInternalExternal));
+    return shadeHexColor(colorFromConnectivity(p.getNormalizedConnectivityScore()),colors.shadingDifferenceInternalExternal);
 }
 
 // Maps the connectivity score to 5 color bins
