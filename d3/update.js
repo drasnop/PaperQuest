@@ -1,4 +1,4 @@
-// Manage papers on the fringe, with or without animating the transitions (TODO)
+// Manage papers on the fringe, with or without animating the transitions
 view.manageDynamicElements=function(animate){
 
 //------------------DATA JOIN-------------------//
@@ -199,7 +199,7 @@ t0.select(".glyph")
     return 1; })
 
 d3.selectAll(".glyph title")
-.text(function(p){ console.log(p.getNormalizedConnectivityScore() + " " +global.minConnectivityScore); return p.citation_count + " (" + Math.round(p.getNormalizedExternalCitationCount()*100) + "%) external citations, " +
+.text(function(p){ return p.citation_count + " (" + Math.round(p.getNormalizedExternalCitationCount()*100) + "%) external citations, " +
     p.citations.length + " (" + Math.round(p.getNormalizedInternalCitationCount()*100) + "%) internal citations; " +
     p.connectivity + " (" + Math.round(p.getNormalizedConnectivityScore()*100) + "%) connectivity.";
 })

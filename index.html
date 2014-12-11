@@ -23,6 +23,7 @@
 
     <script type="text/javascript" src="d3/view.js"></script>
     <script type="text/javascript" src="d3/update.js"></script>
+    <script type="text/javascript" src="d3/updateSideViews.js"></script>
 </head>
 <body>
   <ul id="paper-menu">
@@ -43,40 +44,45 @@
                 <ul>
                     <li onclick=sessionManager.saveSession()> Save session </li>
                     <li onclick=sessionManager.resetSession()> Reset session </li>
-                    <li onclick=global.switchEncoding() style="margin-bottom: 1px"> Switch Encoding </li>
+                    <li onclick=global.switchEncoding() style="border-bottom: 1px solid white"> Switch Encoding </li>
                     <li> Load other dataset </li>
                     <li><a href="/stats.html" target="_blank"> Dataset statistics... </a></li>
                 </ul>
             </li>
         </ul>
     </div>
-    <div id="data-selector">
-        <ul>
-            <li>Show information on:</li>
-            <li>
-                <label>
-                    <input type="checkbox" onclik="global.showCoreInfo= !global.showCoreInfo"> 
-                    <span> Core</span>
-                </label>
-            </li>
-            <li>
-                <label>
-                    <input type="checkbox" onclick="global.showToReadInfo= !global.showToReadInfo">
-                    <span> To read</span>
-                </label>
-            </li>
-            <li>
-                <label>
-                    <input type="checkbox" onclick="global.showVisibleFringeInfo= !global.showVisibleFringeInfo" checked> 
-                    <span> Fringe</span>
-                </label>
-            </li>
-        </ul>
-    </div>
-    <svg id="authors-list">
+    <div id="sideviews">
+        <div id="data-selector">
+            <ul>
+                <li>Show information on:</li>
 
-    </svg>
-    <div id="publication-years">
+                <li>
+                    <label>
+                        <input type="checkbox" onclick="global.updateDataShown(0)">
+                        <span> Core</span>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" onclick="global.updateDataShown(1)">
+                        <span> To read</span>
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox" onclick="global.updateDataShown(2)" checked> 
+                        <span> Fringe</span>
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <ul id="authors-list">
+                <li style="text-decoration: underline"> Authors </li>
+            </ul>
+        </div>
+        <div id="publication-years">
+        </div>
     </div>
 </div>
 <!-- Usage: apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->

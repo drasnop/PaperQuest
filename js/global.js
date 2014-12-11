@@ -108,6 +108,7 @@ var global= (function () {
     }
 
     // this step is necessary because the two data structures are good for different operations
+    global.frequentAuthors=[]
     for(var author in occurences){
       global.frequentAuthors.push({
         "author":author,
@@ -129,6 +130,23 @@ var global= (function () {
     return result;
   }
   
+  global.updateDataShown = function(which){
+    // toggle the global boolean corresponding to the checkbox
+    console.log(which)
+    switch(which){
+      case 0:
+       global.showCoreInfo = !global.showCoreInfo;
+       break;
+      case 1:
+        global.showToReadInfo = !global.showToReadInfo;
+        break;
+      case 2:
+        global.showVisibleFringeInfo = !global.showVisibleFringeInfo;
+        break;
+    }
+
+    view.updateView(0); // will do the appropriate computations first
+  }
 
 
   //////////////////////    Helper functions    ///////////////////////////////
@@ -136,7 +154,7 @@ var global= (function () {
   function papersShownInSidebar(){
     return P.all().filter(function(p){
       return (global.showCoreInfo && p.core)  ||
-             (global.showToReadInfo && p.toRead) ||
+             (global.showToReadInfo && p.toread) ||
              (global.showVisibleFringeInfo && global.visibleFringe.indexOf(p)>-1)
     }); 
   }

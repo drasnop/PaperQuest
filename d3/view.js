@@ -23,6 +23,7 @@ function updateView(animate){
 
   drawStaticElements(animate);
   manageDynamicElements(animate);
+  manageSideViews();
   bindListeners();
 }
 
@@ -44,6 +45,10 @@ function updateFringe() {
 
 function manageDynamicElements(animate){
     return view.manageDynamicElements(animate);
+}
+
+function manageSideViews(){
+    return view.manageSideViews();
 }
 
 // Create some svg elements, once and for all
@@ -380,7 +385,6 @@ function bindListeners(){
           // this is ugly as hell, but I don't know how to access d cleanly...
           var res;
           d3.select(this).each(function(p) {
-            console.log(p.getNormalizedConnectivityScore());
             res=!p.selected;
           })
             return res;

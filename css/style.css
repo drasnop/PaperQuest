@@ -215,17 +215,33 @@ button:disabled{
 
 /* data-selector (3 checkboxes) */
 
-#data-selector ul{
+#sideviews ul{
   list-style: none;
   margin:0;
-  padding:15px 0;
+  padding:0;
 }
 
-#data-selector ul li{
+#sideviews ul li{
   padding-left: 15px;
   padding-bottom: 2px;
+  cursor:pointer;
 }
 
-#data-selector ul li:not(:first-child):hover{
+#sideviews ul li:first-child{
+  padding-bottom: 5px;
+}
+
+#sideviews ul li:not(:first-child):hover{
   background-color: white;
+}
+
+#data-selector{
+  margin-top:5px;
+  padding: 7px 0;
+}
+
+/*   list of authors   */
+
+#authors-list{
+  padding: 7px 0;
 }
