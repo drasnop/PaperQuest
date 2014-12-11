@@ -7,7 +7,6 @@ var view = (function () {
 
 var leftViewClipPath;
 var menuTimeout = null;
-var fringeSliderToggle = true;
 
 // Except for the (static) background elements, everything is computed on-the-fly
 function initializeView(createStatic){
@@ -87,6 +86,7 @@ function createStaticElements(){
   // controls
   d3.select("body").append("span")
     .attr("id", "fringe-slider-toggle")
+    .attr("title", "switch between views")
     .attr("onclick", "view.toggleFringeSlider()")
     .classed("icon-tab", true)
 
@@ -201,6 +201,11 @@ function drawStaticElements(animate){
     //.style("stroke", colors.coreDivisor)
     .style("fill-opacity", 0.5)
     .call(dragCore);
+
+  // button for switching views
+  d3.select("#fringe-slider-toggle")
+    .style("left", 0+"px")
+    .style("top", global.toReadHeight-12+"px") 
 
   // fringeSeparator
   t0(d3.select("#fringe-separator"))
@@ -616,12 +621,14 @@ function doAutomaticFringeUpdate() {
 
 
 function toggleFringeSlider() {
-  fringeSliderToggle = !fringeSliderToggle;
-  if (fringeSliderToggle) {
-    global.fringeApparentWidth = (window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding);
-  } else {
+  var largestReasonnableFringe = window.innerWidth - d3.select("#sidebar")[0][0].offsetWidth - parameters.fringeRightPadding;
+  var midpoint = (parameters.fringeApparentWidthMin + largestReasonnableFringe)/2;
+
+  if(global.fringeApparentWidth <= midpoint)
+    global.fringeApparentWidth = largestReasonnableFringe;
+  else
     global.fringeApparentWidth = parameters.fringeApparentWidthMin;
-  }
+    
   updateView(1);
 }
 

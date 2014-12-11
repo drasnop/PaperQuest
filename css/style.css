@@ -163,8 +163,14 @@ button.off{
 
 #fringe-slider-toggle {
   position: absolute;
-  top: 0px;
-  left: 0px;
+  background-color: rgb(223, 111, 95);
+  padding: 6px;
+  border-radius: 20px;
+  color: white;
+}
+
+#fringe-slider-toggle:hover {
+  background-color: rgb(225, 88, 69);
 }
 
 .link {
