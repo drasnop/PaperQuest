@@ -79,16 +79,17 @@ var zoom0 = enteringPapers.append("g")
         }
 
         glyph.append("path")
+        .attr("class", "externalCitationsCircle")
+        .attr("d", halfdisk(true))
+        .style("fill", function(p) { return fringePaperExternalColor(p); })
+        .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
+        
+        glyph.append("path")
         .attr("class", "internalCitationsCircle")
         .attr("d", halfdisk(false))
         .style("fill", function(p) { return fringePaperInternalColor(p); })
         .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
 
-        glyph.append("path")
-        .attr("class", "externalCitationsCircle")
-        .attr("d", halfdisk(true))
-        .style("fill", function(p) { return fringePaperExternalColor(p); })
-        .attr("transform", function(p) { return "translate("+p.x+","+p.y+")"; })
     }
 
     // the content of this tooltip is set dynamically, in the update section (below: "glyph title")
