@@ -65,20 +65,37 @@ button:hover{
 }
 
 button:disabled:hover{
-  background-color: #2c7fb8;
+  background-color: white;
 }
 
 button:disabled{
-	opacity:.7;
+	background-color: white;
+  color: #777;
+  border: 1px solid #999;
+}
+
+button.off{
+  border: 1px solid white;   /* just to avoid jumpind effect */
+  color: #444;
 }
 
 #updateFringeAutomatically{
+  color: #444;
   padding: 7px 16px;
   border-radius: 5px;
 }
 
 #updateFringeAutomatically:hover{
   color: white;
+  background-color: #2fa4b2;
+}
+
+#updateFringeAutomatically.on{
+  color: white;
+  background-color: #2c7fb8;
+}
+
+#updateFringeAutomatically.on:hover{
   background-color: #2fa4b2;
 }
 

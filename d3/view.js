@@ -19,7 +19,6 @@ function initializeView(createStatic){
 // Update the vis, with different animation speeds. If animate=0, no animation.
 function updateView(animate){
   global.computeVisibleFringe();
-  console.log(global.visibleFringe);
   global.computeFrequentAuthors();
 
   drawStaticElements(animate);
@@ -105,7 +104,7 @@ function createStaticElements(){
     .attr("class","visControl")
     .append("input")
     .attr("type","checkbox")
-    .attr("onclick","global.updateAutomatically=!global.updateAutomatically; view.updateFringe()")
+    .attr("onclick","view.updateAutomaticallyToggle()")
 
   d3.select("#updateFringeAutomatically")
     .append("span")
@@ -587,6 +586,21 @@ function updateUpdateFringeButton() {
     d3.select("#updateFringe").attr("disabled","disabled");
 }
 
+function updateAutomaticallyToggle() {
+  global.updateAutomatically=!global.updateAutomatically;
+
+  if(global.updateAutomatically){
+    d3.select("#updateFringe").classed("off",true);
+    d3.select("#updateFringeAutomatically").classed("on",true);
+  }
+  else{
+    d3.select("#updateFringe").classed("off",false);
+    d3.select("#updateFringeAutomatically").classed("on",false);
+  }
+
+  updateFringe();
+}
+
 function doAutomaticFringeUpdate() {
   if(!global.updateAutomatically)
     return;
@@ -617,6 +631,7 @@ var view = {};
 view.initializeView=initializeView;
 view.updateView=updateView;
 view.updateFringe=updateFringe;
+view.updateAutomaticallyToggle=updateAutomaticallyToggle;
 view.toggleFringeSlider = toggleFringeSlider;
 return view;
 
