@@ -88,17 +88,33 @@ var global= (function () {
   }
 
 
-  //
+  // Creates a list of authors for the papers shown in the sidebar, sorted by the number of papers they wrote
   global.computeFrequentAuthors = function(){
+    var papers=papersShownInSidebar();
+
     // compute how often each author appears
     var occurences = [];
-    for(var p in papersShownInSidebar()){
-      for(var a in p.authors){
-        if(occurences.indexOf(a) == -1)
-          occurences[a]=0;
-        occurences[a]++;
+    var author;
+    for(var i in papers){
+      for(var j in papers[i].authors){
+        author=papers[i].authors[j];
+
+        if(occurences[author] == undefined)
+          occurences[author]=0;
+        occurences[author]++;
       }
     }
+
+    // this step is necessary because the two data structures are good for different operations
+    for(var author in occurences){
+      global.frequentAuthors.push({
+        "author":author,
+        "frequency":occurences[author] 
+      });
+    }
+    
+    // sort in decreasing number of occurences
+    global.frequentAuthors.sort(function(a, b){return b.frequency-a.frequency});
   }
 
   // Checks that a paper passes all the filters in the filters array defined in the namespace
