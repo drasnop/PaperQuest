@@ -2,7 +2,7 @@
 view.manageSideViews=function(animate){
 
 // Compute the size of the histogram, as it impacts the number of authors that can be shown
-var histogramWidth = Math.max(window.innerWidth/10,80),
+var histogramWidth = Math.max(window.innerWidth/10,180),
     histogramHeight=150;
 
 
@@ -38,7 +38,7 @@ authors.exit().remove();
 
 var values=global.publicationYears();
 
-var margin = {top: 10, right: 10, bottom: 30, left: 10},
+var margin = {top: 10, right: 15, bottom: 30, left: 5},
     innerWidth = histogramWidth - margin.left - margin.right,
     innerHeight = histogramHeight - margin.top - margin.bottom;
 
@@ -59,6 +59,7 @@ var y = d3.scale.linear()
 var xAxis = d3.svg.axis()
     .scale(x)
     .ticks(parameters.nBinsYears)
+    .tickFormat(d3.format("d"))
     .orient("bottom");
 
 

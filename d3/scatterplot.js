@@ -23,7 +23,7 @@ function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
 
 	// Define the axes
 	var xAxis = d3.svg.axis().scale(x)
-	    .orient("bottom").ticks(5);
+	    .orient("bottom").ticks(5).tickFormat(d3.format("d"));
 
 	var yAxis = d3.svg.axis().scale(y)
 	    .orient("left").ticks(5);
