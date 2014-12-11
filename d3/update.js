@@ -37,7 +37,7 @@ var linkGenerator = d3.svg.line()
  */
 function drawLink(s, t) {
   // Angle of the perpendicular to line between s and t
-  var angle = Math.atan2(t.y - s.y, t.x - s.x) + Math.PI/2;
+  var angle = Math.atan2(t.y - s.y, t.x - s.x) - Math.PI/2;
   // Length of line connecting s and t
   var length = Math.sqrt(Math.pow(t.x - s.x, 2) + Math.pow(t.y - s.y, 2));
 
