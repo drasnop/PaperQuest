@@ -1,6 +1,10 @@
 // Manage the small views in the sidebar, which show only a subset of the data
 view.manageSideViews=function(){
 
+var width = Math.max(window.innerWidth/10,180),
+    height=150;
+
+
 //------------------DATA JOIN-------------------//
 // Join new data with old elements, if any
 var authors = d3.select("#authors-list").selectAll(".author")
@@ -11,7 +15,9 @@ var authors = d3.select("#authors-list").selectAll(".author")
 var enteringAuthors = authors.enter()
 .append("li")
 .attr("class","author")
-
+.style("display",function(a,i) { console.log((i*20+164)+" "+(window.innerHeight-height-20)); 
+    return (i*20+164) < window.innerHeight-height-20? "":"none";  })
+// this is super ugly...
 
 //------------------ENTER+UPDATE-------------------//
 // Appending to the enter selection expands the update selection to include
@@ -29,12 +35,9 @@ authors.exit().remove();
 
 var values=global.publicationYears(),
 	svg=d3.select("svg#publication-years"),
-	width = Math.max(window.innerWidth/10,180),
-	height=150,
 	bins=5,
 	minX=d3.min(values),
 	maxX=d3.max(values);
-	console.log(minX+ " "+maxX)
 
 var margin = {top: 10, right: 10, bottom: 30, left: 10},
     innerWidth = width - margin.left - margin.right,
@@ -44,14 +47,10 @@ var x = d3.scale.linear()
     .domain([minX, maxX])
     .range([0, innerWidth])
 
-    console.log(x(0)+" "+x(1983)+" "+x(2010))
-
 // Generate a histogram using twenty uniformly-spaced bins.
 var data = d3.layout.histogram()
     .bins(x.ticks(bins))
     (values);
-
-console.log(data)
 
 var y = d3.scale.linear()
     .domain([0, d3.max(data, function(d) { return d.y; })])

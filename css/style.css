@@ -240,16 +240,21 @@ button:disabled{
   color: #444;
 }
 
-#sideviews ul li:not(:first-child){
+#sideviews ul li{
   font-size: 95%;
 }
 
-#sideviews ul li:first-child{
+#data-selector ul li:first-child{
   padding-bottom: 5px;
+  font-size: 100%;
 }
 
-#sideviews ul li:not(:first-child):hover{
+#sideviews ul li:hover{
   background-color: white;
+}
+
+#data-selector ul li:first-child:hover{
+  background-color: #eee;
 }
 
 #data-selector{
@@ -259,8 +264,13 @@ button:disabled{
 
 /*   list of authors   */
 
-#authors-list{
-  padding: 7px 0;
+ul#authors-list{
+  padding: 10px 0;
+  background-color: #e5e5e5;
+}
+
+ul#authors-list li:hover{
+  background-color: #f6f6f6;
 }
 
 /*   histogram of publication years   */
