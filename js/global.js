@@ -96,14 +96,26 @@ var global= (function () {
 
     // compute how often each author appears
     var occurences = [];
+    var nSelected = [];
+    var highestRC = [];
+    var firstOrLastAuthor = [];
+
     var author;
     for(var i in papers){
       for(var j in papers[i].authors){
         author=papers[i].authors[j];
 
-        if(occurences[author] == undefined)
+        if(occurences[author] == undefined){
           occurences[author]=0;
+          nSelected[author]=0;
+          highestRC[author]=0;
+          firstOrLastAuthor[author]=0;
+        }
+
         occurences[author]++;
+        if(papers[i].selected) nSelected[author]++;
+        highestRC[author]=Math.max(highestRC[author],papers[i].getRelevanceScore());
+        if(j==0 || j==papers[i].authors.length-1) firstOrLastAuthor[author]++;
       }
     }
 
@@ -112,12 +124,26 @@ var global= (function () {
     for(var author in occurences){
       global.frequentAuthors.push({
         "author":author,
-        "frequency":occurences[author] 
+        "frequency":occurences[author],
+        "nSelected":nSelected[author],
+        "highestRC":highestRC[author],
+        "firstOrLastAuthor":firstOrLastAuthor[author]
       });
     }
     
-    // sort in decreasing number of occurences
-    global.frequentAuthors.sort(function(a, b){return b.frequency-a.frequency});
+    // sort in decreasing number of occurences, then relevance score then firstLastAuthor
+    global.frequentAuthors.sort(function(a, b){
+      if(b.frequency != a.frequency)
+      return b.frequency-a.frequency;
+
+      if(b.nSelected != a.nSelected)
+      return b.nSelected-a.nSelected;
+
+      if(b.highestRC != a.highestRC)
+      return b.highestRC-a.highestRC;
+      
+      return b.firstOrLastAuthor-a.firstOrLastAuthor;
+    });
   }
 
   // Checks that a paper passes all the filters in the filters array defined in the namespace
