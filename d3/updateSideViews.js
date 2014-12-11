@@ -1,5 +1,5 @@
 // Manage the small views in the sidebar, which show only a subset of the data
-view.manageSideViews=function(){
+view.manageSideViews=function(animate){
 
 // Compute the size of the histogram, as it impacts the number of authors that can be shown
 var histogramWidth = Math.max(window.innerWidth/10,80),
@@ -83,28 +83,40 @@ var bars = histogram.selectAll(".bar")
 var enteringBars = bars.enter()
     .append("g")
     .attr("class", "bar")
+    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
     
 enteringBars.append("rect")
-
-enteringBars.append("text")
-
-
-//------------------ENTER+UPDATE----------------//
-bars.attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
-
-bars.select("rect")
     .attr("x", 1)
     .attr("width", x(data[1].x)-x(data[0].x))
-    .attr("height", function(d) { return innerHeight - y(d.y); });
+    .attr("y", function(d) { return innerHeight - y(d.y); })
+    .attr("height", 0);
 
-bars.select("text")
+enteringBars.append("text")
     .attr("dy", ".75em")
-    .attr("y", 6)
-    .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
     .attr("text-anchor", "middle")
+    .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
+    .attr("y",innerHeight)
     .text(function(d) { return d.y>0? d.y : ""; });
 
 
+//------------------ENTER+UPDATE----------------//
+var t0=bars.transition().duration(parameters.fringePapersPositionTransitionDuration[animate])
+        .ease(parameters.fringePapersTransitionEasing)
+
+t0.attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+t0.select("rect")
+    .attr("y", 0)
+    .attr("height", function(d) { return innerHeight - y(d.y); })
+    .attr("width", x(data[1].x)-x(data[0].x))
+
+t0.select("text")
+    .attr("y", 6)
+    .attr("x", (x(data[1].x)-x(data[0].x)) / 2)
+    .text(function(d) { return d.y>0? d.y : ""; })
+
+
 //--------------------EXIT---------------------//
+// although this should probably never happen (always same number of bins)
 bars.exit().remove();
 }

@@ -181,7 +181,6 @@ var global= (function () {
   
   global.updateDataShown = function(which){
     // toggle the global boolean corresponding to the checkbox
-    console.log(which)
     switch(which){
       case 0:
        global.showCoreInfo = !global.showCoreInfo;
@@ -194,7 +193,7 @@ var global= (function () {
         break;
     }
 
-    view.updateView(0); // will do the appropriate computations first
+    view.updateView(2); // will do the appropriate computations first
   }
 
 

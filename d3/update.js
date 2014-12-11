@@ -212,7 +212,8 @@ enteringPapers.append("foreignObject")
 // entering elements; so, operations on the update selection after appending to
 // the enter selection will apply to both entering and updating nodes.
 
-var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate]).ease(parameters.fringePapersTransitionEasing)
+var t0=papers.transition().duration(parameters.fringePapersPositionTransitionDuration[animate])
+        .ease(parameters.fringePapersTransitionEasing)
 global.animationRunning=true;
 
 // do not display papers that are at the bottom of the fringe (except in abstract view, for intuitive scrolling)

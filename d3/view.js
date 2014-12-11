@@ -24,7 +24,7 @@ function updateView(animate){
 
   drawStaticElements(animate);
   manageDynamicElements(animate);
-  manageSideViews();
+  manageSideViews(animate);
   bindListeners();
 }
 
@@ -48,8 +48,8 @@ function manageDynamicElements(animate){
     return view.manageDynamicElements(animate);
 }
 
-function manageSideViews(){
-    return view.manageSideViews();
+function manageSideViews(animate){
+    return view.manageSideViews(animate);
 }
 
 // Create some svg elements, once and for all
