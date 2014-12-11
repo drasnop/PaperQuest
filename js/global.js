@@ -18,6 +18,8 @@ var global= (function () {
 
     // medians of the maximal normalized citation counts for each year
     "medians":[],
+    // median of the medians! 
+    "overallMedian":0,
     // current mminimal connectivity score, computed every time the fringe is updated
     "minConnectivityScore":0,
     // current maximal connectivity score, computed every time the fringe is updated
@@ -91,6 +93,9 @@ var global= (function () {
     for(var i in temp){
       global.medians[temp[i].x]=temp[i].y;
     }
+
+    // Compute the medians of the medians
+    global.overallMedian=d3.median(global.medians);
   }
 
 

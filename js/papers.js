@@ -157,12 +157,12 @@ P = (function() {
     return t;
   }
 
-  // Bi-linear interpolation of values in [0,1], to move the median to .5
+  // Bi-linear interpolation of values in [0,1], to move the median to global.overallMedian
   function interpolateWithMedian(y,median){
     if(y<=median)
-      return .5/median*y;
+      return global.overallMedian/median*y;
     else
-      return .5+.5/(1-median)*(y-median);
+      return global.overallMedian+(1-global.overallMedian)/(1-median)*(y-median);
   }
 
 
