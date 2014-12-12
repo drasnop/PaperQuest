@@ -36,6 +36,10 @@ var linkGenerator = d3.svg.line()
  * Inspired by http://jsfiddle.net/stephenboak/efSxc/
  */
 function drawLink(s, t) {
+  if (!s.visible || !t.visible) {
+    return "";
+  }
+
   // Angle of the perpendicular to line between s and t
   var angle = Math.atan2(t.y - s.y, t.x - s.x) - Math.PI/2;
   // Length of line connecting s and t
@@ -60,7 +64,8 @@ var papers = svg.select("#fringe-papers").selectAll(".paper")
 if (global.connectedPaper) {
   var links;
   links = svg.select("#links").selectAll(".reference")
-    .data(global.connectedPaper.internalReferences(null, true).filter(function(p) { return p.visible; }));
+    .data(global.connectedPaper.internalReferences(null, true).filter(function(p) { return p.visible; }),
+          function(p) { return global.connectedPaper.doi + "-" + p.doi; });
   links.transition()
     .duration(parameters.fringePapersPositionTransitionDuration[animate])
     .ease(parameters.fringePapersTransitionEasing)
@@ -83,7 +88,8 @@ if (global.connectedPaper) {
     .remove();
 
   links = svg.select("#links").selectAll(".citation")
-    .data(global.connectedPaper.internalCitations(null, true).filter(function(p) { return p.visible; }));
+    .data(global.connectedPaper.internalCitations(null, true).filter(function(p) { return p.visible; }),
+          function(p) { return global.connectedPaper.doi + "-" + p.doi; });
   links.transition()
     .duration(parameters.fringePapersPositionTransitionDuration[animate])
     .ease(parameters.fringePapersTransitionEasing)

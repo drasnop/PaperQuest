@@ -43,6 +43,12 @@ function circleX(y) {
 // Compute Y coordinate for a paper on the fringe
 function fringePaperY(p) {
   var index = global.visibleFringe.indexOf(p);
+  // Hackery: if p is not found, we'll make it's Y really big so that
+  // it's most certainly outside the screen.
+  // TODO: fix this properly
+  if (index < 0) {
+    return 999999999;
+  }
     
   // compute the sum of the height of the papers that are above the current one in the fringe
   var offset = global.scrollOffset;
