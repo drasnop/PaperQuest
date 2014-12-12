@@ -54,7 +54,7 @@ var data = d3.layout.histogram()
     (values);
 
 var y = d3.scale.linear()
-    .domain([0, d3.max(data, function(d) { return d.y; })])
+    .domain([0, Math.max(3,d3.max(data, function(d) { return d.y; })) ])
     .range([innerHeight, 0]);
 
 var xAxis = d3.svg.axis()
@@ -94,7 +94,7 @@ enteringBars.append("rect")
     .attr("height", 0)
 
     .append("svg:title")
-    .text(function(d) { return d.y+" papers in "+d.x; })
+    .attr("class","tooltip")
 
 /*
 * Since the bars are very narrow, we don't show a number inside them
@@ -116,6 +116,9 @@ t0.select("rect")
     .attr("y", 0)
     .attr("height", function(d) { return innerHeight - y(d.y); })
     .attr("width", x(data[1].x)-x(data[0].x))
+
+    .select(".tooltip")
+    .text(function(d) { return d.y+" paper"+(d.y>1? "s":"")+" in "+d.x; })
 
 /*t0.select("text")
     .attr("y", 6)
