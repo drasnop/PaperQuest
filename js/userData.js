@@ -20,19 +20,18 @@ userData.addToQueue = function(p,from,to){
       userData.queue.splice(i,1);
     }
   }*/
-  console.log((p in userData.queue))
-  if(!(p in userData.queue)){
-    console.log(p.doi)
-    userData.queue[p]={"doi":p.doi, "from":from, "to":to};
+
+  if(userData.queue[p.doi] === undefined){
+    userData.queue[p.doi]={"doi":p.doi, "from":from, "to":to};
   }
   else{
     // update the path of this paper to a new destination
-    if(userData.queue[p].to == from){
-      userData.queue[p].to = to;
+    if(userData.queue[p.doi].to == from){
+      userData.queue[p.doi].to = to;
 
       // if back to original position, remove from queue
-      if(userData.queue[p].to == userData.queue[p].from)
-        delete userData.queue[p];
+      if(userData.queue[p.doi].to == userData.queue[p.doi].from)
+        delete userData.queue[p.doi];
     }
     else
       console.log("this should never happen")
