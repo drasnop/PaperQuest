@@ -106,18 +106,33 @@ function endAll (transition, callback) {
     }
 }
 
-d3.selection.prototype.moveToBackOf = function(elem) { 
-    return this.each(function() { 
+d3.selection.prototype.moveToBackOf = function(elem, unsafeName) {
+  unsafeName = unsafeName || false;
+
+  return this.each(function() {
+    if (unsafeName) {
+      var firstChild = d3.select(document.getElementById(elem)).node().firstChild;
+      if (firstChild) {
+        d3.select(document.getElementById(elem)).node().insertBefore(this, firstChild);
+      } else {
         var firstChild = d3.select(elem).node().firstChild; 
         if (firstChild) { 
-            d3.select(elem).node().insertBefore(this, firstChild); 
+          d3.select(elem).node().insertBefore(this, firstChild); 
         } 
-    }); 
+      }
+    }
+  }); 
 };
 
-d3.selection.prototype.moveToFrontOf = function(elem) {
+d3.selection.prototype.moveToFrontOf = function(elem, unsafeName) {
+  unsafeName = unsafeName || false;
+
   return this.each(function(){
-    d3.select(elem).node().appendChild(this);
+    if (unsafeName) {
+      d3.select(document.getElementById(elem)).node().appendChild(this);
+    } else {
+      d3.select(elem).node().appendChild(this);
+    }
   });
 };
 

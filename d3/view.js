@@ -258,9 +258,9 @@ function bindListeners(){
       selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".title").classed("highlighted",true)    // add class
-      selection.select(".card")
-        .classed("highlighted",true)
-        .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+      // selection.select(".card")
+      //   .classed("highlighted",true)
+      //   .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
 
     .on("mouseleave", function() {
@@ -406,9 +406,9 @@ function movePaperTo(menuItem, destination){
       selection.select(".internalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".externalCitationsCircle").attr("filter","url(#drop-shadow)")
       selection.select(".title").classed("highlighted",true)    // add class
-      selection.select(".card")
-        .classed("highlighted",true)
-        .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+      // selection.select(".card")
+      //   .classed("highlighted",true)
+      //   .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
     })
 
     .on("mouseleave",function() {
@@ -427,7 +427,7 @@ function movePaperTo(menuItem, destination){
             return res;
         })
       nonSelectedOnly.select(".title").classed("highlighted",false)     // remove class
-      nonSelectedOnly.select(".card").classed("highlighted",false)     // remove class
+//      nonSelectedOnly.select(".card").classed("highlighted",false)     // remove class
     })
 
     // clicking papers on the fringe translates them to the left
@@ -471,10 +471,20 @@ function movePaperTo(menuItem, destination){
           }
         }
         else{
-          if(global.expandedPaper == p)
+          if(global.expandedPaper == p) {
+            d3.select(document.getElementById("card" + global.expandedPaper.doi))
+              .style("visibility", "hidden")
+              .moveToBackOf("#fringe-papers");
             global.expandedPaper=null;
-          else
+          } else {
+            if (global.expandedPaper) {
+              d3.select(document.getElementById("card" + global.expandedPaper.doi))
+                .style("visibility", "hidden")
+                .moveToBackOf("#fringe-papers");
+            }
             global.expandedPaper=p;
+          }
+          updateView(0);
         }
       });
 
@@ -576,7 +586,7 @@ function removeHighlighting(p) {
     selection.select(".internalCitationsCircle").attr("filter","none")
     selection.select(".externalCitationsCircle").attr("filter","none")
     selection.select(".title").classed("highlighted", false);
-    selection.select(".card").classed("highlighted", false);
+//    selection.select(".card").classed("highlighted", false);
   }
 }
 

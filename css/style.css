@@ -30,6 +30,10 @@ svg#main-view{
 
 .card{
 	fill:white;
+  opacity: 1;
+  stroke-width: 1;
+  stroke: #000;
+  cursor: default;
 }
 
 .card.highlighted{
@@ -168,6 +172,7 @@ button.off{
   padding: 6px;
   border-radius: 20px;
   color: white;
+  cursor: pointer;
 }
 
 #fringe-slider-toggle:hover {

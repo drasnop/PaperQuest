@@ -115,7 +115,7 @@ if (global.connectedPaper) {
 
 papers.selectAll(".title")
   .text(function(p) {
-  if (p.fringe) {
+  if (p.fringe || (p == global.expandedPaper)) {
     return p.title;
   } else {
     var maxPixels = global.fringeApparentWidth - 4*parameters.paperMaxRadius - parameters.toreadPaperMargin - parameters.titleLeftMargin - parameters.toreadTitlePadding;
@@ -183,8 +183,10 @@ var zoom0 = enteringPapers.append("g")
 
 
 zoom0.append("rect")
-.attr("class","card")
-.moveToBackOf("#fringe-papers")  // eventually we'll have to make these follow the selected papers during animations
+    .attr("id", function(p) { return "card" + p.doi; })
+    .attr("class","card")
+    .moveToBackOf("#fringe-papers")  // eventually we'll have to make these follow the selected papers during animations
+
 
 zoom0.append("text")
 .attr("class", "title")
@@ -238,11 +240,11 @@ t0.style("visibility",function(p) {
 
 // TODO: refactoring, not sure what this does, doesn't seem to trigger
 // Antoine: the cards were the "background colors" behind the titles. Not really used at the moment. We should discuss this
-t0.select(".card")
-.attr("x", function(p) { return fringePaperLabelX(p);} )
-.attr("y", function(p) { return p.y-parameters.paperMaxRadius;} )
-.attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
-.attr("height",2*parameters.paperMaxRadius)
+// t0.select(".card")
+// .attr("x", function(p) { return fringePaperLabelX(p);} )
+// .attr("y", function(p) { return p.y-parameters.paperMaxRadius;} )
+// .attr("width", function(p) { return d3.select(this.parentNode).select(".title").node().getComputedTextLength();} )
+// .attr("height",2*parameters.paperMaxRadius)
 
 if(global.butterfly){
     t0.select(".externalCitationsCircle")
@@ -281,7 +283,7 @@ else{
 
 t0.select(".glyph")
 .style("opacity", function(p) {
-    if((p.fringe && !p.selected) && P.selected().length>0 && global.zoom>0)
+    if((p != global.expandedPaper) && (p.fringe && !p.selected) && P.selected().length>0 && global.zoom>0)
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
 
@@ -322,7 +324,7 @@ t0.select(".title")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return p.y;} )
 .style("opacity", function(p) {
-    if((p.fringe && !p.selected) && P.selected().length>0)
+    if((p != global.expandedPaper) && (p.fringe && !p.selected) && P.selected().length>0)
         return parameters.opacityOfNonSelectedPapers[global.zoom];
     return 1; })
 .attr("transform", function(p) {
@@ -331,7 +333,7 @@ t0.select(".title")
                 + (p.x-parameters.compressionRatio[global.zoom]*p.x) +","
                 + (p.y-parameters.compressionRatio[global.zoom]*p.y) +")";
 
-    if((p.fringe && !p.selected) && P.selected().length>0)
+    if((p != global.expandedPaper) && (p.fringe && !p.selected) && P.selected().length>0)
         return scaling;
     return null; })
 
@@ -342,18 +344,18 @@ t0.select(".title")
 t0.select(".metadata")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return p.y+parameters.metadataYoffset;} )
-.style("opacity", function(p) { return (p.selected && global.zoom>=1) ? 1: 0;})
-.style("display", function(p) { return (p.selected && global.zoom>=1) ? "": "none";})
+.style("opacity", function(p) { return (p == global.expandedPaper) || (p.selected && global.zoom>=1) ? 1: 0;})
+.style("display", function(p) { return (p == global.expandedPaper) || (p.selected && global.zoom>=1) ? "": "none";})
 
 t0.selectAll(".abstractWrapper")
 .attr("x", function(p) { return fringePaperLabelX(p);} )
 .attr("y", function(p) {return p.y+parameters.metadataYoffset+parameters.abstractYoffset;} )
 .attr("width",parameters.abstractLineWidth)
 .attr("height", function(p) { return p.abstractHeight;})
-.style("display", function(p) { return (p.selected && global.zoom>=2) ? "": "none";})
+.style("display", function(p) { return (p == global.expandedPaper) || (p.selected && global.zoom>=2) ? "": "none";})
 
 t0.selectAll(".abstract")
-.style("height", function(p) { return (p.selected && global.zoom>=2) ?
+.style("height", function(p) { return (p == global.expandedPaper) || (p.selected && global.zoom>=2) ?
                                         p.abstractHeight+"px": "0px";})
 
 /*d3.select("#bottomPane")
@@ -368,4 +370,18 @@ papers.exit()
 .attr("transform","matrix(1,0,0,.5,0,0)")*/
 .remove();
 
+
+// Render paper overlay if there is one
+if (global.expandedPaper) {
+  var paperNode = d3.select(document.getElementById(global.expandedPaper.doi)).moveToFrontOf("#fringe-papers");
+  d3.select(document.getElementById("card" + global.expandedPaper.doi))
+    .style("visibility", "visible")
+    .attr("width", function(p) { return Math.max(paperNode.select(".title").node().getComputedTextLength(), parameters.abstractLineWidth) + 2*parameters.titleLeftMargin; })
+    .attr("height", function(p) { return 2*parameters.paperMaxRadius + parameters.metadataYoffset + p.abstractHeight; })
+    .moveToBackOf(global.expandedPaper.doi, true)
+    .transition()
+    .duration(parameters.fringePapersPositionTransitionDuration[animate])
+    .attr("x", function(p) { return fringePaperLabelX(p) - parameters.titleLeftMargin; })
+    .attr("y", function(p) { return p.y - parameters.paperMaxRadius; });
+}
 }
