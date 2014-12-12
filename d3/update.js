@@ -54,11 +54,13 @@ var papers = svg.select("#fringe-papers").selectAll(".paper")
 .data(visiblePapers(), function(p) { return visiblePapers().indexOf(p); })
     // using this key function is critical to ensure papers will change position when updating the fringe
 
-// Render links first, so that they're in the back.
+
+
+// Render links
 if (global.connectedPaper) {
   var links;
   links = svg.select("#links").selectAll(".reference")
-    .data(global.connectedPaper.internalReferences().filter(function(p) { return p.visible; }));
+    .data(global.connectedPaper.internalReferences(null, true).filter(function(p) { return p.visible; }));
   links.transition()
     .duration(parameters.fringePapersPositionTransitionDuration[animate])
     .ease(parameters.fringePapersTransitionEasing)
@@ -72,14 +74,16 @@ if (global.connectedPaper) {
     .classed("link", true)
     .transition()
     .duration(parameters.linkTransitionDuration)
+    .delay(parameters.fringePapersPositionTransitionDuration[animate])
     .style("opacity", 1);
   links.exit()
     .transition()
     .duration(parameters.linkTransitionDuration)
     .style("opacity", 0)
+    .remove();
 
   links = svg.select("#links").selectAll(".citation")
-    .data(global.connectedPaper.internalCitations().filter(function(p) { return p.visible; }));
+    .data(global.connectedPaper.internalCitations(null, true).filter(function(p) { return p.visible; }));
   links.transition()
     .duration(parameters.fringePapersPositionTransitionDuration[animate])
     .ease(parameters.fringePapersTransitionEasing)
@@ -93,11 +97,13 @@ if (global.connectedPaper) {
     .classed("link", true)
     .transition()
     .duration(parameters.linkTransitionDuration)
+    .delay(parameters.fringePapersPositionTransitionDuration[animate])
     .style("opacity", 1);
   links.exit()
     .transition()
     .duration(parameters.linkTransitionDuration)
     .style("opacity", 0)
+    .remove();
 }
 
 
@@ -119,6 +125,8 @@ var enteringPapers = papers.enter()
 .append("g")
 .attr("class","paper")
 .attr("id", function(p) { return p.doi;})
+
+
 
 // group of visible elements at lowest zoom level (= glyph + title)
 var zoom0 = enteringPapers.append("g")
@@ -354,4 +362,5 @@ papers.exit()
 /*        .transition().duration(fringePapersPositionTransitionDuration[animate])
 .attr("transform","matrix(1,0,0,.5,0,0)")*/
 .remove();
+
 }

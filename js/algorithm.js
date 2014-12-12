@@ -55,6 +55,7 @@ function updateRelevanceScores(pSource, inserting){
         if (!pTarget.core) {
           pTarget.fringe = true;
         }
+        userData.papers[pTarget.doi] = pTarget;
         initializeConnectivityScore(pTarget);
       }
 

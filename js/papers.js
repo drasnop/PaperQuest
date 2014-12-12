@@ -75,13 +75,19 @@ P = (function() {
       delete that.isStump;  // Remove stump flag.
 
       // Internal publications are wrapped as paper objects.
-      links.internalReferences = function() {
+      links.internalReferences = function(ignoreNonexplored) {
+        if (ignoreNonexplored) {
+          return that.references.filter(function(ref) { return ref in userData.papers; }).map(lookup);
+        }
         return that.references.filter(function(ref) { return ref in global.papers; }).map(lookup);
       };
       links.externalReferences = function() {
         return that.references.filter(function(ref) { return !(ref in global.papers); });  // Can't really map lookup
       };
-      links.internalCitations  = function() {
+      links.internalCitations  = function(ignoreNonexplored) {
+        if (ignoreNonexplored) {
+          return that.citations.filter(function(cit) { return cit in userData.papers; }).map(lookup);
+        }
         return that.citations.filter(function(cit) { return cit in global.papers; }).map(lookup);
       };
       links.externalCitations  = function() {
@@ -91,11 +97,15 @@ P = (function() {
       // Inflate previously stumped collections.
       stumpedCollections.forEach(function(methodName) {
         that[methodName] = function(callback) {
+          var copy = [].slice.call(arguments);
+          copy.splice(0,1); // remove "callback" from the list of arguments
+
+          var collection = links[methodName].apply(this, copy);
           if (typeof callback === "function") {
-            links[methodName]().forEach(callback);
+            collection.forEach(callback);
           }
 
-          return links[methodName]();
+          return collection;
         };
       });
 
@@ -247,19 +257,19 @@ P = (function() {
    * papers in the dataset.
    */
   function lookup(doi) {
-    var p = userData.papers[doi];
+//    var p = userData.papers[doi];
+//    if (typeof p === "undefined") {
+    var p = _paperCache[doi];  // Not in userData, lookup in the cache
     if (typeof p === "undefined") {
-      p = _paperCache[doi];  // Not in userData, lookup in the cache
-      if (typeof p === "undefined") {
-        if (doi in global.papers) {  // First time used, cache it
-          p = new paper(doi);
-          _paperCache[doi] = p;
-        } else {
-          return undefined;   // Not an internal doi
-        }
+      if (doi in global.papers) {  // First time used, cache it
+        p = new paper(doi);
+        _paperCache[doi] = p;
+      } else {
+        return undefined;   // Not an internal doi
       }
+//      }
       // Add it to the explored space
-      userData.papers[doi] = p;
+//      userData.papers[doi] = p;
     }
     return p;
   }
