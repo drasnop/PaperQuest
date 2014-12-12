@@ -301,63 +301,41 @@ function bindListeners(){
     .on("mousedown", function() {
       d3.select(this).classed("active", true);
     })
-    .on("mouseup", function() {
-      global.activePaper.moveTo("toread");
-
-      // New (or updated) interesting paper, fringe should recompute.
-      userData.addNewInteresting(global.activePaper);
-      // Enable or disable the updateFringe button.
-      updateUpdateFringeButton();
-
-      d3.select(this).classed("active", false);
-      global.activePaper.selected = false;    
-      removeHighlighting(global.activePaper);
-      hideMenu();
-      doAutomaticFringeUpdate();
-      updateView(2);
-    });
+    .on("mouseup", function() { movePaperTo(this,"toread") });
 
   // Move a paper to the core
   d3.select("#menu-tocore")
     .on("mousedown", function() {
       d3.select(this).classed("active", true);
     })
-    .on("mouseup", function() {
-      global.activePaper.moveTo("core");
-      
-      // New (or updated) interesting paper, fringe should recompute.
-      userData.addNewInteresting(global.activePaper);
-      // Enable or disable the updateFringe button.
-      updateUpdateFringeButton();
-
-      d3.select(this).classed("active", false);
-      global.activePaper.selected = false;
-      removeHighlighting(global.activePaper);
-      hideMenu();
-      doAutomaticFringeUpdate();
-      updateView(2);
-    });
+    .on("mouseup", function() { movePaperTo(this,"core") });
 
   // Move a paper to the fringe
   d3.select("#menu-tofringe")
     .on("mousedown", function() {
       d3.select(this).classed("active", true);
     })
-    .on("mouseup", function() {
-      global.activePaper.moveTo("fringe");
+    .on("mouseup", function() { movePaperTo(this,"fringe") });
 
-      // Return the active paper to the fringe as an unselected paper, should recompute the fringe.
-      userData.removeInteresting(global.activePaper);
-      // Enable or disable the updateFringe button.
-      updateUpdateFringeButton();
+function movePaperTo(menuItem, destination){
 
-      d3.select(this).classed("active", false);
-      global.activePaper.selected = false;
-      removeHighlighting(global.activePaper);
-      hideMenu();
-      doAutomaticFringeUpdate();
-      updateView(2);
-    });
+  var from=global.activePaper.weightIndex();
+  global.activePaper.moveTo(destination);
+  userData.addToQueue(global.activePaper,from,global.activePaper.weightIndex());
+  
+  // New (or updated) interesting paper, fringe should recompute.
+  userData.addNewInteresting(global.activePaper);
+  // Enable or disable the updateFringe button.
+  updateUpdateFringeButton();
+
+  d3.select(menuItem).classed("active", false);
+  global.activePaper.selected = false;
+  removeHighlighting(global.activePaper);
+  hideMenu();
+  doAutomaticFringeUpdate();  // if necessary
+  updateView(2);
+}
+
 
 
   // Show a paper's links
@@ -463,13 +441,17 @@ function bindListeners(){
           if (!p.fringe)
             return;
 
+          var from=p.weightIndex();
           p.selected = !p.selected;
+
+          userData.addToQueue(p,from,p.weightIndex());
 
           // Add or remove the paper to the list that will update the fringe
           if(p.selected)
             userData.addNewInteresting(p);
           else
             userData.removeInteresting(p);
+
 
           // Enable or disable the updateFringe button, if new papers have been (de)selected
           updateUpdateFringeButton();

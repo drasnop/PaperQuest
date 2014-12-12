@@ -3,9 +3,47 @@ var userData={
     "papers":{},
     // temporary list of the papers that have just been selected; used when updating the fringe
     "newInterestingPapers":[],
-    "newUninterestingPapers":[]
+    "newUninterestingPapers":[],
+    // [paper]={doi, from, to}  -- doi is for debug only
+    // 0=unknown, 1=fringe, 2=toread, 3=core
+    "queue":[]
 }; 
 
+
+userData.addToQueue = function(p,from,to){
+/*  for(var i in userData.queue){
+    // if a symetrical operation exists in the queue, remove it
+    // not actually required for the algorithm update, but nice to know when the queue is empty
+    if(userData.queue[i].p === p
+         && userData.queue[i].from == to
+         && userData.queue[i].to == from){
+      userData.queue.splice(i,1);
+    }
+  }*/
+  console.log((p in userData.queue))
+  if(!(p in userData.queue)){
+    console.log(p.doi)
+    userData.queue[p]={"doi":p.doi, "from":from, "to":to};
+  }
+  else{
+    // update the path of this paper to a new destination
+    if(userData.queue[p].to == from){
+      userData.queue[p].to = to;
+
+      // if back to original position, remove from queue
+      if(userData.queue[p].to == userData.queue[p].from)
+        delete userData.queue[p];
+    }
+    else
+      console.log("this should never happen")
+  }
+}
+
+// debug
+userData.showQueue = function(){
+  for( var i in userData.queue)
+    console.log(userData.queue[i]);
+}
 
 userData.addNewInteresting = function(p) {
   var index = userData.newUninterestingPapers.indexOf(p);

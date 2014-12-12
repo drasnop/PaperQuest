@@ -177,7 +177,7 @@ P = (function() {
 
 
   paper.prototype.getTotalconnectivity = function(){
-    var ownConnectivityScore = (this.core? parameters.coreWeight: (this.toread? parameters.toReadWeight: (this.selected? parameters.selectedWeight : 0)));
+    var ownConnectivityScore = parameters.weights[this.weightIndex()];
     return this.connectivity + ownConnectivityScore;
   }
 
@@ -216,6 +216,16 @@ P = (function() {
     this[where] = true;
   }
 
+  // type of weight that this paper carries
+  paper.prototype.weightIndex = function(){
+    if(this.core)
+      return 3;
+    if(this.toread)
+      return 2;
+    if(this.fringe && this.selected)
+      return 1;
+    return 0;
+  }
 
 
 

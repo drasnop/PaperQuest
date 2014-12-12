@@ -92,6 +92,8 @@ var parameters= {
   "coreWeight": 5,
   "toReadWeight":3,
   "selectedWeight":1,
+  // Relative weight of the different types of paper: 0=unkown, 1=selected, 2=toread, 3=core
+  "weights":[0,1,3,5],
 
 
   /*     misc parameters      */
