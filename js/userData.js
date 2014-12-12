@@ -22,8 +22,11 @@ userData.removeInteresting = function(p) {
   var index = userData.newInterestingPapers.indexOf(p);
   if(index >- 1)
     userData.newInterestingPapers.splice(index,1);
-  else
-    userData.newUninterestingPapers.push(p);
+  else{
+    if(userData.newUninterestingPapers.indexOf(p)==-1)
+      userData.newUninterestingPapers.push(p);
+    // otherwise there is no need to add it again   
+  }
 }
 
 

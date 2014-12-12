@@ -203,6 +203,8 @@ function drawStaticElements(animate){
     .call(dragCore);
 
   // button for switching views
+/*  t0(d3.select("#fringe-slider-toggle"))
+    .style("left", global.fringeApparentWidth-28+"px")*/
   d3.select("#fringe-slider-toggle")
     .style("left", 0+"px")
     .style("top", global.toReadHeight-12+"px") 
@@ -343,7 +345,7 @@ function bindListeners(){
     })
     .on("mouseup", function() {
       global.activePaper.moveTo("fringe");
-      
+
       // Return the active paper to the fringe as an unselected paper, should recompute the fringe.
       userData.removeInteresting(global.activePaper);
       // Enable or disable the updateFringe button.
