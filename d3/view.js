@@ -16,9 +16,11 @@ function initializeView(createStatic){
 }
 
 // Update the vis, with different animation speeds. If animate=0, no animation.
-function updateView(animate){
-  global.computeVisibleFringe();
-  global.computeFrequentAuthors();
+function updateView(animate, keepFringe){
+  if(!keepFringe){
+    global.computeVisibleFringe();
+    global.computeFrequentAuthors();
+  }
 
   drawStaticElements(animate);
   manageDynamicElements(animate);
@@ -453,13 +455,13 @@ function bindListeners(){
           // (using different animation speeds depending on the zoom level, just because it's pretty)
           switch(global.zoom){
           case 0:
-            updateView(4);
+            updateView(4,true);
             break;
           case 1:
-            updateView(3);
+            updateView(3,true);
             break;
           case 2:
-            updateView(2);
+            updateView(2,true);
             break;
           }
         }
