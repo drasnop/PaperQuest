@@ -317,24 +317,23 @@ function bindListeners(){
     })
     .on("mouseup", function() { movePaperTo(this,"fringe") });
 
-function movePaperTo(menuItem, destination){
 
-  var from=global.activePaper.weightIndex();
-  global.activePaper.moveTo(destination);
-  userData.addToQueue(global.activePaper,from,global.activePaper.weightIndex());
-  
-  // New (or updated) interesting paper, fringe should recompute.
-  userData.addNewInteresting(global.activePaper);
-  // Enable or disable the updateFringe button.
-  updateUpdateFringeButton();
+  function movePaperTo(menuItem, destination){
+    var from=global.activePaper.weightIndex();
+    global.activePaper.moveTo(destination);
 
-  d3.select(menuItem).classed("active", false);
-  global.activePaper.selected = false;
-  removeHighlighting(global.activePaper);
-  hideMenu();
-  doAutomaticFringeUpdate();  // if necessary
-  updateView(2);
-}
+    // Add the paper to the list that will update the fringe
+    userData.addToQueue(global.activePaper,from,global.activePaper.weightIndex());
+
+    d3.select(menuItem).classed("active", false);
+    global.activePaper.selected = false;
+    removeHighlighting(global.activePaper);
+    hideMenu();
+
+    updateUpdateFringeButton();
+    doAutomaticFringeUpdate();  // if necessary
+    updateView(2);
+  }
 
 
 
@@ -444,14 +443,8 @@ function movePaperTo(menuItem, destination){
           var from=p.weightIndex();
           p.selected = !p.selected;
 
+          // Add the paper to the list that will update the fringe
           userData.addToQueue(p,from,p.weightIndex());
-
-          // Add or remove the paper to the list that will update the fringe
-          if(p.selected)
-            userData.addNewInteresting(p);
-          else
-            userData.removeInteresting(p);
-
 
           // Enable or disable the updateFringe button, if new papers have been (de)selected
           updateUpdateFringeButton();
