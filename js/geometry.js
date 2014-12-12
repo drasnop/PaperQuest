@@ -94,7 +94,7 @@ function radius(p, external){
 
     var scale = (p.fringe && !p.selected && p != global.expandedPaper) ? parameters.compressionRatio[global.zoom] : 1  
 
-    return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*count) * scale;
+    return Math.min(parameters.paperMaxRadius, parameters.paperMaxRadius*Math.sqrt(count)) * scale;
 }
 
 function maxRadius(p){
