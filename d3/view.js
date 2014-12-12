@@ -581,7 +581,7 @@ function removeHighlighting(p) {
 }
 
 function updateUpdateFringeButton() {
-  if((userData.newInterestingPapers.length>0 || userData.newUninterestingPapers.length>0) && !global.updateAutomatically)
+  if(!userData.isQueueEmpty() && !global.updateAutomatically)
     d3.select("#updateFringe").attr("disabled",null);
   else
     d3.select("#updateFringe").attr("disabled","disabled");

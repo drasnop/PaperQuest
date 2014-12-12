@@ -38,6 +38,10 @@ userData.addToQueue = function(p,from,to){
   }
 }
 
+userData.isQueueEmpty = function(){
+  return Object.keys(userData.queue).length == 0;
+}
+
 // debug
 userData.showQueue = function(){
   for( var i in userData.queue)
