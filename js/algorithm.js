@@ -7,29 +7,39 @@ var algorithm = (function(){
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
 	P.all(initializeConnectivityScore);
-  	P.interesting(updateRelevanceScoresWhenInserting);
+  	P.interesting(initialUpdateRelevanceScores);
   	computeMinMaxConnectivityScore();
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
 function updateFringe(){
-	userData.newInterestingPapers.forEach(updateRelevanceScoresWhenInserting);
+/*	userData.newInterestingPapers.forEach(updateRelevanceScoresWhenInserting);
 	userData.newUninterestingPapers.forEach(updateRelevanceScoresWhenRemoving);
 	userData.newInterestingPapers=[];
-	userData.newUninterestingPapers=[];
+	userData.newUninterestingPapers=[];*/
+
+	userData.queue.forEach(updateRelevanceScores);
+	userData.queue=[];
+
 	computeMinMaxConnectivityScore();
 }
 
-
-function updateRelevanceScoresWhenInserting(pSource){
+/*function updateRelevanceScoresWhenInserting(pSource){
 	// pSource is provided to the callback in forEach
 	updateRelevanceScores(pSource, true);
 }
 
 function updateRelevanceScoresWhenRemoving(pSource){
 	updateRelevanceScores(pSource, false);
+}*/
+
+function initialUpdateRelevanceScores(e) {
+	updateRelevanceScores2(e,true);
 }
 
+function updateRelevanceScores(e) {
+	updateRelevanceScores2(e,false);
+}
 
 /////////////////////	Private	functions 	////////////////////////////
 
@@ -38,6 +48,51 @@ function initializeConnectivityScore(p) {
 }
 
 // Update the score for all connected papers when inserting/removing a paper
+// takes as input an "event" = {doi, from,  to}
+function updateRelevanceScores2(e, initial){
+
+  var pSource;
+  if(initial){
+  	console.log("inserting "+e.doi);
+  	pSource=e;
+  }
+  else {
+    console.log("consuming " + e.doi + " from " + e.from + " to " + e.to)
+	pSource=P(e.doi);
+  }
+
+  // update both (internal) references and citations of this paper
+  pSource.internalReferences().concat(pSource.internalCitations())
+    .forEach(function(pTarget) {
+      // if paper has never been seen before, initialize it and add it to the fringe
+      if (pTarget.isNew) {
+        pTarget.isNew = false;
+        // Added this check because we're hard-coding initial seed
+        // papers to the core.  Eventually this check should be
+        // removed.
+        if (!pTarget.core) {
+          pTarget.fringe = true;
+        }
+        userData.papers[pTarget.doi] = pTarget;
+        initializeConnectivityScore(pTarget);
+      }
+
+      // update relevance score of this paper
+      if(initial)
+      	initialUpdatePaper(pTarget, e.to);
+      else
+      	updatePaper2(pTarget, e.from, e.to);
+
+      // remove the paper if it's no longer linked by interesting papers
+      if (pTarget.connectivity <= 0) {
+        pTarget.isNew = true;
+        delete userData.papers[pTarget.doi];
+      }
+    });
+    console.log(P.fringe())
+}
+
+/*// Update the score for all connected papers when inserting/removing a paper
 // TODO: refactor
 function updateRelevanceScores(pSource, inserting){
 	console.log( (inserting?"inserting ":"removing ") + pSource.doi + " into "
@@ -68,25 +123,35 @@ function updateRelevanceScores(pSource, inserting){
         delete userData.papers[pTarget.doi];
       }
     });
-}
+}*/
 
 
 ///////////////		helper functions	/////////////////////////////
 
-function updatePaper(pSource, pTarget, inserting){
+/*function updatePaper(pSource, pTarget, inserting){
 	if(inserting)
 		pTarget.connectivity+=connectionWeight(pSource);
 	else
 		pTarget.connectivity-=connectionWeight(pSource);
+}*/
+
+function initialUpdatePaper(pTarget, pSourceTo){
+	pTarget.connectivity += parameters.weights[pSourceTo];
 }
 
-function connectionWeight(paper){
+// update the target's score based on the source's paper from and to
+function updatePaper2(pTarget, pSourceFrom, pSourceTo){
+	pTarget.connectivity -= parameters.weights[pSourceFrom];
+	pTarget.connectivity += parameters.weights[pSourceTo];
+}
+
+/*function connectionWeight(paper){
 	if(paper.core)
 		return parameters.coreWeight;
 	if(paper.toRead)
 		return parameters.toReadWeight;
 	return parameters.selectedWeight;
-}
+}*/
 
 function computeMinMaxConnectivityScore(){
 	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getTotalconnectivity(); })
@@ -99,8 +164,8 @@ function computeMinMaxConnectivityScore(){
 	var algorithm={};
 	algorithm.generateFringe=generateFringe;
 	algorithm.updateFringe=updateFringe;
-	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
-	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;
+/*	algorithm.updateRelevanceScoresWhenInserting=updateRelevanceScoresWhenInserting;
+	algorithm.updateRelevanceScoresWhenRemoving=updateRelevanceScoresWhenRemoving;*/
 	return algorithm;
 
 })();
