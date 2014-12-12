@@ -18,7 +18,9 @@ function updateFringe(){
 	userData.newInterestingPapers=[];
 	userData.newUninterestingPapers=[];*/
 
-	userData.queue.forEach(updateRelevanceScores);
+	for(var doi in userData.queue){
+		updateRelevanceScores(userData.queue[doi]);
+	}
 	userData.queue=[];
 
 	computeMinMaxConnectivityScore();
@@ -79,7 +81,7 @@ function updateRelevanceScores2(e, initial){
 
       // update relevance score of this paper
       if(initial)
-      	initialUpdatePaper(pTarget, e.to);
+      	initialUpdatePaper(pTarget, pSource.weightIndex());
       else
       	updatePaper2(pTarget, e.from, e.to);
 
@@ -89,7 +91,6 @@ function updateRelevanceScores2(e, initial){
         delete userData.papers[pTarget.doi];
       }
     });
-    console.log(P.fringe())
 }
 
 /*// Update the score for all connected papers when inserting/removing a paper
@@ -156,7 +157,7 @@ function updatePaper2(pTarget, pSourceFrom, pSourceTo){
 function computeMinMaxConnectivityScore(){
 	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getTotalconnectivity(); })
 	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.getTotalconnectivity(); })
-	//console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
+	// console.log("minConnectivityScore: "+global.minConnectivityScore+"  maxConnectivityScore: "+global.maxConnectivityScore)
 }
 
 ///////////////     Define public static methods, and return    /////////////
