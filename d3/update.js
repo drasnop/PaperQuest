@@ -112,7 +112,7 @@ if (global.connectedPaper) {
     .remove();
 }
 
-
+// used only for the original core papers, I suppose?
 papers.selectAll(".title")
   .text(function(p) {
   if (p.fringe || (p == global.expandedPaper)) {
