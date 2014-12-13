@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="css/normalize.css"></link>
     <link rel="stylesheet" href="css/style.css"></link>
 
-    <script type="text/javascript" src="d3/d3.js"></script>
+    <script type="text/javascript" src="lib/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="lib/typeahead.bundle.js"></script>
+    <script type="text/javascript" src="lib/d3.min.js"></script>
     <script type="text/javascript" src="d3/helpers.js"></script>
     <script type="text/javascript" src="d3/visParameters.js"></script>
 
@@ -34,7 +36,13 @@
     <li id="menu-star" class="toggle"><span class="icon-star-4"></span></li>
     <li id="menu-tocore"><span class="icon-checkmark"></span></li>
     <li id="menu-expand" class="toggle"><span class="icon-arrow-down-5"></span></li>
-</ul>
+  </ul>
+
+  <button id="add-seed">+ Add </button>
+  <div id="overlay"></div>
+  <div id="dialog">
+    <input class="typeahead" type="text" placeholder="Catchy Name: Actual Boring Paper Title">
+  </div>
 
 <script type="text/javascript" src="js/main.js"></script>
 <div id="sidebar">

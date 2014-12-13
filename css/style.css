@@ -95,6 +95,35 @@ button.off{
   color: #444;
 }
 
+#add-seed{
+  position:fixed;
+  bottom: 5px;
+  left: 35px;
+  z-index: 20;
+}
+
+#dialog{
+  position: fixed;
+  z-index: 20;
+  bottom: 40px;
+  left:35px;
+  width:700px;
+  height:250px;
+
+  display:none;
+}
+
+#overlay{
+  position:fixed;
+  z-index: 19;
+  top:0;
+  left:0;
+  background-color: white;
+  opacity:0.8;
+
+  display:none;
+}
+
 #updateFringeAutomatically{
   color: #444;
   padding: 7px 16px;
@@ -356,4 +385,67 @@ ul#authors-list li:hover{
 
 #publication-years-wrapper .tick{
   font-size: 70%;
+}
+
+
+/* typeahead */
+
+.typeahead,
+.tt-query,
+.tt-hint {
+  width: 596px;
+  height: 30px;
+  padding: 8px 12px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+  color:#333;
+}
+
+.typeahead {
+  background-color: #fff;
+  box-shadow: 0 5px 10px rgba(0,0,0,.25);
+}
+
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+  width: 622px;
+  padding: 8px 0;
+  background-color: #fff;
+  color:#444;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 20px;
+}
+
+.tt-suggestion.tt-cursor {
+  background-color: #eee;
+}
+
+.tt-suggestion p {
+  margin: 0;
 }
