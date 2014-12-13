@@ -148,12 +148,16 @@ P = (function() {
     return this.citations.length;
   }
 
-  paper.prototype.getNormalizedInternalCitationCount = function(){
-    return Math.min(1,this.citations.length/parameters.internalCitationCountCutoff);
+  paper.prototype.getNormalizedInternalCitationCount = function(){ 
+    //return Math.min(1, this.citations.length/parameters.internalCitationCountCutoff);
+    return Math.min(1,Math.sqrt(this.citations.length/parameters.internalCitationCountCutoff));
+    //return Math.min(1,Math.log(this.citations.length+1)/Math.log(parameters.internalCitationCountCutoff+1));
   }
 
   paper.prototype.getNormalizedExternalCitationCount = function(){
-    return Math.min(1,this.citation_count/parameters.externalCitationCountCutoff);
+    //return Math.min(1, this.citation_count/parameters.externalCitationCountCutoff);
+    return Math.min(1,Math.sqrt(this.citation_count/parameters.externalCitationCountCutoff));
+    //return Math.min(1,Math.log(this.citation_count+1)/Math.log(parameters.externalCitationCountCutoff+1));
   }
 
   paper.prototype.getMaximumNormalizedCitationCount = function() {
@@ -162,8 +166,7 @@ P = (function() {
 
   paper.prototype.adjustedCitationCount = function() {
     var median=global.medians[this.year];
-    var t=interpolateWithMedian(Math.max(this.getNormalizedInternalCitationCount(),
-      this.getNormalizedExternalCitationCount()) , median );
+    var t=interpolateWithMedian(this.getMaximumNormalizedCitationCount() , median );
     return t;
   }
 

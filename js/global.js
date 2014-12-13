@@ -79,12 +79,10 @@ var global= (function () {
 
     var data=[];
     for(var doi in global.papers){
-      var p=global.papers[doi];
-      var MNCC=Math.max(Math.min(1,p.citation_count/parameters.externalCitationCountCutoff),
-              Math.min(1,p.citations.length/parameters.internalCitationCountCutoff))
+      var p=P(doi);
       data.push({
-        "x":global.papers[doi].year,
-        "y": MNCC
+        "x": p.year,
+        "y": p.getMaximumNormalizedCitationCount()
       })
     }
     
