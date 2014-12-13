@@ -12,6 +12,8 @@ var global= (function () {
     "scrollOffset": 0,
     // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
     "updateAutomatically": false,
+    // whether the autocomplete box contains a complete paper total (ready to be added to core)
+    "fullPaperTitle":false,
 
     // papers dataset, accessed by global.papers[doi]
     "papers": false,

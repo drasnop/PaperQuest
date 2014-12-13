@@ -71,6 +71,7 @@ button {
   padding: 7px 16px;
   border-radius: 5px;
   border:none;
+  outline:none;
   -webkit-font-smoothing: subpixel-antialiased;
   color: #fff;
   background-color: #2c7fb8;

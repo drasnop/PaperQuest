@@ -7,8 +7,8 @@ var algorithm = (function(){
 // Initialize the relevance scores, then insert papers from Core, toRead and Selected
 function generateFringe(){
 	P.all(initializeConnectivityScore);
-  	P.interesting(initialUpdateRelevanceScores);
-  	computeMinMaxConnectivityScore();
+  P.interesting(initialUpdateRelevanceScores);
+  computeMinMaxConnectivityScore();
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)

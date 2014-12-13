@@ -29,12 +29,13 @@ function initializeVisualization(createStaticElements){
 	    $('#dialog .typeahead').typeahead({
 	      hint: true,
 	      highlight: true,
-	      minLength: 1
+	      minLength: 3
 	    },
 	    {
 	      name: 'titles',
 	      displayKey: 'value',
-	      source: substringMatcher(P.all().map(function(p) { return p.title; }))
+	      source: substringMatcher(Object.keys(global.papers)
+	      	.map(function(doi) { return global.papers[doi].title; }))
 	    });
 	});	
 }
@@ -53,15 +54,64 @@ $("#add-seed").on("click", function(){
 	$("#dialog")
 	.css("left",window.innerWidth/2 - $("#dialog").width()/2)
 	.css("top",window.innerHeight/2 - $("#dialog").height()/2)
-	$("#dialog").toggle()
 
 	$("#overlay").width(window.innerWidth).height(window.innerHeight)
+
+	global.fullPaperTitle=false;
+
+	toggleDialog();
+
+	$('#dialog .typeahead').focus()
+})
+
+function toggleDialog(){
+	$("#dialog").toggle()
 	$("#overlay").toggle()
 
 	var adding=$("#dialog").css("display")!="none";
 	$("#add-seed").html(adding? "Done" : "+Add")
+	$('#dialog .typeahead').typeahead("val","")
+}
 
-	$('#dialog .typeahead').focus()
+// Add paper on enter
+$('#dialog .typeahead').on("typeahead:autocompleted", function(e,s,d){
+	global.fullPaperTitle=true;
+})
+$('#dialog .typeahead').on("typeahead:selected", function(){
+	global.fullPaperTitle=true;
+})
+$('#dialog .typeahead').on("keypress", function(e){
+	if(e.which == 13 && global.fullPaperTitle){
+		console.log($('#dialog .typeahead').typeahead('val'))
+		var title=$('#dialog .typeahead').typeahead('val');
+
+		// find the doi
+		for(var doi in global.papers){
+			if(global.papers[doi].title == title){
+				console.log("adding " + doi + " to core")
+
+				var from;
+				var p=P(doi);
+				if(userData.papers[doi] == undefined)
+					from=0; // unknown
+				else
+					from=p.weightIndex();
+				
+				p.moveTo("core");
+
+				// Add the paper to the list that will update the fringe
+				userData.addToQueue(p,from,p.weightIndex());
+
+				view.updateUpdateFringeButton();
+				view.doAutomaticFringeUpdate();  // if necessary
+				view.updateView(2);
+
+				toggleDialog();
+			}
+		}
+
+		// close 
+	}
 })
 
 // from https://twitter.github.io/typeahead.js/examples/

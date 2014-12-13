@@ -641,6 +641,8 @@ view.updateView=updateView;
 view.updateFringe=updateFringe;
 view.updateAutomaticallyToggle=updateAutomaticallyToggle;
 view.toggleFringeSlider = toggleFringeSlider;
+view.updateUpdateFringeButton = updateUpdateFringeButton;
+view.doAutomaticFringeUpdate=doAutomaticFringeUpdate;
 return view;
 
 })();
