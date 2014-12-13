@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>PaperQuest</title>
+    <title>PaperQuest - Dataset Statistics</title>
     <link rel="stylesheet" href="css/normalize.css"></link>
     <link rel="stylesheet" href="css/stats-style.css"></link>
 
@@ -21,19 +21,5 @@
 </head>
 <body>
     <script type="text/javascript" src="js/stats.js"></script>
-    <!-- Usage: apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->
-    <svg width=0 height=0>
-        <!-- Must extend the size of the drawing region, otherwise the shadow is clipped -->
-        <filter id="drop-shadow" x="-50%" width="200%" y="-50%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-            <feOffset dx="1" dy="1" result="offsetblur"/>
-            <feFlood flood-color="rgba(10,10,10,0.5)"/>
-            <feComposite in2="offsetblur" operator="in"/>
-            <feMerge>
-                <feMergeNode/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </svg>
 </body>
 </html>

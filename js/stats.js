@@ -2,10 +2,9 @@
 * Calls the appropriate rendering functions to create and update the vis
 */
 
-// I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
 var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",2.5*window.innerHeight);
+            .attr("height",3*window.innerHeight);
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
@@ -22,7 +21,7 @@ window.onresize = function(){
     
     svg=d3.select("body").append("svg")
     .attr("width",window.innerWidth)
-    .attr("height",2.5*window.innerHeight)
+    .attr("height",3*window.innerHeight)
     
     initializeView();
 }
@@ -36,125 +35,84 @@ function initializeView(){
         return !(global.papers[doi].citation_count==0 && global.papers[doi].citations.length>0);
     })*/
 
-    function internalCitationCounts() {
-      var internalCitationCounts = [];
-      papers.forEach(function(doi){
-        internalCitationCounts.push(P(doi).getInternalCitationCount())
-      })
-      return internalCitationCounts;
-    }
-
-    function externalCitationCounts() {
-      var externalCitationCounts = [];
-      papers.forEach(function(doi){
-        externalCitationCounts.push(P(doi).citation_count)
-      })
-      return externalCitationCounts;
-    }
-
-    function externalVsInternal(){
-        var externalVsInternal = [];
+    function generateDataScatterplot(x,y){
+        var data = [];
         papers.forEach(function(doi){
-            externalVsInternal.push({
-                "y":P(doi).getInternalCitationCount(),
-                "x":P(doi).citation_count
+            data.push({
+                "x": x(doi),
+                "y": y(doi)
             });
         })
-        return externalVsInternal;
+        return data;
     }
 
-    function timeVsExternal(){
-        var timeVsExternal = [];
+    function generateValuesHistogram(y){
+        var values = [];
         papers.forEach(function(doi){
-            timeVsExternal.push({
-                "x":P(doi).year,
-                "y":P(doi).citation_count
-            });
+            values.push(y(doi));
         })
-        return timeVsExternal;
+        return values;
     }
-
-    function timeVsInternal(){
-        var timeVsInternal = [];
-        papers.forEach(function(doi){
-            timeVsInternal.push({
-                "x":P(doi).year,
-                "y":P(doi).getInternalCitationCount()
-            });
-        })
-        return timeVsInternal;
-    }
-
-    function timeVsOldACC(){
-        var timeVsOldACC = [];
-        papers.forEach(function(doi){
-            timeVsOldACC.push({
-                "x":P(doi).year,
-                "y":P(doi).oldAdjustedCitationCount()
-            });
-        })
-        return timeVsOldACC;
-    }
-
-    function timeVsMNCC(){
-        var timeVsMNCC = [];
-        papers.forEach(function(doi){
-            timeVsMNCC.push({
-                "x":P(doi).year,
-                "y":P(doi).getMaximumNormalizedCitationCount()
-            });
-        })
-        return timeVsMNCC;
-    }
-
-    function timeVsACC(){
-        var timeVsACC = [];
-        papers.forEach(function(doi){
-            timeVsACC.push({
-                "x":P(doi).year,
-                "y":P(doi).adjustedCitationCount()
-            });
-        })
-        return timeVsACC;
-    }
-
-
 
     var width=window.innerWidth/2,
         height=window.innerHeight/2;
 
-    var histogramInternal=svg.append("g");
-    histogram(histogramInternal,width,height,internalCitationCounts(),20,0,20);
-    
-    var histogramExternal=svg.append("g")
-        .attr("transform", "translate("+width+",0)");
-    histogram(histogramExternal,width,height,externalCitationCounts(),20,0,400);
+
+    histogram(svg, 0, 0, width, height, 20, 0, 20,
+        generateValuesHistogram(function(doi) { return P(doi).getInternalCitationCount(); }),
+        "internal citations", "number of papers" );
+
+    histogram(svg, width, 0, width, height, 20, 0, 400,
+        generateValuesHistogram(function(doi) { return P(doi).citation_count; }),
+        "external citations", "number of papers" );
 
 
-    var scatterplotexternalVsInternal=svg.append("g")
-        .attr("transform", "translate(0,"+height+")");
-    scatterplot(scatterplotexternalVsInternal,width,height,externalVsInternal(),true,false);
+    scatterplot(svg, 0, height, width, height, true, false,
+        generateDataScatterplot(function(doi) { return P(doi).citation_count; },
+         function(doi) { return P(doi).getInternalCitationCount(); }), 
+        "external citations", "internal citations" );
+
+    scatterplot(svg, width, height, width, height, false, false,
+        generateDataScatterplot(function(doi) { return P(doi).getNormalizedExternalCitationCount(); },
+         function(doi) { return P(doi).getNormalizedInternalCitationCount(); }), 
+        "normalized external citations", "normalized internal citations");
 
 
-    var scatterplotTimeVsInternal=svg.append("g")
-        .attr("transform", "translate("+0+","+2*height+")");
-    scatterplot(scatterplotTimeVsInternal,width,height,timeVsInternal(),true,true);
+    scatterplot(svg, 0, 2*height, width, height, true, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).getInternalCitationCount(); }),
+         "year", "internal citations" );
 
-    var scatterplotTimeVsExternal=svg.append("g")
-        .attr("transform", "translate("+width+","+2*height+")");
-    scatterplot(scatterplotTimeVsExternal,width,height,timeVsExternal(),true,true);
-
-
-    var scatterplotTimeVsOldACC=svg.append("g")
-        .attr("transform", "translate("+0+","+3*height+")");
-    scatterplot(scatterplotTimeVsOldACC,width,height,timeVsOldACC(),false,true);
-
-    var scatterplotTimeVsMNCC=svg.append("g")
-        .attr("transform", "translate("+width+","+3*height+")");
-    scatterplot(scatterplotTimeVsMNCC,width,height,timeVsMNCC(),false,true);
+    scatterplot(svg, width, 2*height, width, height, true, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).citation_count; }),
+         "year", "external citations" );
 
 
-    var scatterplotTimeVsACC=svg.append("g")
-        .attr("transform", "translate("+width+","+4*height+")");
-    scatterplot(scatterplotTimeVsACC,width,height,timeVsACC(),false,true);
+    scatterplot(svg, 0, 3*height, width, height, false, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).getNormalizedInternalCitationCount(); }),
+         "year", "normalized internal citations" );
+
+    scatterplot(svg, width, 3*height, width, height, false, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).getNormalizedExternalCitationCount(); }),
+         "year", "normalized external citations" );
+
+
+    scatterplot(svg, 0, 4*height, width, height, false, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).oldAdjustedCitationCount(); }),
+         "year", "(deprecated) Adjusted Citation Count" );
+
+    scatterplot(svg, width, 4*height, width, height, false, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).getMaximumNormalizedCitationCount(); }),
+         "year", "Maximum of Normalized Citation Count" );
+
+
+    scatterplot(svg, width, 5*height, width, height, false, true,
+        generateDataScatterplot(function(doi) { return P(doi).year; },
+         function(doi) { return P(doi).adjustedCitationCount() ; }),
+         "year", "Adjusted Citation Count" );
 }

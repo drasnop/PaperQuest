@@ -1,9 +1,8 @@
 /*
 *	Builds a scatterplot and appends it to the "svg" element
-*   Each element of data must have a .x and .y value
 */
 
-function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
+function scatterplot(svg, xPos, yPos, width, height, halfVerticalScale, showMedian, data, xTitle, yTitle) {
 
 	// Set the dimensions of the canvas / graph
 	var margin = {top: 10, right: 30, bottom: 30, left: 50},
@@ -38,8 +37,10 @@ function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
 
 	// Adds the svg canvas
 	var scatterplot = svg
+		.append("g")
 	        .attr("width", width + margin.left + margin.right)
 	        .attr("height", height + margin.top + margin.bottom)
+	    	.attr("transform", "translate("+xPos+","+yPos+")")
 	    .append("g")
 	        .attr("transform", 
 	              "translate(" + margin.left + "," + margin.top + ")");
@@ -70,4 +71,18 @@ function scatterplot(svg, width, height, data, halfVerticalScale, showMedian) {
     scatterplot.append("g")
         .attr("class", "y axis")
         .call(yAxis);
+
+    scatterplot.append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "end")
+        .attr("x", width)
+        .attr("y", height+25)
+        .text(xTitle);
+
+    scatterplot.append("text")
+        .attr("class", "y label")
+        .attr("text-anchor", "end")
+        .attr("y", -30)
+        .attr("transform", "rotate(-90)")
+        .text(yTitle);
 }

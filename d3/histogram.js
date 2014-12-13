@@ -2,7 +2,7 @@
 *	Builds an histogram and appends it to the "svg" element
 */
 
-function histogram(svg, width, height, values, bins, minX, maxX){
+function histogram(svg, xPos, yPos, width, height, bins, minX, maxX, values, xTitle, yTitle){
 	// A formatter for counts.
 	var formatCount = d3.format(",.0f");
 
@@ -20,8 +20,6 @@ function histogram(svg, width, height, values, bins, minX, maxX){
 	    .bins(x.ticks(bins))
 	    (values);
 
-	console.log(data)
-
 	var y = d3.scale.linear()
 	    .domain([0, d3.max(data, function(d) { return d.y; })])
 	    .range([height, 0]);
@@ -30,8 +28,10 @@ function histogram(svg, width, height, values, bins, minX, maxX){
 	    .scale(x)
 	    .orient("bottom");
 
-	var histogram = svg.attr("width", width + margin.left + margin.right)
+	var histogram = svg.append("g")
+		.attr("width", width + margin.left + margin.right)
 	    .attr("height", height + margin.top + margin.bottom)
+	   	.attr("transform", "translate("+xPos+","+yPos+")")
 	  .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -57,4 +57,18 @@ function histogram(svg, width, height, values, bins, minX, maxX){
 	    .attr("class", "x axis")
 	    .attr("transform", "translate(0," + height + ")")
 	    .call(xAxis);
+
+	histogram.append("text")
+	    .attr("class", "x label")
+	    .attr("text-anchor", "end")
+	    .attr("x", width)
+	    .attr("y", height+25)
+	    .text(xTitle);
+
+	histogram.append("text")
+	    .attr("class", "y label")
+	    .attr("text-anchor", "end")
+	    .attr("y", -5)
+	    .attr("transform", "rotate(-90)")
+	    .text(yTitle);
 }
