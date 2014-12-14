@@ -92,6 +92,7 @@ function updatePaper2(pTarget, pSourceFrom, pSourceTo){
 	pTarget.connectivity += parameters.weights[pSourceTo];
 }
 
+// Fun fact: the colors look exactly the same if we compute min and max from global.visibleFringe instead of P.fringe()...
 function computeMinMaxConnectivityScore(){
 	global.maxConnectivityScore=d3.max(P.fringe(), function(p) { return p.getTotalconnectivity(); })
 	global.minConnectivityScore=d3.min(P.fringe(), function(p) { return p.getTotalconnectivity(); })

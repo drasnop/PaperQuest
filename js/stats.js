@@ -4,7 +4,7 @@
 
 var svg = d3.select("body").append("svg")
             .attr("width",window.innerWidth)
-            .attr("height",3*window.innerHeight);
+            .attr("height",2.5*window.innerHeight);
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
@@ -21,7 +21,7 @@ window.onresize = function(){
     
     svg=d3.select("body").append("svg")
     .attr("width",window.innerWidth)
-    .attr("height",3*window.innerHeight)
+    .attr("height",2.5*window.innerHeight)
     
     initializeView();
 }
@@ -102,16 +102,11 @@ function initializeView(){
 
     scatterplot(svg, 0, 4*height, width, height, false, true,
         generateDataScatterplot(function(doi) { return P(doi).year; },
-         function(doi) { return P(doi).oldAdjustedCitationCount(); }),
-         "year", "(deprecated) Adjusted Citation Count" );
-
-    scatterplot(svg, width, 4*height, width, height, false, true,
-        generateDataScatterplot(function(doi) { return P(doi).year; },
          function(doi) { return P(doi).getMaximumNormalizedCitationCount(); }),
          "year", "Maximum of Normalized Citation Count" );
 
 
-    scatterplot(svg, width, 5*height, width, height, false, true,
+    scatterplot(svg, width, 4*height, width, height, false, true,
         generateDataScatterplot(function(doi) { return P(doi).year; },
          function(doi) { return P(doi).adjustedCitationCount() ; }),
          "year", "Adjusted Citation Count" );

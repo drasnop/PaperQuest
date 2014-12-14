@@ -89,8 +89,8 @@ function updateFringeButtonX(){
 // So far I'm interpolating with a sqrt, to emphasize the differences between 0 citations and a few
 function radius(p, external){
 
-    var count=external? p.citation_count/parameters.externalCitationCountCutoff
-     : p.citations.length/parameters.internalCitationCountCutoff;
+    var count=external? p.getNormalizedExternalCitationCount()
+     : p.getNormalizedInternalCitationCount();
 
     var scale = (p.fringe && !p.selected && p != global.expandedPaper) ? parameters.compressionRatio[global.zoom] : 1  
 
