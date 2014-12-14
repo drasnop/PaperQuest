@@ -29,10 +29,10 @@ svg#main-view{
 }
 
 .card{
-	fill:white;
+	fill: #f9f9f9;
   opacity: 1;
-  stroke-width: 1;
-  stroke: #000;
+  stroke-width: 0;
+  stroke: #888;
   cursor: default;
 }
 

@@ -108,6 +108,16 @@
             <feMergeNode in="SourceGraphic"/>
         </feMerge>
     </filter>
+    <filter id="drop-shadow-strong" x="-50%" width="200%" y="-50%" height="200%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+        <feOffset dx="1" dy="1" result="offsetblur"/>
+        <feFlood flood-color="rgba(10,10,10,0.5)"/>
+        <feComposite in2="offsetblur" operator="in"/>
+        <feMerge>
+            <feMergeNode/>
+            <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+    </filter>
 </svg>
 </body>
 </html>

@@ -378,6 +378,7 @@ if (global.expandedPaper) {
     .style("visibility", "visible")
     .attr("width", function(p) { return Math.max(paperNode.select(".title").node().getComputedTextLength(), parameters.abstractLineWidth) + 2*parameters.titleLeftMargin; })
     .attr("height", function(p) { return 2*parameters.paperMaxRadius + parameters.metadataYoffset + p.abstractHeight; })
+    .attr("filter","url(#drop-shadow-strong)")
     .moveToBackOf(global.expandedPaper.doi, true)
     .transition()
     .duration(parameters.fringePapersPositionTransitionDuration[animate])
