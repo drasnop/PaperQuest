@@ -1,7 +1,10 @@
 PaperQuest
 ==========
 
-A visualization tool to support the process of doing a literature review.
+A visualization tool to support the process of doing a literature
+review.  Originally a project for CS547 at UBC, a course about
+Information Visulaization (http://www.cs.ubc.ca/~tmm/courses/547-14/)
+taught by Tamara Munzner (http://www.cs.ubc.ca/~tmm/).
 
 
 Contact
@@ -16,8 +19,8 @@ https://github.com/drasnop/PaperQuest
 You can contact the authors with any issues or suggestions at the
 following email addresses:
 
-aponsard@cs.ubc.ca
-pax@cs.ubc.ca
+* Antoine Ponsard (aponsard@cs.ubc.ca)
+* Francisco Escalona (pax@cs.ubc.ca)
 
 Running the code
 ================
@@ -48,39 +51,39 @@ implements most of the functionality.  It uses D3 (http://d3js.org/)
 for the majority of the work.  The following is a breakdown of how the
 code is organized, roughly.
 
- + js/
-   + algorithm.js contains the implementation of the relevance
+ + `js/`
+   + `algorithm.js` contains the implementation of the relevance
      algorithm for recommending papers.
-   + geometry.js has a bunch of helper functions to compute geometry
+   + `geometry.js` has a bunch of helper functions to compute geometry
      of papers and views in the window.
-   + global.js defines the global state object for the system.
-   + main.js is the script that gets called first, and is in charge of
+   + `global.js` defines the global state object for the system.
+   + `main.js` is the script that gets called first, and is in charge of
      setting up the rest of the vis.  It doesn't do anything after
      that.
-   + papers.js is an implementation of a paper class in JS that
+   + `papers.js` is an implementation of a paper class in JS that
      presents an abstraction layer from the dataset to the rest of the
      code.
-   + sessionManager.js uses Local Storage to save and restore user
+   + `sessionManager.js` uses Local Storage to save and restore user
      sessions.
-   + stats.js contains helper functionality to render the
+   + `stats.js` contains helper functionality to render the
      visualizations in stats.html.
-   + userData.js manages the user's dataset, that is papers and other
+   + `userData.js` manages the user's dataset, that is papers and other
      derived attributes relevant to the current user of the system.
 
- + d3/
-   + helpers.js contains general functions that are useful in many
+ + `d3/`
+   + `helpers.js` contains general functions that are useful in many
      places, like a function that truncates text at word boundaries.
-   + histogram.js contains useful code for building histograms.
-   + scatterplot.js is the same, but for scatterplots.
-   + update.js is responsible for much of the interaction in the
+   + `histogram.js` contains useful code for building histograms.
+   + `scatterplot.js` is the same, but for scatterplots.
+   + `update.js` is responsible for much of the interaction in the
      system.  It implements the logic for how things should be
      rendered based on changes in the system's global state.  It's
      code is called frequently to update the visualization and keep it
      current.
-   + udpateSideViews.js has similar responsibilities, but only for the
+   + `udpateSideViews.js` has similar responsibilities, but only for the
      sidebar at the right of the vis.
-   + view.js sets down the main SVG components of the interface, draws
+   + `view.js` sets down the main SVG components of the interface, draws
      the bigger elements like side-by-side views, and connects the
      different listeners to components in the DOM.
-   + visParameters.js is a configuration file with sane defaults for
+   + `visParameters.js` is a configuration file with sane defaults for
      how things should work.
