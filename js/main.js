@@ -92,9 +92,14 @@ $('#dialog .typeahead').on("keypress", function(e){
 
 				var from;
 				var p=P(doi);
-				if(userData.papers[doi] == undefined)
+				if(userData.papers[doi] == undefined) {
 					from=0; // unknown
-				else
+          userData.papers[doi] = p;
+          p.connectivity = 0;
+          if (p.isStump) {
+            p.inflate();
+          }
+        } else
 					from=p.weightIndex();
 				
 				p.moveTo("core");
