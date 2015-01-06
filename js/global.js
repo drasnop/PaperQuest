@@ -42,7 +42,7 @@ var global= (function () {
     "showToReadInfo": false,
     "showVisibleFringeInfo": true,
     // All the filters that should be applied to the dataset
-    "filters": [dateFilter],  
+    "filters": [dateFilter],
 
     // flag indicating that a long animation is currently running
     "animationRunning": false,
@@ -135,7 +135,7 @@ var global= (function () {
     }
 
     // this step is necessary because the two data structures are good for different operations
-    global.frequentAuthors=[]
+    global.frequentAuthors=[];
     for(var author in occurences){
       global.frequentAuthors.push({
         "author":author,
@@ -210,7 +210,7 @@ var global= (function () {
     return P.all().filter(function(p){
       return (global.showCoreInfo && p.core)  ||
              (global.showToReadInfo && p.toread) ||
-             (global.showVisibleFringeInfo && global.visibleFringe.indexOf(p)>-1)
+             (global.showVisibleFringeInfo && global.visibleFringe.indexOf(p)>-1);
     }); 
   }
 

@@ -47,8 +47,8 @@ function drawLink(s, t) {
 
   // Midpoint, offset to one side to create a curvature in the link
   var m = {
-    x: (s.x + t.x)/2 + (parameters.linkCurvature * length) * Math.cos(angle),
-    y: (s.y + t.y)/2 + (parameters.linkCurvature * length) * Math.sin(angle)
+    x: (s.x + t.x)/2 + (-parameters.linkCurvature * length) * Math.cos(angle),
+    y: (s.y + t.y)/2 + (-parameters.linkCurvature * length) * Math.sin(angle)
   };
 
   return linkGenerator([s, m, t]);
