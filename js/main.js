@@ -88,7 +88,7 @@ $('#dialog .typeahead').on("keypress", function(e){
 		// find the doi
 		for(var doi in global.papers){
 			if(global.papers[doi].title == title){
-				console.log("adding " + doi + " to core")
+				console.log("adding " + doi + " to core");
 
 				var from;
 				var p=P(doi);

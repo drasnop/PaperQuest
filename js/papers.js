@@ -272,17 +272,22 @@ P = (function() {
   function lookup(doi) {
 //    var p = userData.papers[doi];
 //    if (typeof p === "undefined") {
-    var p = _paperCache[doi];  // Not in userData, lookup in the cache
+    var p = _paperCache[doi];  // Not in userData, lookup in the cach
     if (typeof p === "undefined") {
       if (doi in global.papers) {  // First time used, cache it
         p = new paper(doi);
         _paperCache[doi] = p;
+        // Add it to the explored space
+        //userData.papers[doi] = p;
       } else {
         return undefined;   // Not an internal doi
       }
 //      }
       // Add it to the explored space
 //      userData.papers[doi] = p;
+    }
+    else{
+
     }
     return p;
   }
