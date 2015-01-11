@@ -22,7 +22,7 @@ userData.addToQueue = function(p,from,to){
         delete userData.queue[p.doi];
     }
     else
-      console.log("this should never happen")
+      console.log("this should never happen");
   }
 }
 

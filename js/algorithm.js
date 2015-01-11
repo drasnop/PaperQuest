@@ -4,13 +4,7 @@
 
 var algorithm = (function(){
 
-// Initialize the relevance scores, then insert seed papers (if any)
-function generateFringe(){
-	//P.all(initializeConnectivityScore);
-  updateFringe();
-}
-
-// Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
+// Insert, remove or move the papers from the event queue (if any)
 function updateFringe(){
 	for(var doi in userData.queue){
 		updateRelevanceScores(userData.queue[doi]);
@@ -21,10 +15,6 @@ function updateFringe(){
 }
 
 /////////////////////	Private	functions 	////////////////////////////
-
-/*function initializeConnectivityScore(p) {
-	p.connectivity = 0;
-}*/
 
 // Update the score for all connected papers when inserting/removing a paper
 // takes as input an "update" = {doi, from,  to}
@@ -46,7 +36,6 @@ function updateRelevanceScores(update){
           pTarget.fringe = true;
         }
         userData.papers[pTarget.doi] = pTarget;
-        //initializeConnectivityScore(pTarget);
       }
 
       // update relevance score of this reference/citations
@@ -80,7 +69,6 @@ function computeMinMaxConnectivityScore(){
 ///////////////     Define public static methods, and return    /////////////
 	
 	var algorithm={};
-	algorithm.generateFringe=generateFringe;
 	algorithm.updateFringe=updateFringe;
 	return algorithm;
 

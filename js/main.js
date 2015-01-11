@@ -22,7 +22,8 @@ function initializeVisualization(createStaticElements){
 		// Restore data from previous session
 	    sessionManager.loadPreviousSession();
 
-	    algorithm.generateFringe();
+	    // If no seed papers, won't do anything
+	    algorithm.updateFringe();
 	    view.initializeView(createStaticElements);
 
 	    // setup autocomplete popup
