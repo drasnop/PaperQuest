@@ -73,7 +73,7 @@ function toggleDialog(){
 	$('#dialog .typeahead').typeahead("val","")
 }
 
-// Add paper on enter
+// When autocomplete has been succesful, add a paper when enter is pressed
 $('#dialog .typeahead').on("typeahead:autocompleted", function(e,s,d){
 	global.fullPaperTitle=true;
 })
@@ -82,64 +82,42 @@ $('#dialog .typeahead').on("typeahead:selected", function(){
 })
 $('#dialog .typeahead').on("keypress", function(e){
 	if(e.which == 13 && global.fullPaperTitle){
-		console.log($('#dialog .typeahead').typeahead('val'))
+		console.log("paper title typed: ", $('#dialog .typeahead').typeahead('val'))
 		var title=$('#dialog .typeahead').typeahead('val');
 
-		// find the doi
-		for(var doi in global.papers){
-			if(global.papers[doi].title == title){
-				console.log("adding " + doi + " to core");
-
-				var from;
-				var p=P(doi);
-				if(userData.papers[doi] == undefined) {
-					from=0; // unknown
-          userData.papers[doi] = p;
-          p.connectivity = 0;
-          if (p.isStump) {
-            p.inflate();
-          }
-        } else
-					from=p.weightIndex();
-				
-				p.moveTo("core");
-
-				// Add the paper to the list that will update the fringe
-				userData.addToQueue(p,from,p.weightIndex());
-
-				view.updateUpdateFringeButton();
-				view.doAutomaticFringeUpdate();  // if necessary
-				view.updateView(2);
-
-				toggleDialog();
-			}
-		}
-
-		// close 
+		addCorePaper(title);
 	}
 })
 
-// from https://twitter.github.io/typeahead.js/examples/
-var substringMatcher = function(strs) {
-  return function findMatches(q, cb) {
-    var matches, substrRegex;
- 
-    // an array that will be populated with substring matches
-    matches = [];
- 
-    // regex used to determine if a string contains the substring `q`
-    substrRegex = new RegExp(q, 'i');
- 
-    // iterate through the pool of strings and for any string that
-    // contains the substring `q`, add it to the `matches` array
-    $.each(strs, function(i, str) {
-      if (substrRegex.test(str)) {
-        // the typeahead jQuery plugin expects suggestions to a
-        // JavaScript object, refer to typeahead docs for more info
-        matches.push({ value: str });
-      }
-    });
- 
-    cb(matches);
-  };
-};
+// Add a paper to the core based on its title
+function addCorePaper(title){
+
+	// find the doi
+	for(var doi in global.papers){
+		if(global.papers[doi].title == title){
+			console.log("adding " + doi + " to core");
+
+			var from;
+			var p=P(doi);
+			if(userData.papers[doi] == undefined) {
+				from=0; // unknown
+				userData.papers[doi] = p;
+				if (p.isStump) {
+					p.inflate();
+				}
+	    	} else
+				from=p.weightIndex();
+
+			p.moveTo("core");
+
+			// Add the paper to the list that will update the fringe
+			userData.addToQueue(p,from,p.weightIndex());
+
+			view.updateUpdateFringeButton();
+			view.doAutomaticFringeUpdate();  // if necessary
+			view.updateView(2);
+
+			toggleDialog();
+		}
+	}
+}

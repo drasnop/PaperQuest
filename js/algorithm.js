@@ -4,11 +4,10 @@
 
 var algorithm = (function(){
 
-// Initialize the relevance scores, then insert papers from Core, toRead and Selected
+// Initialize the relevance scores, then insert seed papers (if any)
 function generateFringe(){
-	P.all(initializeConnectivityScore);
-  P.interesting(initialUpdateRelevanceScores);
-  computeMinMaxConnectivityScore();
+	//P.all(initializeConnectivityScore);
+  updateFringe();
 }
 
 // Insert the papers that have just been selected, and removes the ones that have been deselected (if any)
@@ -21,35 +20,20 @@ function updateFringe(){
 	computeMinMaxConnectivityScore();
 }
 
-function initialUpdateRelevanceScores(e) {
-	updateRelevanceScores2(e,true);
-}
-
-function updateRelevanceScores(e) {
-	updateRelevanceScores2(e,false);
-}
-
 /////////////////////	Private	functions 	////////////////////////////
 
-function initializeConnectivityScore(p) {
+/*function initializeConnectivityScore(p) {
 	p.connectivity = 0;
-}
+}*/
 
 // Update the score for all connected papers when inserting/removing a paper
-// takes as input an "event" = {doi, from,  to}
-function updateRelevanceScores2(e, initial){
+// takes as input an "update" = {doi, from,  to}
+function updateRelevanceScores(update){
 
-  var pSource;
-  if(initial){
-  	console.log("inserting "+e.doi);
-  	pSource=e;
-  }
-  else {
-    console.log("consuming " + e.doi + " from " + e.from + " to " + e.to)
-	pSource=P(e.doi);
-  }
+  console.log("consuming " + update.doi + " from " + update.from + " to " + update.to);
+  var pSource=P(update.doi);
 
-  // update both (internal) references and citations of this paper
+  // update both (internal) references and citations of current paper
   pSource.internalReferences().concat(pSource.internalCitations())
     .forEach(function(pTarget) {
       // if paper has never been seen before, initialize it and add it to the fringe
@@ -62,14 +46,11 @@ function updateRelevanceScores2(e, initial){
           pTarget.fringe = true;
         }
         userData.papers[pTarget.doi] = pTarget;
-        initializeConnectivityScore(pTarget);
+        //initializeConnectivityScore(pTarget);
       }
 
-      // update relevance score of this paper
-      if(initial)
-      	initialUpdatePaper(pTarget, pSource.weightIndex());
-      else
-      	updatePaper2(pTarget, e.from, e.to);
+      // update relevance score of this reference/citations
+      updatePaper(pTarget, update.from, update.to);
 
       // remove the paper if it's no longer linked by interesting papers
       if (pTarget.connectivity <= 0) {
@@ -82,12 +63,9 @@ function updateRelevanceScores2(e, initial){
 
 ///////////////		helper functions	/////////////////////////////
 
-function initialUpdatePaper(pTarget, pSourceTo){
-	pTarget.connectivity += parameters.weights[pSourceTo];
-}
-
 // update the target's score based on the source's paper from and to
-function updatePaper2(pTarget, pSourceFrom, pSourceTo){
+// when a new paper is added (initialUpdate), no score is decreased because weight[0]=0
+function updatePaper(pTarget, pSourceFrom, pSourceTo){
 	pTarget.connectivity -= parameters.weights[pSourceFrom];
 	pTarget.connectivity += parameters.weights[pSourceTo];
 }

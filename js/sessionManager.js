@@ -18,8 +18,7 @@ var sessionManager = function(){
         var retrievedData = localStorage.getObject("userData");
 
         if(retrievedData!=null){
-            console.log("retrieved: ");
-            console.log(retrievedData);
+            console.log("retrieved: ", retrievedData);
             // We re-wrap each retrieved item in a paper object.
             Object.keys(retrievedData.papers).forEach(function(doi) {
               var p = P(doi);
@@ -51,6 +50,7 @@ var sessionManager = function(){
         p = P(seedPapers[i]);
         userData.papers[p.doi] = p;
         if (typeof p !== "undefined") {  // ignore seed papers that are not internal
+          userData.addToQueue(p, 0, 3);
           p.moveTo("core");
         }
       }

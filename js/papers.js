@@ -3,13 +3,14 @@ P = (function() {
   var stumpedCollections = ["internalReferences", "externalReferences", "internalCitations", "externalCitations"];
   var readOnlyProperties = ["conference", "title", "abstract", "year", "citation_count", "authors", "references", "citations"];
   var defaultInitialValues =  {
-    fringe:   false,            // Paper is in the fringe or not
-    core:     false,            // Paper is in the core or not
-    toread:   false,            // Paper is in the to-read list or not
-    score:    0,                // Relevance score
-    upvoters: 0,                // Number of links to other papers of interest to the user
-    selected: false,            // Paper has been selected from the fringe by the user or not
-    isNew:    true
+    fringe:       false,      // Paper is in the fringe or not
+    core:         false,      // Paper is in the core or not
+    toread:       false,      // Paper is in the to-read list or not
+    score:        0,          // Relevance score
+    upvoters:     0,          // Number of links to other papers of interest to the user
+    selected:     false,      // Paper has been selected from the fringe by the user or not
+    isNew:        true,
+    connectivity: 0,          // Strength of the connection between that paper and all the other interesting papers
   };
 
   var _paperCache = {};
