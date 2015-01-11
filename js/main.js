@@ -20,25 +20,25 @@ function initializeVisualization(createStaticElements){
 		global.computeMedianMaximalNormalizedCitationCountsPerYear();
 		
 		// Restore data from previous session
-	    sessionManager.loadPreviousSession();
+	sessionManager.loadPreviousSession();
 
-	    // If no seed papers, won't do anything
-	    algorithm.updateFringe();
-	    view.initializeView(createStaticElements);
+	// If no seed papers, won't do anything
+	algorithm.updateFringe();
+	view.initializeView(createStaticElements);
 
-	    // setup autocomplete popup
-	    $('#dialog .typeahead').typeahead({
-	      hint: true,
-	      highlight: true,
-	      minLength: 3
-	    },
-	    {
-	      name: 'titles',
-	      displayKey: 'value',
-	      source: substringMatcher(Object.keys(global.papers)
-	      	.map(function(doi) { return global.papers[doi].title; }))
-	    });
-	});	
+	// setup autocomplete popup
+	$('#dialog .typeahead').typeahead({
+			hint: true,
+			highlight: true,
+			minLength: 3
+		},
+		{
+			name: 'titles',
+			displayKey: 'value',
+			source: substringMatcher(Object.keys(global.papers)
+				.map(function(doi) { return global.papers[doi].title; }))
+		});
+	});
 }
 
 initializeVisualization(true);
@@ -100,19 +100,18 @@ function addCorePaper(title){
 
 			var from;
 			var p=P(doi);
-			if(userData.papers[doi] == undefined) {
+			if(userData.papers[doi] === undefined) {
 				from=0; // unknown
 				userData.papers[doi] = p;
 				if (p.isStump) {
 					p.inflate();
 				}
-	    	} else
+			} else
 				from=p.weightIndex();
 
 			p.moveTo("core");
-
-			// Add the paper to the list that will update the fringe
-			userData.addToQueue(p,from,p.weightIndex());
+			// Add the paper to the core, via the list that will update the fringe
+			userData.addToQueue(p, from, p.weightIndex());
 
 			view.updateUpdateFringeButton();
 			view.doAutomaticFringeUpdate();  // if necessary

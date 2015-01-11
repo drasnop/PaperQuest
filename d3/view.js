@@ -322,6 +322,7 @@ function bindListeners(){
 
   function movePaperTo(menuItem, destination){
     var from=global.activePaper.weightIndex();
+    
     global.activePaper.moveTo(destination);
 
     // Add the paper to the list that will update the fringe

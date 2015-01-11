@@ -6,22 +6,25 @@ var algorithm = (function(){
 
 // Insert, remove or move the papers from the event queue (if any)
 function updateFringe(){
+  
 	for(var doi in userData.queue){
-		updateRelevanceScores(userData.queue[doi]);
+    // the paper has already been moved to its destination (by changing the booleans)
+    // propagate this change to its references and citations
+    updateConnectivityScores(userData.queue[doi]);
 	}
 	userData.queue=[];
 
 	computeMinMaxConnectivityScore();
 }
 
-/////////////////////	Private	functions 	////////////////////////////
+/////////////////////	Private	functions	////////////////////////////
 
 // Update the score for all connected papers when inserting/removing a paper
 // takes as input an "update" = {doi, from,  to}
-function updateRelevanceScores(update){
+function updateConnectivityScores(update){
 
-  console.log("consuming " + update.doi + " from " + update.from + " to " + update.to);
-  var pSource=P(update.doi);
+  console.log("consuming " + update.p.doi + " from " + update.from + " to " + update.to);
+  var pSource=update.p;
 
   // update both (internal) references and citations of current paper
   pSource.internalReferences().concat(pSource.internalCitations())

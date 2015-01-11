@@ -50,8 +50,8 @@ var sessionManager = function(){
         p = P(seedPapers[i]);
         userData.papers[p.doi] = p;
         if (typeof p !== "undefined") {  // ignore seed papers that are not internal
-          userData.addToQueue(p, 0, 3);
           p.moveTo("core");
+          userData.addToQueue(p, 0, p.weightIndex());
         }
       }
     }

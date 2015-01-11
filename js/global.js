@@ -5,7 +5,7 @@ var global= (function () {
 
   var global={
     // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
-    "fringeApparentWidth": parameters.fringeApparentWidthMin,
+    "fringeApparentWidth": parameters.fringeApparentWidthMin+120,
     // Current zoom level: 0=titles only, 1=metadata (authors/conf/date), 2=first line of abstract, 3=full abstract
     "zoom": 0,
     // Vertical offset used to scroll the fringe
@@ -136,7 +136,7 @@ var global= (function () {
 
     // this step is necessary because the two data structures are good for different operations
     global.frequentAuthors=[];
-    for(var author in occurences){
+    for(author in occurences){
       global.frequentAuthors.push({
         "author":author,
         "frequency":occurences[author],
@@ -211,7 +211,7 @@ var global= (function () {
       return (global.showCoreInfo && p.core)  ||
              (global.showToReadInfo && p.toread) ||
              (global.showVisibleFringeInfo && global.visibleFringe.indexOf(p)>-1);
-    }); 
+    });
   }
 
 

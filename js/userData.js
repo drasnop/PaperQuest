@@ -1,16 +1,16 @@
-var userData={ 
+var userData={
     // contains the tags and all useful (non-static) information about the papers that have been visited
     "papers":{},
     // waiting queue for the papers that will influence the algorithm: [doi]={doi, from, to}
     // 0=unknown, 1=fringe, 2=toread, 3=core
     "queue":[]
-}; 
+};
 
 
 userData.addToQueue = function(p,from,to){
 
   if(userData.queue[p.doi] === undefined){
-    userData.queue[p.doi]={"doi":p.doi, "from":from, "to":to};
+    userData.queue[p.doi]={"p":p, "from":from, "to":to};
   }
   else{
     // update the path of this paper to a new destination
@@ -27,7 +27,7 @@ userData.addToQueue = function(p,from,to){
 }
 
 userData.isQueueEmpty = function(){
-  return Object.keys(userData.queue).length == 0;
+  return Object.keys(userData.queue).length === 0;
 }
 
 // debug

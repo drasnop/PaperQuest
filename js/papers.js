@@ -216,7 +216,7 @@ P = (function() {
   paper.prototype.moveTo = function(where) {
     var that = this;
     // Set everything to false, then only "where" to true
-    ["fringe", "core", "toread"].forEach(function(d) { that[d] = false; });
+    ["fringe", "toread", "core"].forEach(function(d) { that[d] = false; });
     this[where] = true;
   }
 
