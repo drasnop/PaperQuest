@@ -51,7 +51,7 @@ function info(){
 ///////     hard-coded set of seed papers    /////////////////
 
 var seedPapers=[
-    "10.1145/108844.108867",    // Triggers and barriers to customization
+/*    "10.1145/108844.108867",    // Triggers and barriers to customization
     "10.1145/97243.97271",      // User-tailorable systems: pressing the issues with buttons
-    "10.1145/238386.238541"    // User customization of a word processor
+    "10.1145/238386.238541"    // User customization of a word processor*/
 ]

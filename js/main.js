@@ -20,14 +20,14 @@ function initializeVisualization(createStaticElements){
 		global.computeMedianMaximalNormalizedCitationCountsPerYear();
 		
 		// Restore data from previous session
-	sessionManager.loadPreviousSession();
+		sessionManager.loadPreviousSession();
 
-	// If no seed papers, won't do anything
-	algorithm.updateFringe();
-	view.initializeView(createStaticElements);
+		// If no seed papers, won't do anything
+		algorithm.updateFringe();
+		view.initializeView(createStaticElements);
 
-	// setup autocomplete popup
-	$('#dialog .typeahead').typeahead({
+		// setup autocomplete popup
+		$('#dialog .typeahead').typeahead({
 			hint: true,
 			highlight: true,
 			minLength: 3

@@ -209,7 +209,7 @@ function drawStaticElements(animate){
     .style("left", global.fringeApparentWidth-28+"px")*/
   d3.select("#fringe-slider-toggle")
     .style("left", 0+"px")
-    .style("top", global.toReadHeight-12+"px") 
+    .style("top", global.toReadHeight-12+"px")
 
   // fringeSeparator
   t0(d3.select("#fringe-separator"))
@@ -523,8 +523,8 @@ function bindListeners(){
         }
 
         // Update the view (quickly), to take into account the new heights of the selected papers
-        view.updateView(2);
-    })
+        view.updateView(2,true);
+    });
 
 }
 
