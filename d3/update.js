@@ -150,10 +150,12 @@ var zoom0 = enteringPapers.append("g")
         glyph.append("circle")
         .attr("class", "internalCitationsCircle")
         .style("fill", function(p) { return fringePaperInternalColor(p); })
+        .attr("r",0)
 
         glyph.append("circle")
         .attr("class", "externalCitationsCircle")
         .style("fill", function(p) { return fringePaperInternalColor(p); })
+        .attr("r",0)
     }
     else{
         var halfdisk=function(external){

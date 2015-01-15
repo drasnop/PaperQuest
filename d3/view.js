@@ -125,7 +125,20 @@ function createStaticElements(){
     .attr("id", "toread-papers");
 
   svg.append("g")
-    .attr("id","fringe-papers");
+    .attr("id", "fringe-papers");
+
+  d3.select("body").append("div")
+    .attr("id", "description-core")
+    .attr("class", "legend")
+    .classed("highlighted", true)   // the instructions for the core are highlighted at the beginning
+
+  d3.select("body").append("div")
+    .attr("id", "description-toread")
+    .attr("class", "legend")
+
+  d3.select("body").append("div")
+    .attr("id", "description-fringe")
+    .attr("class", "legend")
 
   // sideview - histogram
   d3.select("svg#publication-years")
@@ -182,6 +195,24 @@ function drawStaticElements(animate){
     .attr("height", window.innerHeight - global.toReadHeight)
     .attr("clip-path", "url(#left-views)")
     .style("fill",colors.core);
+
+  d3.select("#description-core")
+    .html(function() { if(P.core().length === 0) return parameters.descriptionCore; })
+    .style("top", function() { return global.toReadHeight+"px"; })
+    .style("left", "10px")
+
+  d3.select("#description-toread")
+    .html(function() { if(P.toread().length === 0) return parameters.descriptionToread; })
+    .style("top", "0px")
+    .style("left", "10px")
+    .classed("highlighted", function() { return P.core().length > 0  && P.fringe().length > 0; })
+
+  d3.select("#description-fringe")
+    .html(function() { if(P.fringe().length === 0) return parameters.descriptionFringe; })
+    .style("top", "0px")
+    .style("left", circleX(0)+20+"px")
+    .classed("highlighted", function() { return P.core().length > 0; })
+
 
   // coreSeparator (no transition)
   var dragCore = d3.behavior.drag()

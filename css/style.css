@@ -20,6 +20,15 @@ svg#main-view{
   stroke-width: 2;
 }
 
+.legend {
+  position:fixed;
+  color: #999;
+}
+
+.legend.highlighted{
+  color: #333;
+}
+
 .visControl{
 	position:absolute;
 }

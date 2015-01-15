@@ -34,7 +34,6 @@ var sessionManager = function(){
             });
         }
         else{
-            console.log("Loading hard-coded seedPapers")
             uploadSeedPapers();
         }
     }
