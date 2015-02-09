@@ -335,6 +335,12 @@ function bindListeners(){
     })
     .on("mouseup", function() { movePaperTo(this,"fringe") });
 
+  // Remove a paper from the core
+  d3.select("#menu-remove")
+    .on("mousedown", function() {
+      d3.select(this).classed("active", true);
+    })
+    .on("mouseup", function() { movePaperTo(this,"toread") });
 
   function movePaperTo(menuItem, destination){
     var from=global.activePaper.weightIndex();
@@ -595,7 +601,7 @@ function buildMenu(p) {
   ["menu-remove", "menu-star", "menu-tocore", "menu-tofringe", "menu-toread", "menu-links", "menu-expand"].forEach(hideOption);
 
   if (p.core) {
-    ["menu-links"].forEach(showOption);
+    ["menu-remove", "menu-links"].forEach(showOption);
   } else if(p.toread) {
     ["menu-tofringe", "menu-tocore", "menu-links"].forEach(showOption);
   } else if (p.fringe) {
