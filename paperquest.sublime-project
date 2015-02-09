@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"path": "/C/Users/Antoine/programmation/web/PaperQuest",
+			"name":"PaperQuest",
+			"folder_exclude_patterns":[
+				".git",
+				"lib",
+				"data",
+				"fonts"
+			],
+			"file_exclude_patterns": [
+				".git*",
+				"*.sublime*",
+				"iconFont.min.css"
+			]
+		}
+	]
+}

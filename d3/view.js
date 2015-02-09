@@ -198,21 +198,27 @@ function drawStaticElements(animate){
 
   d3.select("#description-core")
     .html(function() { if(P.core().length === 0) return parameters.descriptionCore; })
-    .style("top", function() { return global.toReadHeight+"px"; })
-    .style("left", "10px")
-
   d3.select("#description-toread")
     .html(function() { if(P.toread().length === 0) return parameters.descriptionToread; })
-    .style("top", "0px")
-    .style("left", "10px")
     .classed("highlighted", function() { return P.core().length > 0  && P.fringe().length > 0; })
-
   d3.select("#description-fringe")
     .html(function() { if(P.fringe().length === 0) return parameters.descriptionFringe; })
-    .style("top", "0px")
-    .style("left", circleX(0)+20+"px")
     .classed("highlighted", function() { return P.core().length > 0; })
 
+  t0(d3.select("#description-core"))
+    .style("top", function() { return global.toReadHeight+"px"; })
+    .style("left", "10px")
+    .style("width", global.fringeApparentWidth-10+"px")
+
+  t0(d3.select("#description-toread"))
+    .style("top", "0px")
+    .style("left", "10px")
+    .style("width", global.fringeApparentWidth-10+"px")
+
+  t0(d3.select("#description-fringe"))
+    .style("top", "0px")
+    .style("left", circleX(220)+20+"px")
+    .style("width", (Math.min(0.9*window.innerWidth, window.innerWidth-180)-(circleX(220)+20+10))+"px")
 
   // coreSeparator (no transition)
   var dragCore = d3.behavior.drag()
