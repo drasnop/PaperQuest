@@ -29,108 +29,139 @@
     <script type="text/javascript" src="d3/updateSideViews.js"></script>
 </head>
 <body>
-  <ul id="paper-menu">
-    <li id="menu-tofringe"><span class="icon-arrow-right"></span></li>
-    <li id="menu-toread"><span class="icon-arrow-left"></span></li>
-    <li id="menu-links"><span class="icon-tree-view"></span></li>
-    <li id="menu-remove" class="click"><span class="icon-cancel-2"></span></li>
-    <li id="menu-star" class="toggle"><span class="icon-star-4"></span></li>
-    <li id="menu-tocore"><span class="icon-checkmark"></span></li>
-    <li id="menu-expand" class="toggle"><span class="icon-arrow-down-5"></span></li>
-  </ul>
+    <svg id="main-view"></svg>
 
-  <span id="fringe-slider-toggle" title="switch between views" onclick="view.toggleFringeSlider()" class="icon-tab"></span>
-
-  <button id="add-seed" title="Add a seed paper">+ Add </button>
-  <button id="updateFringe" class="visControl" onclick="view.updateFringe()" disabled>Update fringe</button>
-  <label id="updateFringeAutomatically" class="visControl" >
-    <input type="checkbox" onclick="view.updateAutomaticallyToggle()">
-    <span> automatically</span>
-  </label>
-  <div id="zoom-slider" title="Change the level of details shown for papers in the Fringe: title > authors > abstract">
-    <label>Details:</label>
-    <input type="range" min="0" max="2" value="0" onInput="view.changeZoomLevel()">
-  </div>
-
-  <div id="overlay"></div>
-  <div id="dialog">
-    <input class="typeahead" type="text" placeholder="Catchy Name: Actual Boring Paper Title">
-  </div>
-
-<script type="text/javascript" src="js/main.js"></script>
-<div id="sidebar">
-    <div id="top-menu">
-        <ul>
-            <li> ☰ PaperQuest
-                <ul>
-                    <li onclick=sessionManager.saveSession()> Save session </li>
-                    <li onclick=sessionManager.resetSession()> Reset session </li>
-                    <li onclick=global.switchEncoding() style="border-bottom: 1px solid white"> Switch Encoding </li>
-                    <li> Load other dataset </li>
-                    <li><a href="./stats.html" target="_blank"> Dataset statistics... </a></li>
-                </ul>
-            </li>
-        </ul>
+    <div id="description-core" class="legend highlighted">
+        <h2> Read </h2>
+        Add a seed paper to begin your journey!
     </div>
-    <div id="sideviews">
-        <div id="data-selector">
+    <div id="description-toread" class="legend">
+        <h2> To Read </h2>
+        ← to move interesting papers to this list <br>
+        ✓ to mark them as read
+    </div>
+    <div id="description-fringe" class="legend">
+        <div id="description-fringe-1">
+            <h2> The Fringe </h2>
+            Papers related to those Read, To Read or selected. The most relevant papers appear at the top of the Fringe. <br>
+            <br>
+            <b>Click</b> to select interesting papers, then <b>scroll</b> to show authors & abstracts.<br>
+            <br>
+            Color = how strongly connected this paper is to other interesting papers:
+        </div>
+        <svg id="color-legend"></svg>
+        <div id="description-fringe-2">
+            Size = citation counts. The left circle represents citations from CHI & UIST only, the right one shows the total citation count scraped from Google Scholar:
+        </div>
+        <svg id="size-legend"></svg>
+        <div id="description-fringe-3">
+            <br>
+            Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in.
+        </div>
+    </div>
+
+    <ul id="paper-menu">
+        <li id="menu-tofringe"><span class="icon-arrow-right"></span></li>
+        <li id="menu-toread"><span class="icon-arrow-left"></span></li>
+        <li id="menu-links"><span class="icon-tree-view"></span></li>
+        <li id="menu-remove" class="click"><span class="icon-cancel-2"></span></li>
+        <li id="menu-star" class="toggle"><span class="icon-star-4"></span></li>
+        <li id="menu-tocore"><span class="icon-checkmark"></span></li>
+        <li id="menu-expand" class="toggle"><span class="icon-arrow-down-5"></span></li>
+    </ul>
+
+    <span id="fringe-slider-toggle" title="switch between views" onclick="view.toggleFringeSlider()" class="icon-tab"></span>
+
+    <button id="add-seed" title="Add a seed paper">+ Add </button>
+    <button id="updateFringe" class="visControl" onclick="view.updateFringe()" disabled>Update fringe</button>
+    <label id="updateFringeAutomatically" class="visControl" >
+        <input type="checkbox" onclick="view.updateAutomaticallyToggle()">
+        <span> automatically</span>
+    </label>
+    <div id="zoom-slider" title="Change the level of details shown for papers in the Fringe: title > authors > abstract">
+        <label>Details:</label>
+        <input type="range" min="0" max="2" value="0" onInput="view.changeZoomLevel()">
+    </div>
+
+    <div id="overlay"></div>
+    <div id="dialog">
+        <input class="typeahead" type="text" placeholder="Catchy Name: Actual Boring Paper Title">
+    </div>
+
+    <script type="text/javascript" src="js/main.js"></script>
+    <div id="sidebar">
+        <div id="top-menu">
             <ul>
-                <li>Show information for:</li>
+                <li> ☰ PaperQuest
+                    <ul>
+                        <li onclick=sessionManager.saveSession()> Save session </li>
+                        <li onclick=sessionManager.resetSession()> Reset session </li>
+                        <li onclick=global.switchEncoding() style="border-bottom: 1px solid white"> Switch Encoding </li>
+                        <li> Load other dataset </li>
+                        <li><a href="./stats.html" target="_blank"> Dataset statistics... </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div id="sideviews">
+            <div id="data-selector">
+                <ul>
+                    <li>Show information for:</li>
 
-                <li>
-                    <label>
-                        <input type="checkbox" onclick="global.updateDataShown(0)">
-                        <span> Core</span>
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" onclick="global.updateDataShown(1)">
-                        <span> To read</span>
-                    </label>
-                </li>
-                <li>
-                    <label>
-                        <input type="checkbox" onclick="global.updateDataShown(2)" checked="checked"> 
-                        <span> Fringe</span>
-                    </label>
-                </li>
-            </ul>
-        </div>
-        <div id="authors-list-wrapper">
-            <ul id="authors-list">
-                <!--<li style="text-decoration: underline"> Authors </li>-->
-            </ul>
-        </div>
-        <div id="publication-years-wrapper">
-            <svg id="publication-years">
-            </svg>
+                    <li>
+                        <label>
+                            <input type="checkbox" onclick="global.updateDataShown(0)">
+                            <span> Core</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" onclick="global.updateDataShown(1)">
+                            <span> To read</span>
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input type="checkbox" onclick="global.updateDataShown(2)" checked="checked"> 
+                            <span> Fringe</span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div id="authors-list-wrapper">
+                <ul id="authors-list">
+                    <!--<li style="text-decoration: underline"> Authors </li>-->
+                </ul>
+            </div>
+            <div id="publication-years-wrapper">
+                <svg id="publication-years">
+                </svg>
+            </div>
         </div>
     </div>
-</div>
-<!-- Usage: apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->
-<svg width=0 height=0>
-    <!-- Must extend the size of the drawing region, otherwise the shadow is clipped -->
-    <filter id="drop-shadow" x="-50%" width="200%" y="-50%" height="200%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
-        <feOffset dx="1" dy="1" result="offsetblur"/>
-        <feFlood flood-color="rgba(10,10,10,0.5)"/>
-        <feComposite in2="offsetblur" operator="in"/>
-        <feMerge>
-            <feMergeNode/>
-            <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-    </filter>
-    <filter id="drop-shadow-strong" x="-50%" width="200%" y="-50%" height="200%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
-        <feOffset dx="1" dy="1" result="offsetblur"/>
-        <feFlood flood-color="rgba(10,10,10,0.5)"/>
-        <feComposite in2="offsetblur" operator="in"/>
-        <feMerge>
-            <feMergeNode/>
-            <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-    </filter>
-</svg>
+    <!-- Usage: apply this filter to an svg element with filter: url(#drop-shadow) in the CSS -->
+    <svg width=0 height=0>
+        <!-- Must extend the size of the drawing region, otherwise the shadow is clipped -->
+        <filter id="drop-shadow" x="-50%" width="200%" y="-50%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+            <feOffset dx="1" dy="1" result="offsetblur"/>
+            <feFlood flood-color="rgba(10,10,10,0.5)"/>
+            <feComposite in2="offsetblur" operator="in"/>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <filter id="drop-shadow-strong" x="-50%" width="200%" y="-50%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feOffset dx="1" dy="1" result="offsetblur"/>
+            <feFlood flood-color="rgba(10,10,10,0.5)"/>
+            <feComposite in2="offsetblur" operator="in"/>
+            <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </svg>
 </body>
 </html>

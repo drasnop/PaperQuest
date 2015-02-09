@@ -102,19 +102,6 @@ function createStaticElements(){
   svg.append("g")
     .attr("id", "fringe-papers");
 
-  d3.select("body").append("div")
-    .attr("id", "description-core")
-    .attr("class", "legend")
-    .classed("highlighted", true)   // the instructions for the core are highlighted at the beginning
-
-  d3.select("body").append("div")
-    .attr("id", "description-toread")
-    .attr("class", "legend")
-
-  d3.select("body").append("div")
-    .attr("id", "description-fringe")
-    .attr("class", "legend")
-
   // sideview - histogram
   d3.select("svg#publication-years")
       .append("g")
@@ -122,6 +109,37 @@ function createStaticElements(){
       .append("g")
         .attr("class", "axis")
         .attr("id","x-axis")
+
+  // visual legends in the Fringe description
+
+  for(var i=0; i<colors.monotone.length; i++){
+    d3.select("svg#color-legend")
+      .append("circle")
+      .attr("cx",(2*i+1)*parameters.paperMaxRadius)
+      .attr("cy",parameters.paperMaxRadius)
+      .attr("r",parameters.paperMaxRadius)
+      .style("fill",colors.monotone[i])
+  }
+
+  d3.select("svg#color-legend")
+    .style("margin-top","4px")
+    .style("margin-bottom","4px")
+  d3.select("svg#size-legend")
+    .style("margin-top","4px")
+    .style("margin-bottom","0px")
+
+  d3.select("svg#size-legend")
+    .append("circle")
+    .attr("cx",parameters.paperMaxRadius)
+    .attr("cy",parameters.paperMaxRadius)
+    .attr("r",0.75*parameters.paperMaxRadius)
+    .style("fill","#333")
+  d3.select("svg#size-legend")
+    .append("circle")
+    .attr("cx",2.75*parameters.paperMaxRadius)
+    .attr("cy",parameters.paperMaxRadius)
+    .attr("r",parameters.paperMaxRadius)
+    .style("fill","#333")
 }
 
 // draw the static elements at their appropriate positions
@@ -173,13 +191,18 @@ function drawStaticElements(animate){
 
   // help hints
   d3.select("#description-core")
-    .html(function() { if(P.core().length === 0) return parameters.descriptionCore; })
+    .style("display", P.core().length === 0 ? "" : "none")
   d3.select("#description-toread")
-    .html(function() { if(P.toread().length === 0) return parameters.descriptionToread; })
+    .style("display", P.toread().length === 0 ? "" : "none")
     .classed("highlighted", function() { return P.core().length > 0  && P.fringe().length > 0; })
   d3.select("#description-fringe")
-    .html(function() { if(P.fringe().length === 0) return parameters.descriptionFringe; })
+    .style("display", P.fringe().length === 0 ? "" : "none")
     .classed("highlighted", function() { return P.core().length > 0; })
+
+  d3.select("svg#color-legend")
+    .attr("height",2*parameters.paperMaxRadius)
+  d3.select("svg#size-legend")
+    .attr("height",2*parameters.paperMaxRadius)
 
   t0(d3.select("#description-core"))
     .style("top", function() { return global.toReadHeight+15+"px"; })

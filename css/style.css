@@ -30,6 +30,10 @@ svg#main-view{
   opacity:1;
 }
 
+#description-fringe{
+  max-width: 600px
+}
+
 .visControl{
 	position:absolute;
 }

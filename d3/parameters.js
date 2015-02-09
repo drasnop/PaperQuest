@@ -68,9 +68,6 @@ var parameters= {
   "fringePapersPositionTransitionDuration": [0,1000,450,250,120],
   "fringePapersColorTransitionDuration": [0,500,0,0,0],
 
-  // How much does one scroll changes the position of the papers
-  "amountOfVerticalScrolling": 200,
-
   // Duration for link in and out animations
   "linkTransitionDuration": 200,
 
@@ -102,13 +99,6 @@ var parameters= {
   "menuOffset": 60,
   // The factor affecting how curved the links are
   "linkCurvature": 0.2,
-
-
-  /*     text in the interface    */
-
-  "descriptionCore": "<h2> Read </h2> Add a seed paper to begin your journey!",
-  "descriptionToread": "<h2> To Read </h2> ← to move interesting papers to this list <br> ✓ to mark them as read",
-  "descriptionFringe": "<h2> The Fringe </h2> Papers related to those Read, To Read or selected. The most relevant papers appear at the top of the Fringe. <br><br> <b>Click</b> to select interesting papers, then <b>scroll</b> to show authors & abstracts. <br><br> The size of the circles represent the citation counts; <br> their color represent how strongly connected they are to other interesting papers. <br><br> Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in."
 }
 
 
