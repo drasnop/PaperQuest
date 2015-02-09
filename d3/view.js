@@ -481,6 +481,7 @@ function bindListeners(){
             updateView(2,true);
             break;
           }
+
         }
         else{
           if(global.expandedPaper == p) {
@@ -537,6 +538,9 @@ function bindListeners(){
                     global.zoom--;
             }
         }
+
+        // update the state of the level of details slider
+        $("#zoom-slider input").prop("value",global.zoom);
 
         // Update the view (quickly), to take into account the new heights of the selected papers
         view.updateView(2,true);
@@ -602,6 +606,12 @@ function removeHighlighting(p) {
   }
 }
 
+function changeZoomLevel(){
+  global.zoom=$("#zoom-slider input").prop("value");
+  // Update the view (quickly), to take into account the new heights of the selected papers
+  view.updateView(2,true);
+}
+
 function updateUpdateFringeButton() {
   if(!userData.isQueueEmpty() && !global.updateAutomatically)
     d3.select("#updateFringe").attr("disabled",null);
@@ -655,11 +665,14 @@ var view = {};
 
 view.initializeView=initializeView;
 view.updateView=updateView;
+
+view.changeZoomLevel=changeZoomLevel;
 view.updateFringe=updateFringe;
 view.updateAutomaticallyToggle=updateAutomaticallyToggle;
 view.toggleFringeSlider = toggleFringeSlider;
 view.updateUpdateFringeButton = updateUpdateFringeButton;
 view.doAutomaticFringeUpdate=doAutomaticFringeUpdate;
+
 return view;
 
 })();

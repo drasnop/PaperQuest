@@ -139,12 +139,14 @@ button.off{
   position: fixed;
   bottom: 0px;
   right: 200px;
+  background-color: white;
 }
 
 #zoom-slider label{
   position: absolute;
   right: 80px;
   padding: 10px;
+  background-color: white;
 }
 
 #zoom-slider input{
@@ -154,6 +156,7 @@ button.off{
 
 #updateFringeAutomatically{
   color: #444;
+  background-color: white;
   padding: 7px 16px;
   border-radius: 5px;
 }
