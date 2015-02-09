@@ -370,9 +370,15 @@ P = (function() {
 
   /**
    * Returns an array of all the papers currently selected in the
-   * fringe.  If a callback is provided, it's invoked for each paper.
+   * fringe, sorted by decreasing relevance score.  If a callback is provided,
+   * it's invoked for each paper.
    */
-  lookup.selected = getSubset(function(doi) { return userData.papers[doi].selected; });
+  lookup.selected = getSubset(function(doi) { return userData.papers[doi].selected; },
+                                  function(a, b) { return b.getRelevanceScore() - a.getRelevanceScore(); });  // decreasing order!
+
+  lookup.sortedSelected = getSubset(function(doi) { return userData.papers[doi].selected; },
+                                  function(a, b) { return global.visibleFringe.indexOf(a) - global.visibleFringe.indexOf(b); });  // increasing order!
+
 
   /**
    * Returns an array of all the papers.  If a callback is provided,

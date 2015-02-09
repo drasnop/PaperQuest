@@ -522,17 +522,27 @@ function bindListeners(){
         if(d3.event.ctrlKey)
             return;
 
+        // Do nothing if previous zoom animation is still running (to handle trackpads)
+        if(global.animationRunning)
+          return;
+
+        var prevZoom=global.zoom;
         // compute the new zoom level
         if(d3.event.deltaY>0){
             if(global.zoom<2)
                 global.zoom++;
-            else
-                global.scrollOffset-=parameters.amountOfVerticalScrolling;
-            // if the user keeps scrolling down, this will be interpreted as a scrolling down
+            else{
+              // if the user keeps scrolling down, this will be interpreted as a scrolling down
+              global.scrollOffset -= P.sortedSelected()[global.paperScrollOffset].h;
+              global.paperScrollOffset++;
+            }
         }
         else{
-            if(global.scrollOffset<0)
-                global.scrollOffset+=parameters.amountOfVerticalScrolling;
+            if(global.scrollOffset<0){
+                // scrolling back up if necessary, before changing zoom level
+                global.paperScrollOffset--;
+                global.scrollOffset += P.sortedSelected()[global.paperScrollOffset].h;
+              }
             else{
                 if(global.zoom>0)
                     global.zoom--;
@@ -542,7 +552,7 @@ function bindListeners(){
         // update the state of the level of details slider
         $("#zoom-slider input").prop("value",global.zoom);
 
-        // Update the view (quickly), to take into account the new heights of the selected papers
+        // Update the view, to take into account the new heights of the selected papers
         view.updateView(2,true);
     });
 
@@ -609,6 +619,10 @@ function removeHighlighting(p) {
 function changeZoomLevel(){
   global.zoom=$("#zoom-slider input").prop("value");
   // Update the view (quickly), to take into account the new heights of the selected papers
+  if(global.zoom<2){
+    global.paperScrollOffset=0;
+    global.scrollOffset=0;
+  }
   view.updateView(2,true);
 }
 

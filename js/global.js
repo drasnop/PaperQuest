@@ -10,6 +10,8 @@ var global= (function () {
     "zoom": 0,
     // Vertical offset used to scroll the fringe
     "scrollOffset": 0,
+    // Which paper (with abstract) is currently displayed at the top of the fringe
+    "paperScrollOffset":0,
     // whether to update the fringe as soon as the mouse button is realeased, when selecting a paper
     "updateAutomatically": false,
     // whether the autocomplete box contains a complete paper total (ready to be added to core)
