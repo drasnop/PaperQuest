@@ -23,11 +23,11 @@ svg#main-view{
 
 .legend {
   position:fixed;
-  color: #999;
+  opacity: 0.3;
 }
 
 .legend.highlighted{
-  color: #333;
+  opacity:1;
 }
 
 .visControl{

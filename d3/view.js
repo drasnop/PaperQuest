@@ -468,6 +468,7 @@ function bindListeners(){
           var from=p.weightIndex();
           p.selected = !p.selected;
 
+
           // Add the paper to the list that will update the fringe
           userData.addToQueue(p,from,p.weightIndex());
 
@@ -623,7 +624,7 @@ function removeHighlighting(p) {
 }
 
 function changeZoomLevel(){
-  global.zoom=$("#zoom-slider input").prop("value");
+  global.zoom=parseInt($("#zoom-slider input").prop("value"));
   // Update the view (quickly), to take into account the new heights of the selected papers
   if(global.zoom<2){
     global.paperScrollOffset=0;
