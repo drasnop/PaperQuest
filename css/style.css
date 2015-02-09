@@ -2,6 +2,7 @@ body {
 	min-width: 1300px;
 	overflow: hidden;
   font-family: Tahoma, Helvetica;
+  color: #444;
 }
 
 svg#main-view{
@@ -132,6 +133,23 @@ button.off{
   opacity:0.8;
 
   display:none;
+}
+
+#zoom-slider {
+  position: fixed;
+  bottom: 0px;
+  right: 200px;
+}
+
+#zoom-slider label{
+  position: absolute;
+  right: 80px;
+  padding: 10px;
+}
+
+#zoom-slider input{
+  width: 80px;
+  padding: 10px 0;
 }
 
 #updateFringeAutomatically{
@@ -322,7 +340,6 @@ button.off{
   padding-left: 15px;
   padding-bottom: 2px;
   cursor:pointer;
-  color: #444;
 }
 
 #sideviews ul li{
@@ -437,7 +454,6 @@ ul#authors-list li:hover{
   width: 622px;
   padding: 8px 0;
   background-color: #fff;
-  color:#444;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
   -webkit-border-radius: 8px;

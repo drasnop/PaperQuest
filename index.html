@@ -38,7 +38,19 @@
     <li id="menu-expand" class="toggle"><span class="icon-arrow-down-5"></span></li>
   </ul>
 
+  <span id="fringe-slider-toggle" title="switch between views" onclick="view.toggleFringeSlider()" class="icon-tab"></span>
+
   <button id="add-seed">+ Add </button>
+  <button id="updateFringe" class="visControl" onclick="view.updateFringe()" disabled>Update fringe</button>
+  <label id="updateFringeAutomatically" class="visControl" >
+    <input type="checkbox" onclick="view.updateAutomaticallyToggle()">
+    <span> automatically</span>
+  </label>
+  <div id="zoom-slider">
+    <label>Details:</label>
+    <input type="range" min="0" max="2" value="0">
+  </div>
+
   <div id="overlay"></div>
   <div id="dialog">
     <input class="typeahead" type="text" placeholder="Catchy Name: Actual Boring Paper Title">

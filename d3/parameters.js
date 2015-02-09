@@ -106,9 +106,9 @@ var parameters= {
 
   /*     text in the interface    */
 
-  "descriptionCore": "<h2> Read </h2> Add a seed paper to begin your search",
+  "descriptionCore": "<h2> Read </h2> Add a seed paper to begin your journey!",
   "descriptionToread": "<h2> To Read </h2> ← to move interesting papers to this list <br> ✓ to mark them as read",
-  "descriptionFringe": "<h2> The Fringe </h2> Papers related to the ones in Read, To Read or selected. <br> The most relevant papers appear at the top. <br> Click to select interesting papers, then scroll down to show authors & abstract. <br><br> The size of the circles represent the citation counts; <br> their color represent how strongly connected they are to other interesting papers. <br><br> Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in."
+  "descriptionFringe": "<h2> The Fringe </h2> Papers related to the ones in Read, To Read or selected. The most relevant papers appear at the top. <br><br> <b>Click</b> to select interesting papers, then <b>scroll</b> down to show authors & abstracts. <br><br> The size of the circles represent the citation counts; <br> their color represent how strongly connected they are to other interesting papers. <br><br> Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in."
 }
 
 

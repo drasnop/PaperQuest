@@ -85,33 +85,8 @@ function createStaticElements(){
     .append("path")
     .attr("d", arc);
 
-  // controls
-  d3.select("body").append("span")
-    .attr("id", "fringe-slider-toggle")
-    .attr("title", "switch between views")
-    .attr("onclick", "view.toggleFringeSlider()")
-    .classed("icon-tab", true)
-
   // links first, so they're always on the back of papers and some controls
   svg.append("g").attr("id", "links");
-
-  d3.select("body").append("button")
-    .attr("id","updateFringe")
-    .attr("class","visControl")
-    .text("Update fringe")
-    .attr("onclick","view.updateFringe()")
-    .attr("disabled","disabled");   // there's nothing to update when the fringe has just been created
-
-  d3.select("body").append("label")
-    .attr("id","updateFringeAutomatically")
-    .attr("class","visControl")
-    .append("input")
-    .attr("type","checkbox")
-    .attr("onclick","view.updateAutomaticallyToggle()")
-
-  d3.select("#updateFringeAutomatically")
-    .append("span")
-    .text(" automatically")
 
   // clipping path for the left side views
   leftViewClipPath = svg.append("clipPath")
@@ -196,6 +171,7 @@ function drawStaticElements(animate){
     .attr("clip-path", "url(#left-views)")
     .style("fill",colors.core);
 
+  // help hints
   d3.select("#description-core")
     .html(function() { if(P.core().length === 0) return parameters.descriptionCore; })
   d3.select("#description-toread")
@@ -206,7 +182,7 @@ function drawStaticElements(animate){
     .classed("highlighted", function() { return P.core().length > 0; })
 
   t0(d3.select("#description-core"))
-    .style("top", function() { return global.toReadHeight+"px"; })
+    .style("top", function() { return global.toReadHeight+15+"px"; })
     .style("left", "10px")
     .style("width", global.fringeApparentWidth-10+"px")
 
@@ -219,6 +195,9 @@ function drawStaticElements(animate){
     .style("top", "0px")
     .style("left", circleX(220)+20+"px")
     .style("width", (Math.min(0.9*window.innerWidth, window.innerWidth-180)-(circleX(220)+20+10))+"px")
+
+  t0(d3.select("#zoom-slider"))
+    .style("right", function() { return Math.max(0.1*window.innerWidth, 180)+10+"px"; })
 
   // coreSeparator (no transition)
   var dragCore = d3.behavior.drag()
