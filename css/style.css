@@ -1,3 +1,8 @@
+@font-face{
+  font-family: SketchBlock;
+  src: url(/fonts/SketchBlock.ttf);
+}
+
 body {
 	min-width: 1300px;
 	overflow: hidden;
@@ -24,6 +29,14 @@ svg#main-view{
 .legend {
   position:fixed;
   opacity: 0.3;
+  font-family: 'Architects Daughter', cursive;
+}
+
+.legend h2{
+  font-family: 'SketchBlock';
+  font-weight: 400;
+  font-size: 32px;
+  margin: 19px 0;
 }
 
 .legend.highlighted{

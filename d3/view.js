@@ -212,7 +212,7 @@ function drawStaticElements(animate){
   t0(d3.select("#description-toread"))
     .style("top", "0px")
     .style("left", "10px")
-    .style("width", global.fringeApparentWidth-10+"px")
+    .style("width", circleX(30+2*19)-2*10+"px")
 
   t0(d3.select("#description-fringe"))
     .style("top", "0px")
