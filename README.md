@@ -1,16 +1,14 @@
 PaperQuest
 ==========
 
-A visualization tool to support the process of doing a literature
-review.  Originally a project for CS547 at UBC, a course about
-Information Visulaization (http://www.cs.ubc.ca/~tmm/courses/547-14/)
-taught by Tamara Munzner (http://www.cs.ubc.ca/~tmm/).
+A visualization tool to support literature review.
+Originally a project for CS547 at UBC, a course on Information Visualization (http://www.cs.ubc.ca/~tmm/courses/547-14/) taught by Tamara Munzner (http://www.cs.ubc.ca/~tmm/).
 
 
 Contact
 =======
 
-You can test the system at the following address:
+A demo of the system is available at the following address:
 http://www.cs.ubc.ca/~aponsard/paperquest/
 
 An updated version of this code should be available in GitHub:
