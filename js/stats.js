@@ -2,6 +2,11 @@
  * Calls the appropriate rendering functions to create and update the vis
  */
 
+// Determine which dataset to use, by looking for "papers=" in the query string
+var params = getQueryParameters();
+global.dataset = params["papers"] || global.dataset;
+console.log("Loading papers dataset ", global.dataset);
+
 var svg = d3.select("body").append("svg")
    .attr("width", window.innerWidth)
    .attr("height", 2.5 * window.innerHeight);
@@ -146,4 +151,23 @@ function initializeView() {
             return P(doi).adjustedCitationCount();
          }),
       "year", "Adjusted Citation Count");
+}
+
+
+/* helpers */
+
+function getQueryParameters() {
+   if (!window.location.search)
+      return [];
+   return window.location.search.replace(/(^\?)/, '').split("&").map(function(n) {
+      return n = n.split("="), this[n[0]] = n[1], this
+   }.bind({}))[0];
+}
+
+function generateQueryString(parameters) {
+   var query = '?';
+   for (var param in parameters) {
+      query += param + '=' + parameters[param];
+   }
+   return query;
 }

@@ -7,10 +7,13 @@ var params = getQueryParameters();
 global.dataset = params["papers"] || global.dataset;
 console.log("Loading papers dataset ", global.dataset);
 
-// Change the label of the menu item for switching datasets
 $(document).ready(function() {
+   // Change the label of the menu item for switching datasets
    var complement = global.dataset == "hci" ? "vis" : "hci";
    $("#switch-dataset").text("Load " + global.datasets[complement].label + " papers")
+
+   // Change the link to the dataset statistics page
+   $("#dataset-stats").prop("href", "./stats.html?papers=" + global.dataset);
 })
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
