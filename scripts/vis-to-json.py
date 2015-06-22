@@ -56,7 +56,7 @@ if __name__ == "__main__":
             paper['title']          = vals[2]
             paper['doi']            = vals[3]
             paper['url']            = vals[4]
-            # paper['xplore']       = vals[7]
+            paper['xplore']         = vals[7]
             paper['abstract']       = vals[10]
             paper['authors']        = vals[15].split(';')
             paper['id']             = vals[16]
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
             # Index papers by id to set up for building citations.
             papers[vals[16]] = paper
-            # Create a dictionary indexed by xplore numbers for adding citations later
+            # Create a dictionary indexed by xplore numbers for adding internal citations later
             papersXplore[vals[7]] = paper
 
     input_file.close()
@@ -99,27 +99,39 @@ if __name__ == "__main__":
                 print("Not found id: " + ref)
                 pass
 
-    # so far, no external citation counts
+    # Read external citation counts file, if any
+    if len(sys.argv) == 3:
+        ccs = None
+        with open(sys.argv[2]) as citation_counts_json:
+           ccs = json.loads(citation_counts_json.read())
+
+        # The following process adds citation count information to every
+        # paper that can be found on the specified citation_counts file.
+        for ieeex2 in ccs.keys():
+            matches = [ieeex1 for ieeex1 in papersXplore.keys() if ieeex1 == ieeex2]
+            if matches:
+                papers[papersXplore[matches[0]]['id']]['citation_count'] = ccs[ieeex2]['citation_count']
 
 
-    # summary
+    ## Summary
 
     # Print a summary of the dataset
-    print(len(papers), "papers")   
-    # For debugging: number of references and citations in the whole
-    # dataset.  If the dataset is self-contained, these numbers should
-    # be the same.
+    print(len(papers), "papers")
+    print(len([p for p in papers.values() if p['citation_count'] >0]), "papers with non-zero external citation count")
+
+    # Number of references and citations in the whole dataset.
+    # If the dataset is self-contained, these numbers should be the same.
     print(functools.reduce(lambda x,y: x+y, [len(p['references']) for p in papers.values()]), "references")
     print(functools.reduce(lambda x,y: x+y, [len(p['citations']) for p in papers.values()]), "citations")
 
 
-    # outputs
+    ## Outputs
 
     # If no citation counts file was provided, write out a JSON file with a list of urls to crawl
     if len(sys.argv) == 2:
         outname=os.path.dirname(sys.argv[1]) + '/URLs_to_scrape.json'
         with open(outname, 'w') as outfile:
-            outfile.writelines("https://www.google.ca/webhp?#q=%s\n" % p['doi'] for p in papers.values() if p['doi'] is not "")
+            outfile.writelines("https://www.google.com/webhp#q=site:ieeexplore.ieee.org+%s\n" % p['xplore'] for p in papers.values() if p['xplore'] is not "")
 
         print("urls written in " + outname)
 
