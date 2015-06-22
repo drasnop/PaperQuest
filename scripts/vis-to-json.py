@@ -99,21 +99,21 @@ if __name__ == "__main__":
                 print("Not found id: " + ref)
                 pass
 
+    # so far, no external citation counts
+
+
+    # summary
+
+    # Print a summary of the dataset
+    print(len(papers), "papers")   
     # For debugging: number of references and citations in the whole
     # dataset.  If the dataset is self-contained, these numbers should
     # be the same.
-    print(len(papers), "papers")
     print(functools.reduce(lambda x,y: x+y, [len(p['references']) for p in papers.values()]), "references")
     print(functools.reduce(lambda x,y: x+y, [len(p['citations']) for p in papers.values()]), "citations")
 
-    # so far, no external citation counts
 
-    # Write out a JSON file with everything in it.
-    outname=os.path.splitext(sys.argv[1])[0] + '.json'
-    with open(outname, 'w') as outfile:
-        json.dump({"papers":papers}, outfile)
-
-    print("json written in " + outname)
+    # outputs
 
     # If no citation counts file was provided, write out a JSON file with a list of urls to crawl
     if len(sys.argv) == 2:
@@ -122,3 +122,11 @@ if __name__ == "__main__":
             outfile.writelines("https://www.google.ca/webhp?#q=%s\n" % p['doi'] for p in papers.values() if p['doi'] is not "")
 
         print("urls written in " + outname)
+
+        
+    # Write out a JSON file with everything in it.
+    outname=os.path.splitext(sys.argv[1])[0] + '.json'
+    with open(outname, 'w') as outfile:
+        json.dump({"papers":papers}, outfile)
+
+    print("json written in " + outname)
