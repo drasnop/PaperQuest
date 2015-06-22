@@ -29,8 +29,8 @@ import functools
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python vis-to-json.py <papers.tsv>")
+    if len(sys.argv) < 2:
+        print("Usage: python vis-to-json.py <papers.tsv> [<citation_counts.json]")
         exit (1);
 
     input_file = open(sys.argv[1])
@@ -108,9 +108,17 @@ if __name__ == "__main__":
 
     # so far, no external citation counts
 
-    # Write out a JSON object with everything in it.
+    # Write out a JSON file with everything in it.
     outname=os.path.splitext(sys.argv[1])[0] + '.json'
     with open(outname, 'w') as outfile:
         json.dump({"papers":papers}, outfile)
 
     print("json written in " + outname)
+
+    # If no citation counts file was provided, write out a JSON file with a list of urls to crawl
+    if len(sys.argv) == 2:
+        outname=os.path.dirname(sys.argv[1]) + '/URLs_to_scrape.json'
+        with open(outname, 'w') as outfile:
+            outfile.writelines("https://www.google.ca/webhp?#q=%s\n" % p['doi'] for p in papers.values() if p['doi'] is not "")
+
+        print("urls written in " + outname)
