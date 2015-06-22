@@ -9,6 +9,7 @@
 import json
 import re
 import sys
+import os
 
 
 citationPattern = re.compile('(.*)Cited by (\d+).*')
@@ -21,7 +22,7 @@ def extractDOI(s):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print "You have to specify the file with the Kimono results"
+        print("Usage: python extract_citation_counts.py <kimono_results.py>")
         exit (1);
 
     results = None
@@ -49,4 +50,9 @@ if __name__ == "__main__":
         counts[extractDOI(r['href'])] = dict(title=tmp[0],
                                              citation_count=int(tmp[1]))
 
-    print json.dumps(counts)
+    # write citation counts in a file
+    outname=os.path.dirname(sys.argv[1]) +'/citation_counts.json'
+    with open(outname, 'w') as outfile:
+        json.dump(counts, outfile)
+
+    print("citation counts written in " + outname)
