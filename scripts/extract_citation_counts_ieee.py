@@ -21,7 +21,7 @@ def extractXploreNumber(s):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python extract_citation_counts.py <kimono_results.py>")
+        print("Usage: python extract_citation_counts.py <kimono_results.json>")
         exit (1);
 
     results = None
@@ -41,9 +41,6 @@ if __name__ == "__main__":
                if (r['result']['href'].find('arnumber=') >= 0 and
                    citationPattern.search(r['result']['text']))]
 
-    # debug
-    print(len(results), "results containing both an ieee xplore number and a citation count")
-
     counts = {}
     for r in results:
         tmp = citationPattern.findall(r['text'])[0]
@@ -51,6 +48,10 @@ if __name__ == "__main__":
         # store the citation count.
         counts[extractXploreNumber(r['href'])] = dict(title=tmp[0],
                                              citation_count=int(tmp[1]))
+    
+    # print summary
+    print(len(results), "results containing both an ieee xplore number and a citation count")
+    print(len(counts), "unique papers containing both an ieee xplore number and a citation count")
 
     # write citation counts in a file
     outname=os.path.dirname(sys.argv[1]) +'/citation_counts.json'
