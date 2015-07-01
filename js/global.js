@@ -9,11 +9,13 @@ var global = (function() {
       "datasets": {
          "hci": {
             "file": "citeology.json",
-            "label": "HCI"
+            "label": "HCI",
+            "placeholder": "e.g. Instrumental Interaction"
          },
          "vis": {
             "file": "IEEE_VIS_papers_1990-2014.json",
-            "label": "VIS"
+            "label": "VIS",
+            "placeholder": "e.g. A Nested Model for Visualization Design and Validation"
          }
       },
 

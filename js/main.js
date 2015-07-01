@@ -14,6 +14,9 @@ $(document).ready(function() {
 
    // Change the link to the dataset statistics page
    $("#dataset-stats").prop("href", "./stats.html?papers=" + global.dataset);
+
+   // Change the placeholder in the typeahead
+   $("#dialog .typeahead").prop("placeholder", global.datasets[global.dataset].placeholder);
 })
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
