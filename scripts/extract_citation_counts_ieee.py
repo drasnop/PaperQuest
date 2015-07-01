@@ -36,24 +36,28 @@ if __name__ == "__main__":
     # library. Filter out results that don't seem to contain citation
     # count information. We use regular expressions to search for a
     # "Cited by" string.
-    results = [r['result']
-               for r in results['results']['collection1']
+    results = [r for r in results['results']['collection1']
                if (r['result']['href'].find('arnumber=') >= 0 and
                    citationPattern.search(r['result']['text']))]
 
     counts = {}
     for r in results:
-        tmp = citationPattern.findall(r['text'])[0]
-        # Use the IEEE xplore number as extracted from the IEEE URL for a key to
-        # store the citation count.
-        counts[extractXploreNumber(r['href'])] = dict(title=tmp[0],
-                                             citation_count=int(tmp[1]))
+        tmp = citationPattern.findall(r['result']['text'])[0]
+
+        # Extract the IEEE xplore number from the IEEE URL
+        ieeex=extractXploreNumber(r['result']['href'])
+
+        # Make sure this is one of the papers we are looking for, by checking the url of the associated google search
+        if ieeex == r['url'].split("+")[1]:
+
+            # Store the citation count and the title of the paper (unused), indexed by IEEE xplore number
+            counts[ieeex] = dict(title=tmp[0], citation_count=int(tmp[1]))
     
-    # print summary
+    # Print summary
     print(len(results), "results containing both an ieee xplore number and a citation count")
     print(len(counts), "unique papers containing both an ieee xplore number and a citation count")
 
-    # write citation counts in a file
+    # Write citation counts in a file
     outname=os.path.dirname(sys.argv[1]) +'/citation_counts.json'
     with open(outname, 'w') as outfile:
         json.dump(counts, outfile)
