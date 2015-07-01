@@ -35,7 +35,6 @@ if __name__ == "__main__":
 
     input_file = open(sys.argv[1])
     papers = {}
-    papersXplore = {}
 
     # skip headers row
     next(input_file)
@@ -44,9 +43,9 @@ if __name__ == "__main__":
         # Drop whitespace at the end, and split on tabs.
         vals = line.split('\t')
 
-        # temporary: reject any paper that have no xplore number or no id
-        if vals[7] == '' or vals[16] == '':
-            print("incomplete paper: xplore=",vals[7]," id=",vals[16])
+        # temporary: reject any paper that have no xplore number
+        if vals[7] == '':
+            print("incomplete paper: xplore=",vals[7]," title=",vals[2])
         else:
 
             # Build a new dictionary with the values for the paper.
@@ -60,27 +59,12 @@ if __name__ == "__main__":
             paper['abstract']       = vals[10]
             paper['authors']        = vals[15].split(';')
             paper['id']             = vals[16]
-            paper['references']     = vals[17] #.split(',')
+            paper['references']     = [] if vals[17] == "" else vals[17].split(';')
             paper['citations']      = []
             paper['citation_count'] = 0  # All papers have a 0 CC by default
 
-            # Some of the references are still in the old format, using the ; as a delimiter
-            if ',' in paper['references']:
-                paper['references']=paper['references'].split(',')
-                # NB there seems to be a trailing comma in that case
-                del paper['references'][-1]
-            elif ';' in paper['references']:
-                paper['references']=paper['references'].split(';')
-            elif paper['references'] == '':
-                paper['references'] = []    
-            else:
-                # contains only one reference, so we wrap in an array
-                paper['references'] = [paper['references']]
-
-            # Index papers by id to set up for building citations.
-            papers[vals[16]] = paper
-            # Create a dictionary indexed by xplore numbers for adding internal citations later
-            papersXplore[vals[7]] = paper
+            # Index papers by xplore number to add citations later
+            papers[vals[7]] = paper
 
     input_file.close()
 
@@ -89,11 +73,7 @@ if __name__ == "__main__":
     for id, paper in papers.items():
         for ref in paper['references']:
             try:
-                if ref[0].isalpha():
-                    papers[ref]['citations'].append(id)
-                else:
-                    # lookup the id with the old xplore number ref
-                    papers[papersXplore[ref]['id']]['citations'].append(id)
+                papers[ref]['citations'].append(id)
             except KeyError:
                 # Skip this one, there's no paper with that id in our dataset.
                 print("Not found id: " + ref)
@@ -108,9 +88,9 @@ if __name__ == "__main__":
         # The following process adds citation count information to every
         # paper that can be found on the specified citation_counts file.
         for ieeex2 in ccs.keys():
-            matches = [ieeex1 for ieeex1 in papersXplore.keys() if ieeex1 == ieeex2]
+            matches = [ieeex1 for ieeex1 in papers.keys() if ieeex1 == ieeex2]
             if matches:
-                papers[papersXplore[matches[0]]['id']]['citation_count'] = ccs[ieeex2]['citation_count']
+                papers[matches[0]]['citation_count'] = ccs[ieeex2]['citation_count']
 
 
     ## Summary
