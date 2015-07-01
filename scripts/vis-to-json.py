@@ -61,7 +61,7 @@ if __name__ == "__main__":
             paper['id']             = vals[16]
             paper['references']     = [] if vals[17] == "" else vals[17].split(';')
             paper['citations']      = []
-            paper['citation_count'] = 0  # All papers have a 0 CC by default
+            paper['citation_count'] = -1  # will be set to 0 below if no external citation count is available
 
             # Index papers by xplore number to add citations later
             papers[vals[7]] = paper
@@ -87,18 +87,25 @@ if __name__ == "__main__":
 
         # The following process adds citation count information to every
         # paper that can be found on the specified citation_counts file.
-        for ieeex2 in ccs.keys():
-            matches = [ieeex1 for ieeex1 in papers.keys() if ieeex1 == ieeex2]
-            if matches:
-                papers[matches[0]]['citation_count'] = ccs[ieeex2]['citation_count']
-
+        for ieeex in ccs.keys():
+            try:
+                papers[ieeex]['citation_count'] = ccs[ieeex]['citation_count']
+            except KeyError:
+                # Skip this one, there's no paper with that id in our dataset.
+                print("Not found id: " + ieeex)
+                pass
 
     ## Summary
 
     # Print a summary of the dataset
     print(len(papers), "papers")
-    print(len([p for p in papers.values() if p['citation_count'] >0]), "papers with non-zero external citation count")
+    print(len([p for p in papers.values() if p['citation_count'] > -1]), "papers have an external citation count")
 
+    # Set citation_count to 0 by default if no external count could be found
+    for p in papers.values():
+        if p['citation_count'] == -1:
+            p['citation_count'] = 0
+ 
     # Number of references and citations in the whole dataset.
     # If the dataset is self-contained, these numbers should be the same.
     print(functools.reduce(lambda x,y: x+y, [len(p['references']) for p in papers.values()]), "references")
