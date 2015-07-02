@@ -4,7 +4,8 @@
 
 // Determine which dataset to use, by looking for "papers=" in the query string
 var params = getQueryParameters();
-global.dataset = params["papers"] || global.dataset;
+var datasetName = params["papers"] || "hci";
+global.dataset = parameters.datasets[datasetName];
 console.log("Loading papers dataset ", global.dataset);
 
 var svg = d3.select("body").append("svg")
@@ -13,7 +14,7 @@ var svg = d3.select("body").append("svg")
 
 
 // Initialize visualization (eventually calling these methods from the js file corresponding to the current view )
-d3.json("data/" + global.datasets[global.dataset].file, function(data) {
+d3.json("data/" + global.dataset.file, function(data) {
    global.papers = data.papers;
    global.computeMedianMaximalNormalizedCitationCountsPerYear();
    initializeView();

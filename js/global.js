@@ -4,20 +4,8 @@
 var global = (function() {
 
    var global = {
-      // name of the file containing all papers information
-      "dataset": "hci",
-      "datasets": {
-         "hci": {
-            "file": "citeology.json",
-            "label": "HCI",
-            "placeholder": "e.g. Instrumental Interaction"
-         },
-         "vis": {
-            "file": "IEEE_VIS_papers_1990-2014.json",
-            "label": "VIS",
-            "placeholder": "e.g. A Nested Model for Visualization Design and Validation"
-         }
-      },
+      // current dataset, containing all papers information (chosen from parameters.datasets)
+      "dataset": {},
 
       // Current x position of the fringe (distinguishes Core&ToRead from Fringe view)
       "fringeApparentWidth": parameters.fringeApparentWidthMin + 120,
@@ -86,14 +74,14 @@ var global = (function() {
    };
 
    global.switchDataset = function() {
-      if (global.dataset == "hci")
-         global.dataset = "vis";
+      if (global.dataset.name == "hci")
+         global.dataset = parameters.datasets["vis"];
       else
-         global.dataset = "hci";
+         global.dataset = parameters.datasets["hci"];
 
       // reload the page with the proper url
       var params = getQueryParameters();
-      params['papers'] = global.dataset;
+      params['papers'] = global.dataset.name;
       window.location.search = generateQueryString(params);
    }
 

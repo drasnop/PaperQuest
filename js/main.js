@@ -4,19 +4,19 @@
 
 // Determine which dataset to use, by looking for "papers=" in the query string
 var params = getQueryParameters();
-global.dataset = params["papers"] || global.dataset;
+var datasetName = params["papers"] || "hci";
+global.dataset = parameters.datasets[datasetName];
 console.log("Loading papers dataset ", global.dataset);
 
 $(document).ready(function() {
    // Change the label of the menu item for switching datasets
-   var complement = global.dataset == "hci" ? "vis" : "hci";
-   $("#switch-dataset").text("Load " + global.datasets[complement].label + " papers")
+   $("#switch-dataset").text("Load " + global.dataset.switchDatasetMenuLabel + " papers")
 
    // Change the link to the dataset statistics page
-   $("#dataset-stats").prop("href", "./stats.html?papers=" + global.dataset);
+   $("#dataset-stats").prop("href", "./stats.html?papers=" + global.dataset.name);
 
    // Change the placeholder in the typeahead
-   $("#dialog .typeahead").prop("placeholder", global.datasets[global.dataset].placeholder);
+   $("#dialog .typeahead").prop("placeholder", global.dataset.placeholder);
 })
 
 // I'm not sure what was the point of .select("body").append("svg") instead of select("svg")...
@@ -27,7 +27,7 @@ var svg = d3.select("svg#main-view")
 
 // Initialize visualization, with creating the background elements by default
 function initializeVisualization(createStaticElements) {
-   d3.json("data/" + global.datasets[global.dataset].file, function(data) {
+   d3.json("data/" + global.dataset.file, function(data) {
       // Cache the dataset
       global.papers = data.papers;
 
