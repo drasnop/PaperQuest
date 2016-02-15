@@ -1,6 +1,13 @@
-@font-face{
-  font-family: SketchBlock;
-  src: url(../fonts/SketchBlock.ttf);
+@font-face {
+    font-family: SketchBlock;
+    src: url('../fonts/sketchblock-webfont.eot');
+    src: url('../fonts/sketchblock-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/sketchblock-webfont.woff2') format('woff2'),
+         url('../fonts/sketchblock-webfont.woff') format('woff'),
+         url('../fonts/sketchblock-webfont.ttf') format('truetype'),
+         url('../fonts/sketchblock-webfont.svg#sketch_blockbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
 body {
