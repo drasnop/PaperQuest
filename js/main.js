@@ -75,14 +75,18 @@ $("#add-seed").on("click", function() {
 
    $("#overlay").width(window.innerWidth).height(window.innerHeight)
 
-   global.fullPaperTitle = false;
-
+   if(global.fullPaperTitle)
+         addCorePaper($('#dialog .typeahead').typeahead('val'));
+      else
+         global.fullPaperTitle = false;
+         
    toggleDialog();
 
-   $('#dialog .typeahead').focus()
+   $('#dialog .typeahead').focus();
 })
 
 function toggleDialog() {
+   console.log("toggleDialog");
    $("#dialog").toggle()
    $("#overlay").toggle()
 
@@ -100,10 +104,8 @@ $('#dialog .typeahead').on("typeahead:selected", function() {
 })
 $('#dialog .typeahead').on("keypress", function(e) {
    if (e.which == 13 && global.fullPaperTitle) {
-      console.log("paper title typed: ", $('#dialog .typeahead').typeahead('val'))
-      var title = $('#dialog .typeahead').typeahead('val');
-
-      addCorePaper(title);
+      addCorePaper($('#dialog .typeahead').typeahead('val'));
+      toggleDialog();
    }
 })
 
@@ -133,8 +135,6 @@ function addCorePaper(title) {
          view.updateUpdateFringeButton();
          view.doAutomaticFringeUpdate(); // if necessary
          view.updateView(2);
-
-         toggleDialog();
       }
    }
 }
