@@ -32,32 +32,35 @@
 <body>
     <svg id="main-view"></svg>
 
-    <div id="description-core" class="legend highlighted">
+    <div id="description-core" class="placeholder highlighted">
         <h2> Read </h2>
-        Add a seed paper to begin your journey!
+        <p class="legend">  Add a seed paper to begin your journey! </p>
     </div>
-    <div id="description-toread" class="legend">
+    <div id="description-toread" class="placeholder">
         <h2> To Read </h2>
+        <p class="legend">
         ← to move interesting papers to this list <br>
-        ✓ to mark them as read
+        ✓ to mark them as read</p>
     </div>
-    <div id="description-fringe" class="legend">
-        <div id="description-fringe-1">
-            <h2> The Fringe </h2>
-            Papers related to those Read, To Read or selected. The most relevant papers appear at the top of the Fringe. <br>
-            <br>
-            <b>Click</b> to select interesting papers, then <b>scroll</b> to show authors & abstracts.<br>
-            <br>
-            Color = how strongly connected this paper is to other interesting papers:
-        </div>
-        <svg id="color-legend"></svg>
-        <div id="description-fringe-2">
-            Size = citation counts. The left circle represents the total number of citations, scraped from Google Scholar; the right one shows citations from CHI & UIST only:
-        </div>
-        <svg id="size-legend"></svg>
-        <div id="description-fringe-3">
-            <br>
-            Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in.
+    <div id="description-fringe" class="placeholder">
+        <h2> The Fringe </h2>
+        <div class="legend">
+            <div id="description-fringe-1">
+                Papers related to those Read, To Read or selected. The most relevant papers appear at the top of the Fringe. <br>
+                <br>
+                <b>Click</b> to select interesting papers, then <b>scroll</b> to show authors & abstracts.<br>
+                <br>
+                Color = how strongly connected this paper is to other interesting papers:
+            </div>
+            <svg id="color-legend"></svg>
+            <div id="description-fringe-2">
+                Size = citation counts. The left circle represents the total number of citations, scraped from Google Scholar; the right one shows citations from CHI & UIST only:
+            </div>
+            <svg id="size-legend"></svg>
+            <div id="description-fringe-3">
+                <br>
+                Click <em>Update fringe</em> to compute a new Fringe based on all the papers you have expressed interest in.
+            </div>
         </div>
     </div>
 

@@ -33,20 +33,26 @@ svg#main-view{
   stroke-width: 2;
 }
 
-.legend {
+.placeholder {
   position:fixed;
-  opacity: 0.3;
   font-family: 'Architects Daughter', cursive;
+  color: rgba(0,0,0,.6);
 }
 
-.legend h2{
-  font-family: 'SketchBlock';
+.placeholder h2{
+  font-family: 'SketchBlock', sans-serif;
   font-weight: 400;
   font-size: 32px;
   margin: 19px 0;
+  opacity: 0.3;
 }
 
-.legend.highlighted{
+.placeholder .legend{
+  opacity: 0.1;
+}
+
+.placeholder.highlighted .legend,
+.placeholder.highlighted h2 {
   opacity:1;
 }
 
