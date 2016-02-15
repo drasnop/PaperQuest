@@ -1,0 +1,113 @@
+<html>
+
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <title>PaperQuest: a Visualization Tool to Support Literature Review</title>
+   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="screen">
+   <link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+</head>
+
+<body>
+   <div class="container page">
+      <div class="row">
+         <div class="col-xs-12">
+            <h1 class="title">PaperQuest: a Visualization Tool to Support Literature Review</h1>
+            <div class="authors block">
+               <a href="http://www.antoineponsard.com/">Antoine Ponsard</a>, <a href="http://pax.mangara.net/">Francisco Escalona</a> and <a href="https://www.cs.ubc.ca/~tmm/">Tamara Munzner</a>
+            </div>
+         </div>
+         <div class="col-xs-12">
+            <hr>
+            <a href="#abstract">Abstract</a> |
+            <a href="#paper">Paper</a> |
+            <!--<a href="#poster">Poster</a> |
+            <a href="#video">Video</a> |
+            <a href="#report">Tech Report</a> |-->
+            <a href="#demo">Demo</a> |
+            <a href="#code">Software</a>
+            <hr>
+         </div>
+         <div class="col-xs-12">
+            <div class="image"><img src="img/fig-full.png" class="img-responsive"></div>
+         </div>
+         <div class="col-xs-12">
+            <a name="abstract"></a>
+            <h2>Abstract</h2> The literature review is a key component of academic research, which allows researchers to build upon each other's work. While modern search engines enable fast access to publications, there is a lack of support for filtering out the vast majority of papers that are irrelevant to the current research focus. We present PaperQuest, a visualization tool that supports efficient reading decisions, by only displaying the information useful at a given step of the review. We propose an algorithm to find and sort papers that are likely to be relevant to users, based on the papers they have already expressed interest in and the number of citations. The current implementation uses papers from the CHI, UIST, and VIS conferences, and citation counts from Google Scholar, but is easily extensible to other domains of the literature.
+         </div>
+         <div class="col-xs-12">
+            <a name="paper"></a>
+            <h2>Paper</h2>
+            <div class="col-sm-3 hidden-xs">
+               <img src="img/fig-thumbnail.png" class="img-thumbnail">
+            </div>
+            <div class="col-sm-9 col-xs-12 pub">
+               <div class="title">
+                  PaperQuest: a Visualization Tool to Support Literature Review
+               </div>
+               <div class="authors">
+                  <a href="http://www.antoineponsard.com/">Antoine Ponsard</a>, <a href="http://pax.mangara.net/">Francisco Escalona</a>, <a href="/~tmm">Tamara Munzner</a>
+               </div>
+               <div class="venue">
+                  <span class="name"><a href="https://chi2016.acm.org/wp/late-breaking-work/" target="_blank">CHI'16 Extended Abstracts</a> on Human Factors in Computing Systems, San Jose, USA, 2016</span>.
+                  <br/>
+               </div>
+               <div>
+                  [<a href="paperquest-chi16.pdf" target="_blank">Pre-Print PDF</a>] 
+                  <!--[<a href="seqit-infovis15.bib">BibTeX</a>]-->
+               </div>
+            </div>
+         </div>
+         <!--
+         <div class="col-xs-12">
+            <a name="poster"></a>
+            <h2>Poster</h2>
+            <p>The poster being presented at VIS 2015.</p>
+            <p>&rarr; <a href="seqit-poster.pdf">Poster (PDF, 5.9 MB)</a></p>
+         </div>
+         <div class="col-xs-12">
+            <a name="video"></a>
+            <h2>Video</h2>
+            <p>The video preview introduces SEQIT and the extended video explains SEQIT's interface components and provides usage examples.</p>
+            <p>&rarr; <a href="https://vimeo.com/136252149">Video Preview (Vimeo, 30s)</a></p>
+            <p>&rarr; <a href="https://www.youtube.com/watch?v=RRMUm2fQ4Io">Extended Video (YouTube, 1 min 40 sec)</a></p>
+         </div>
+         <div class="col-xs-12">
+            <a name="report"></a>
+            <h2>Technical Report</h2>
+            <p>The technical report describes SEQIT in more details.</p>
+            <p>&rarr; <a href="seqit-tech-report.pdf">Tech Report (PDF, 1.6 MB)</a></p>
+         </div>-->
+         <div class="col-xs-12">
+            <a name="demo"></a>
+            <h2>Demo</h2>
+            <p>A demo of PaperQuest is available <a href="demo" target="_blank">here</a>.</p>
+         </div>
+         <div class="col-xs-12">
+            <a name="code"></a>
+            <h2>Software</h2>
+            <p>PaperQuest is available as open source on <a href="https://github.com/drasnop/PaperQuest" target="_blank">GitHub</a>.</p>
+         </div>
+         <div class="col-xs-12">
+            <hr>
+            <p>Last modified: February 14, 2016</p>
+         </div>
+      </div>
+   </div>
+   <script>
+   (function(i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function() {
+         (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+         m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+   })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+   ga('create', 'UA-1487327-3', 'auto');
+   ga('send', 'pageview');
+   </script>
+</body>
+
+</html>

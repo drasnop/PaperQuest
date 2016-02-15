@@ -1,0 +1,259 @@
+body {
+	background: #fff;
+	font-family: -apple-system, Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	line-height: 16px;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	text-align: justify;
+}
+.page {
+	background: #fff;
+	max-width: 700px;
+	/*min-width: 700px;*/
+	height: 100%;
+	/*margin: 0 auto 0 1.5em;*/
+	/*padding: 0.3em 1.5em 1em 1.5em;*/
+}
+
+.example{ border:1px solid #ccc; margin:0 0 10px 0; }
+.example:hover{ border-color:#999; }
+.examples td{ padding-right:10px; padding-bottom: 25px;}
+.examples td:nth-child(4){ padding-right:0;}
+a { 
+color: #900; 
+text-decoration: none;
+}
+
+a:hover{
+color: #009;
+}
+
+a:active{
+color: #999;
+}
+.section {
+	margin-bottom: 0em;
+	margin-top: 1.05em;
+}
+.section:first-child { margin-top: 0em; }
+
+.vg { color: #bbb; font-weight: normal; }
+h1, h2 { padding: 0; margin: 0; }
+h1 { font-size: 20px; line-height: 25px; margin-bottom: 0.5em; margin-top: 1em; }
+h2 { font-size: 17px; line-height: 23px; margin-bottom: 0.5em; margin-top: 1.2em; letter-spacing: 1px; }
+h3 { font-size: 13px; margin-bottom: 0.5em; margin-top: 1em; }
+table, tr, td { margin: 0; padding: 0; font-size: 13px; line-height: 18px;}
+td { padding-right: 25px; vertical-align: top;}
+
+.error-code {
+  margin-top: 0.75em;
+  margin-bottom: 0.5em;
+  font-size: 24px;
+}
+.error-code b { font-size: 28px; }
+
+/* Page Layout */
+.content {
+	width: 700px;
+	margin-bottom: 1em;
+}
+.index { margin-left: 158px; }
+
+/* Branding and Navigation */
+.header, .footer {
+	font-variant: small-caps;
+	font-weight: normal;
+}
+.header {
+	padding-top: 2px;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 2px;
+	margin-bottom: 0.5em;
+}
+.logo, .nav { font-size: 18px; }
+.logo { width: 200px; }
+.logo .stanford { color: #d56; }
+.logo .vis { color: #300; font-size: 19px; letter-spacing: 1px; }
+.logo .group { color: #bbb;}
+.logo .space { font-size: 0.5em; }
+.nav { float: right; }
+.nav .space { font-size: 19px; }
+.nav a, .nav a:visited { color: #bbb; font-size: 18px; }
+.nav a.selected { color: #300; font-size: 18px; }
+.nav a:hover { color: #c23; }
+.footer {
+	text-align: right;
+	font-size: 16px;
+	border-top: 1px solid #ddd;
+	clear: both;
+}
+.footer .feed {
+	float: left;
+	text-align: left;
+}
+.footer img.feed-icon {
+	float: left;
+	padding: 4px 3px 0px 0px;
+}
+.footer .csd { color: #000; }
+.footer .su { color: #d56; }
+.footer a:hover { color: #c23; }
+
+/* Publication Page */
+.pub-page .block { margin-bottom: 2em; }
+/*.title { max-width: 700px; }*/
+.authors { font-size: 17px; }
+.figure { margin: 25px 0px; }
+.figure .image { margin-bottom: 0.5em; }
+/*.figure img { max-width: 700px; }*/
+.figure .imglink img { margin-bottom: 0.5em; }
+.figure .imglink img:hover { }
+.caption { font-size: 11px; }
+
+/* Publication Entry */
+.pub-year { margin-bottom: 0.5em; margin-top: 2.0em; letter-spacing: 0.15em; }
+.section:first-child .pub-year { margin-top: 1.5em; }
+.pub-list .entry { margin-left: 25px; }
+.entry { margin-bottom: 1.5em; clear: left; }
+.entry .thumbnail { float: left; padding-right: 12px; margin-top: 3px; }
+/*.entry .thumbnail img { border: 1px solid #fff; }*/
+.entry .pub { margin-left: 100px; }
+.pub div { margin: 0; }
+.pub .title { font-weight: bold; }/* display: inline; }*/
+.pub .authors { font-size: 13px; }/* display: inline; }*/
+.pub .venue { display: inline; }
+.pub .venue .name { font-style: italic; }
+.pub .note { font-weight: bold; }
+
+/* People Page */
+.people-list { margin-bottom: 2em; }
+.people-list h2 { margin-bottom: 0px; } /* Improves alignment */
+.people-list .section { margin-bottom: 0px; margin-top: 13px; }
+#people-photo { float: left; width: 130px; margin: 4.5em 0 0 10px; }
+
+/* Front Page Features */
+#spotlight {
+	position: relative;
+	border-bottom: 1px solid #ddd;
+	margin: 0px;
+	margin-top: -0.5em;
+	padding: 0px 0px;
+	padding-bottom: -1px;
+	height: 180px;
+}
+#spotlight .title {
+	position: absolute;
+	bottom: 15px;
+	right: 5px;
+	background: #555;
+	color: black;
+	font-size: 14px;
+	line-height: 17px;
+	padding: 4px;
+}
+#spotlight .title .text { color: white; }
+#spotlight .title .text a { color: white; }
+#spotlight .title .project { font-weight: bold; }
+
+.home .feature { font-variant: normal; margin-bottom: 1em; }
+.home div.section { border-top: 1px solid #bbb; padding-top: 0.5em; }
+.home div.subsection { border-bottom: 1px solid #ddd; }
+.home div.subsection:last-child { border-bottom: none; }
+.home .update a { font-weight: bold; }
+.home .update a.normal { font-weight: normal; }
+.home .pubs .years { float: right; font-size: 12px; margin-top: 6px; }
+.home div.main { margin-right: 180px; margin-top: 0.5em; }
+.home div.sidebar {
+      float: right;
+      width: 150px;
+      margin: 0 0 0 0;
+      padding: 0.5em 0 10px 10px;
+      border-left: 1px dashed #ccc;
+}
+.home div.sidebar p {
+      font-size: 11px;
+      line-height: 14px;
+      margin-top: 0;
+}
+
+/* should use proxima nova bold 700 instead of Roboto */
+@import url(https://fonts.googleapis.com/css?family=Roboto:700);
+
+.filters-container.active{
+  border-radius: 0px;
+}
+
+.filters-container.inactive{
+  padding-left: 0px;
+}
+
+.filters-container.inactive .btn{
+  border-radius: 0px !important;
+}
+
+#message{
+  font-size: 22px;
+  font-weight: normal;
+}
+
+/* need more whitespace in the details. Adjust grid settings if needed. */
+.car div.tile-details{
+  padding: 10px;
+}
+
+.car{
+  box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
+  /*border-radius: 10px 10px 0px 0px;*/
+  transition: box-shadow 0.2s ease-out;
+}
+
+.car:hover{
+  box-shadow: 1px 1px 6px 1px rgba(0, 0, 0, 0.2);
+}
+
+.car .title .col-xs-2{
+  display: none;
+}
+
+.car .title .col-xs-10{
+  width: 100%;
+  white-space: : nowrap;
+  font-family: 'Roboto';
+}
+
+.car .title{
+  font-size: 18px!important;;
+  text-align: left;
+  margin-bottom: 5px;
+  font-weight: normal;
+}
+
+.car .picture{
+  /*filter: grayscale(1);*/
+  transition: filter 0.5s ease-out;
+}
+
+.car:hover .picture{
+  filter: none;
+}
+
+.car .mileage, .car .color{
+  font-size: 16px!important;
+  color: #999!important;
+}
+
+.car .price{
+  font-size: 16px!important;
+  font-weight: bold;
+}
+
+/* $(".car").each(function(){var y=$(this).find(".title .col-xs-2").text(); $(this).find(".color").text(y)}); */
+
+.img-thumbnail{
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  margin-left: -15px;
+}
